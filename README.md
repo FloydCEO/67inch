@@ -14,14 +14,14 @@
 
 [![Discord](https://img.shields.io/badge/Discord-%237289DA.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/grbT9dmk8w)
 [![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://www.youtube.com/@mushroomclient/)
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scoliosiss)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/FloydCEOs)
 
 ---
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=scoliosiss&count_private=true&show_icons=true&theme=chartreuse-dark&icon_color=00FF41&hide_border=true&bg_color=0d0d0d&title_color=00FF41&text_color=cccccc" width="49%" />
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=scoliosiss&theme=dark&hide_border=true&background=0d0d0d&ring=00FF41&fire=00FF41&currStreakLabel=00FF41&sideLabels=cccccc&dates=888888" width="49%" />
+<img src="https://github-readme-stats.vercel.app/api?username=FloydCEOs&count_private=true&show_icons=true&theme=chartreuse-dark&icon_color=00FF41&hide_border=true&bg_color=0d0d0d&title_color=00FF41&text_color=cccccc" width="49%" />
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=FloydCEOs&theme=dark&hide_border=true&background=0d0d0d&ring=00FF41&fire=00FF41&currStreakLabel=00FF41&sideLabels=cccccc&dates=888888" width="49%" />
 
 </div>
 
@@ -105,12 +105,12 @@
 
 <div align="center">
 
-[![Floyd Client](https://img.shields.io/badge/Floyd_Client-creator-00FF41?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scoliosiss)
-[![Kirk Client](https://img.shields.io/badge/Kirk_Client-developer-00BFFF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scoliosiss)
-[![Mushroom Client](https://img.shields.io/badge/Mushroom_Client-D70040?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scoliosiss/MushroomClient2)
+[![Floyd Client](https://img.shields.io/badge/Floyd_Client-creator-00FF41?style=for-the-badge&logo=github&logoColor=white)](https://github.com/FloydCEOs)
+[![Kirk Client](https://img.shields.io/badge/Kirk_Client-developer-00BFFF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/FloydCEOs)
+[![Mushroom Client](https://img.shields.io/badge/Mushroom_Client-D70040?style=for-the-badge&logo=github&logoColor=white)](https://github.com/FloydCEOs/MushroomClient2)
 
 > *"The code doesn't lie. People do."*
 
-![Profile Views](https://komarev.com/ghpvc/?username=scoliosiss&color=00FF41&style=for-the-badge&label=VISITORS)
+![Profile Views](https://komarev.com/ghpvc/?username=FloydCEOs&color=00FF41&style=for-the-badge&label=VISITORS)
 
 </div>
