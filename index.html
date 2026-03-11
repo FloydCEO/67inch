@@ -55,7 +55,7 @@
   }
   .ticker {
     display: inline-block;
-    animation: ticker 25s linear infinite;
+    animation: ticker 55s linear infinite;
     font-family: 'VT323', monospace;
     font-size: 1.2rem;
     letter-spacing: 2px;
@@ -76,7 +76,11 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  nav::-webkit-scrollbar { display: none; }
   nav a {
     color: var(--white);
     text-decoration: none;
@@ -88,6 +92,8 @@
     transition: all 0.15s;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   nav a::after {
     content: '';
@@ -124,6 +130,12 @@
     background: radial-gradient(ellipse at center, #1a0000 0%, #000 70%);
     overflow: hidden;
     padding: 60px 20px;
+  }
+  @media(max-width: 560px) {
+    .hero { min-height: 100svh; padding: 40px 16px; }
+    .hero-title { letter-spacing: 4px; }
+    .hero-btns { gap: 12px; margin-top: 28px; }
+    .btn { font-size: 1.2rem; padding: 13px 32px; }
   }
 
   .hero-bg-text {
@@ -216,6 +228,7 @@
     max-width: 1200px;
     margin: 0 auto;
   }
+  @media(max-width: 560px) { section { padding: 50px 16px; } }
 
   .section-label {
     font-family: 'VT323', monospace;
@@ -259,17 +272,27 @@
     border-top: 4px solid var(--yellow);
     border-bottom: 4px solid var(--yellow);
   }
+  @media(max-width: 560px) { .leaders-section { padding: 50px 16px; } }
   .leaders-inner {
     max-width: 1200px;
     margin: 0 auto;
   }
   .leaders-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
     margin-top: 40px;
+    justify-content: center;
   }
-  @media(max-width: 700px) { .leaders-grid { grid-template-columns: 1fr; } }
+  @media(max-width: 560px) { .leaders-grid { gap: 12px; } }
+  .leader-card {
+    flex: 0 0 calc(33% - 16px);
+    min-width: 240px;
+    max-width: 320px;
+  }
+  @media(max-width: 900px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 12px); min-width: 0; } }
+  @media(max-width: 560px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 8px); min-width: 0; max-width: 100%; } }
+  @media(max-width: 360px) { .leaders-grid .leader-card { flex: 0 0 100%; max-width: 100%; } }
 
   .leader-card {
     background: #111;
@@ -334,6 +357,12 @@
     letter-spacing: 3px;
     margin-top: 4px;
   }
+  .leader-title.sus { color: #555; }
+  .leader-card.icon-card {
+    border-color: var(--yellow);
+    box-shadow: 0 0 24px rgba(255,230,0,0.2);
+  }
+  .leader-card.icon-card:hover { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255,230,0,0.4); }
 
   /* NEWS */
   .news-section { background: var(--darker); }
@@ -442,7 +471,7 @@
     margin-bottom: 20px;
   }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  @media(max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
   .form-field { display: flex; flex-direction: column; gap: 6px; }
   .form-field label {
     font-family: 'VT323', monospace;
@@ -460,6 +489,11 @@
     font-size: 1rem;
     outline: none;
     transition: border-color 0.2s;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  @media(max-width: 560px) {
+    .form-field input, .form-field textarea, .form-field select { font-size: 16px; }
   }
   .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--yellow); }
   .form-field textarea { min-height: 100px; resize: vertical; }
@@ -773,6 +807,51 @@
   .text-yellow { color: var(--yellow); }
   .mt-4 { margin-top: 1rem; }
   .mb-4 { margin-bottom: 1rem; }
+
+  /* ===================== MOBILE ===================== */
+  @media(max-width: 560px) {
+
+    /* NEWS */
+    .news-headline { font-size: 1.4rem; }
+    .news-body { font-size: 0.9rem; }
+    .submit-form { padding: 20px 16px; }
+    .submit-form h3 { font-size: 1.5rem; }
+
+    /* PHOTO WALL */
+    .wall-section { padding: 50px 16px; }
+    .photo-wall { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .wall-item.wide { grid-column: span 2; }
+
+    /* CHARLIE KIRK */
+    .kirk-section { padding: 50px 16px; }
+    .kirk-banner { font-size: clamp(2.2rem, 10vw, 4rem); letter-spacing: 3px; }
+
+    /* OLI */
+    .oli-section { padding: 50px 16px; }
+    .oli-text .section-title { font-size: 2.5rem; }
+    .oli-text p { font-size: 0.95rem; }
+
+    /* GARTIC */
+    .gartic-section { padding: 50px 16px; }
+
+    /* DONATE */
+    .donate-section { padding: 50px 16px; }
+    .qr-frame { width: 200px; height: 200px; }
+
+    /* MODAL */
+    .modal-inner { padding: 20px 16px; }
+    .modal-img { max-height: 50vh; }
+
+    /* FOOTER */
+    footer { padding: 40px 16px 30px; }
+    .footer-links { gap: 16px; }
+
+    /* SECTION TITLES */
+    .section-title { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 28px; }
+
+    /* TOAST */
+    .toast { bottom: 16px; right: 16px; left: 16px; text-align: center; font-size: 1rem; padding: 12px 20px; }
+  }
 </style>
 </head>
 <body>
@@ -780,7 +859,7 @@
 <!-- TICKER -->
 <div class="ticker-wrap">
   <span class="ticker">
-    JUST IN THE NEWS, TRONIX IS BACK, AND HES KINDA CHILL?? | WHAT? | Ollies chair is sitting empty, when will he return! | SPOOKS | Tronix got arrested at one point, but he wont talk about it | Quiz | What kind of pasta is pastaa? Dont't ask him,he'll block you for a full calendar year. | WAR | Iran lowkey is being a bitch and is bombing zync and tenzos spot, wtf iran. | Kate is still in love with lyko | A nice guy bought this domain wowzers | Have you donated to my bgame ltc wallet yet? You prollyshould | tronix tried to play on rise but sucks | YOO octo is a bitch fr his client sucks omm | BREAKING NEWS
+    JUST IN THE NEWS, TRONIX IS BACK, AND HES KINDA CHILL?? | WHAT? | Ollies chair is sitting empty, when will he return! | SPOOKS | Tronix got arrested at one point, but he wont talk about it | Quiz | What kind of pasta is pastaa? Dont't ask him,he'll block you for a full calendar year. | WAR | Iran lowkey is being a bitch and is bombing zync and tenzos spot, wtf iran. | Kate is still in love with lyko | A nice guy bought this domain wowzers | Have you donated to my bgame ltc wallet yet? You prollyshould | tronix tried to play on rise but sucks | YOO octo is a bitch fr his client sucks omm | BREAKING NEWS | Pasgo just got his masters degree in mixing at mixing school, incredible stuff | Tronix and his family donated 6 Tron coins towards human trafficking | JUST IN | CLPZ is back as well after the client feud, and now both clients are dead, they might as well be friends again | QUIZ | is kirk client an exit scam? ........... FIVE............ FOUR............. THREE............... TWO.............. ONE............... .................. ding ding ding ding THE ANSWER IS NOOOOOOOOOO | Breaking news . . .
   </span>
 </div>
 
@@ -818,6 +897,18 @@
     <h2 class="section-title">LEADERSHIP COUNCIL</h2>
     <div class="leaders-grid">
 
+      <!-- OLIVER — before Zep -->
+      <div class="leader-card icon-card" data-rank="LEGEND">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q5eSGHu.png" alt="Oliver Brandon Ernest Good">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">OLIVER BRANDON ERNEST GOOD</div>
+          <div class="leader-title">// LEGEND &amp; MASSIVE ICON //</div>
+        </div>
+      </div>
+
+      <!-- ZEP -->
       <div class="leader-card" data-rank="FOUNDER">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5ey1Ax.png" alt="Zep">
@@ -828,6 +919,7 @@
         </div>
       </div>
 
+      <!-- LYKO -->
       <div class="leader-card" data-rank="CO-FOUNDER">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5eDIBn.png" alt="Lyko">
@@ -838,6 +930,7 @@
         </div>
       </div>
 
+      <!-- PASTAA -->
       <div class="leader-card" data-rank="ADMIN">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5kHjyJ.png" alt="Pastaa">
@@ -845,6 +938,28 @@
         <div class="leader-info">
           <div class="leader-name">PASTAA</div>
           <div class="leader-title">// MINISTER OF PASTA //</div>
+        </div>
+      </div>
+
+      <!-- PASGO — after Pastaa -->
+      <div class="leader-card" data-rank="ADMIN">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q7r0zXa.png" alt="Pasgo">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">PASGO</div>
+          <div class="leader-title">// WENT TO MIXING SCHOOL //</div>
+        </div>
+      </div>
+
+      <!-- TRONIX — after Pasgo -->
+      <div class="leader-card" data-rank="MEMBER">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q7rMOcx.png" alt="Tronix">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">TRONIX</div>
+          <div class="leader-title sus">CONVICTED SO (ALLEGEDLY) //</div>
         </div>
       </div>
 
@@ -985,7 +1100,7 @@
       </div>
       <div class="wall-item" onclick="openModal('https://iili.io/q5eSGHu.png', 'THE OFFICIAL LOGO')">
         <img src="https://iili.io/q5eSGHu.png" alt="Logo">
-        <div class="wall-item-overlay"><div class="wall-item-caption">THE CREST</div></div>
+        <div class="wall-item-overlay"><div class="wall-item-caption">THE PROPHET</div></div>
       </div>
       <div class="wall-item" onclick="openModal('https://iili.io/q5ey1Ax.png', 'ZEP   THE RIGHT HAND')">
         <img src="https://iili.io/q5ey1Ax.png" alt="Zep">
