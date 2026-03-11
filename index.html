@@ -1,1 +1,1116 @@
-Coming Soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>67 Inch Dih Club | The Official HQ</title>
+<link rel="icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link rel="shortcut icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link rel="apple-touch-icon" href="https://iili.io/q5eSGHu.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bangers&family=Permanent+Marker&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #ff1a1a;
+    --yellow: #ffe600;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --white: #f5f5f5;
+    --gray: #1a1a1a;
+    --accent: #ff6b00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--red);
+    padding: 6px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 3px solid var(--yellow);
+  }
+  .ticker {
+    display: inline-block;
+    animation: ticker 25s linear infinite;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--yellow);
+  }
+  @keyframes ticker {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* NAV */
+  nav {
+    background: #0d0d0d;
+    border-bottom: 3px solid var(--yellow);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    padding: 14px 28px;
+    border-right: 1px solid #222;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  nav a:hover { background: #1a1a1a; color: var(--yellow); }
+  nav a:hover::after { transform: scaleX(1); }
+  nav a.discord-btn {
+    background: #5865F2;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  nav a.discord-btn:hover { background: #4752c4; }
+  nav a.discord-btn::after { display: none; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1a0000 0%, #000 70%);
+    overflow: hidden;
+    padding: 60px 20px;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25vw;
+    color: rgba(255,26,26,0.04);
+    letter-spacing: -5px;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+    animation: bgpulse 4s ease-in-out infinite;
+  }
+  @keyframes bgpulse {
+    0%, 100% { opacity: 0.04; }
+    50% { opacity: 0.08; }
+  }
+
+  .hero-logo {
+    width: min(500px, 85vw);
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 40px rgba(255,26,26,0.8));
+    animation: logobob 3s ease-in-out infinite;
+  }
+  @keyframes logobob {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-12px) rotate(1deg); }
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    letter-spacing: 8px;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--red), 8px 8px 0 #000;
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+    line-height: 1;
+  }
+
+  .hero-sub {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: #aaa;
+    letter-spacing: 4px;
+    z-index: 2;
+    margin-top: 10px;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
+    z-index: 2;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    padding: 16px 48px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    display: inline-block;
+    position: relative;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--yellow);
+    box-shadow: 4px 4px 0 #800;
+  }
+  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #800; }
+  .btn-discord {
+    background: #5865F2;
+    color: white;
+    box-shadow: 4px 4px 0 #2a3299;
+  }
+  .btn-discord:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #2a3299; }
+
+  /* SECTION STYLES */
+  section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 6px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    letter-spacing: 4px;
+    color: var(--white);
+    margin-bottom: 40px;
+    position: relative;
+    display: inline-block;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60%;
+    height: 4px;
+    background: var(--yellow);
+  }
+
+  .divider {
+    width: 100%;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--red) 0px, var(--red) 20px, var(--yellow) 20px, var(--yellow) 40px, #0a0a0a 40px, #0a0a0a 60px);
+    margin: 0;
+  }
+
+  /* LEADERS */
+  .leaders-section {
+    background: var(--gray);
+    padding: 80px 20px;
+    border-top: 4px solid var(--yellow);
+    border-bottom: 4px solid var(--yellow);
+  }
+  .leaders-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .leaders-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+  }
+  @media(max-width: 700px) { .leaders-grid { grid-template-columns: 1fr; } }
+
+  .leader-card {
+    background: #111;
+    border: 2px solid #333;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .leader-card:hover { transform: translateY(-6px) rotate(-1deg); border-color: var(--yellow); }
+  .leader-card:nth-child(2):hover { transform: translateY(-6px) rotate(1deg); }
+
+  .leader-card::before {
+    content: attr(data-rank);
+    position: absolute;
+    top: 10px; right: 12px;
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: var(--yellow);
+    background: rgba(0,0,0,0.7);
+    padding: 2px 8px;
+    z-index: 3;
+  }
+
+  .leader-img-wrap {
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    position: relative;
+  }
+  .leader-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(transparent, #111);
+  }
+  .leader-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%) contrast(1.1);
+    transition: transform 0.4s, filter 0.4s;
+  }
+  .leader-card:hover .leader-img-wrap img { transform: scale(1.07); filter: grayscale(0%) contrast(1.2); }
+
+  .leader-info {
+    padding: 16px 20px 20px;
+    position: relative;
+  }
+  .leader-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+    color: var(--white);
+    line-height: 1;
+  }
+  .leader-title {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    color: var(--red);
+    letter-spacing: 3px;
+    margin-top: 4px;
+  }
+
+  /* NEWS */
+  .news-section { background: var(--darker); }
+  .news-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+  @media(max-width: 768px) { .news-grid { grid-template-columns: 1fr; } }
+
+  .news-featured {
+    background: #111;
+    border: 2px solid #222;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .news-featured:hover { border-color: var(--red); }
+  .news-featured img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.3s;
+  }
+  .news-featured:hover img { opacity: 1; }
+
+  .news-tag {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: var(--red);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+  }
+
+  .news-content { padding: 20px; }
+  .news-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .news-meta {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    color: #666;
+    letter-spacing: 2px;
+  }
+  .news-body {
+    margin-top: 12px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #bbb;
+  }
+
+  .news-sidebar { display: flex; flex-direction: column; gap: 16px; }
+  .news-small {
+    background: #111;
+    border: 2px solid #1e1e1e;
+    padding: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .news-small:hover { border-color: var(--yellow); transform: translateX(4px); }
+  .news-small-tag {
+    font-family: 'VT323', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .news-small-headline {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .news-small-meta {
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 6px;
+    font-family: 'VT323', monospace;
+    letter-spacing: 2px;
+  }
+
+  /* SUBMIT NEWS */
+  .submit-form {
+    background: #111;
+    border: 2px solid #333;
+    padding: 30px;
+    margin-top: 40px;
+  }
+  .submit-form h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--yellow);
+    margin-bottom: 20px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    color: #888;
+    text-transform: uppercase;
+  }
+  .form-field input, .form-field textarea, .form-field select {
+    background: #0d0d0d;
+    border: 2px solid #333;
+    color: var(--white);
+    padding: 10px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--yellow); }
+  .form-field textarea { min-height: 100px; resize: vertical; }
+  .form-field select option { background: #111; }
+
+  /* PHOTO WALL */
+  .wall-section { background: #0d0d0d; padding: 80px 20px; }
+  .wall-inner { max-width: 1200px; margin: 0 auto; }
+
+  .photo-wall {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-top: 40px;
+  }
+
+  .wall-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    background: #111;
+    cursor: pointer;
+    border: 2px solid #1a1a1a;
+    transition: border-color 0.2s;
+  }
+  .wall-item:hover { border-color: var(--red); z-index: 2; }
+  .wall-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s, filter 0.3s;
+    filter: grayscale(10%) contrast(1.05);
+  }
+  .wall-item:hover img { transform: scale(1.1); filter: grayscale(0%) contrast(1.15) brightness(1.1); }
+
+  .wall-item-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    padding: 20px 10px 10px;
+    transform: translateY(100%);
+    transition: transform 0.2s;
+  }
+  .wall-item:hover .wall-item-overlay { transform: translateY(0); }
+  .wall-item-caption {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--yellow);
+  }
+
+  .wall-item.tall { grid-row: span 2; aspect-ratio: unset; }
+  .wall-item.wide { grid-column: span 2; aspect-ratio: unset; min-height: 220px; }
+
+  /* DONATE / QR */
+  .donate-section {
+    background: #111;
+    border-top: 4px solid var(--yellow);
+    border-bottom: 4px solid var(--yellow);
+    padding: 80px 20px;
+    text-align: center;
+  }
+  .donate-inner { max-width: 600px; margin: 0 auto; }
+  .donate-inner .section-title { display: block; text-align: center; }
+  .donate-inner .section-title::after { left: 50%; transform: translateX(-50%); }
+  .qr-frame {
+    margin: 40px auto 0;
+    width: 240px;
+    height: 240px;
+    border: 6px solid var(--yellow);
+    padding: 8px;
+    background: #fff;
+    box-shadow: 12px 12px 0 var(--red);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .qr-frame:hover { transform: rotate(-3deg) scale(1.03); }
+  .qr-frame img { width: 100%; height: 100%; object-fit: contain; }
+  .qr-corner {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--red);
+    border-style: solid;
+  }
+  .qr-corner.tl { top: -10px; left: -10px; border-width: 4px 0 0 4px; }
+  .qr-corner.tr { top: -10px; right: -10px; border-width: 4px 4px 0 0; }
+  .qr-corner.bl { bottom: -10px; left: -10px; border-width: 0 0 4px 4px; }
+  .qr-corner.br { bottom: -10px; right: -10px; border-width: 0 4px 4px 0; }
+  .donate-sub {
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: #888;
+    margin-top: 20px;
+  }
+  .donate-tag {
+    display: inline-block;
+    background: var(--red);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    padding: 6px 20px;
+    margin-top: 14px;
+  }
+
+  /* CHARLIE KIRK ZONE */
+  .kirk-section {
+    background: repeating-linear-gradient(-45deg, #0a0a0a, #0a0a0a 20px, #0d0a00 20px, #0d0a00 40px);
+    padding: 80px 20px;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .kirk-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; }
+  .kirk-img {
+    max-width: 600px;
+    width: 90%;
+    border: 6px solid var(--yellow);
+    box-shadow: 16px 16px 0 var(--red), 32px 32px 0 rgba(255,26,26,0.3);
+    animation: kirkwobble 6s ease-in-out infinite;
+  }
+  @keyframes kirkwobble {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+  .kirk-banner {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: 6px;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--red);
+    margin-bottom: 30px;
+    line-height: 1;
+  }
+
+  /* OLI ZONE */
+  .oli-section {
+    background: #0a0a0a;
+    padding: 80px 20px;
+  }
+  .oli-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  @media(max-width: 700px) { .oli-inner { grid-template-columns: 1fr; } }
+  .oli-img {
+    width: 100%;
+    border: 4px solid #333;
+    filter: brightness(0.7) contrast(1.2);
+    position: relative;
+    transition: filter 0.3s;
+  }
+  .oli-img-wrap:hover .oli-img { filter: brightness(1) contrast(1.1); }
+  .oli-img-wrap {
+    position: relative;
+  }
+  .oli-img-wrap::after {
+    content: '???';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: rgba(255,230,0,0.7);
+    pointer-events: none;
+    text-shadow: 2px 2px 0 #000;
+  }
+  .oli-img-wrap:hover::after { opacity: 0; }
+  .oli-text .section-title { font-size: 3.5rem; }
+  .oli-text p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #bbb;
+    margin-top: 16px;
+  }
+  .oli-text .btn { margin-top: 24px; font-size: 1.2rem; }
+
+  /* GARTIC */
+  .gartic-section {
+    background: var(--gray);
+    padding: 80px 20px;
+    text-align: center;
+  }
+  .gartic-inner { max-width: 900px; margin: 0 auto; }
+  .gartic-img {
+    width: 100%;
+    border: 4px solid #333;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    transition: transform 0.3s;
+  }
+  .gartic-img:hover { transform: scale(1.02); }
+  .gartic-caption {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3rem;
+    color: var(--yellow);
+    margin-top: 20px;
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #000;
+    border-top: 4px solid var(--red);
+    padding: 60px 20px 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    width: 120px;
+    filter: drop-shadow(0 0 20px rgba(255,26,26,0.5));
+    margin-bottom: 20px;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .footer-links a {
+    color: #666;
+    text-decoration: none;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-copy {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    color: #333;
+    letter-spacing: 2px;
+    margin-top: 30px;
+  }
+
+  /* MODAL */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 9998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal.active { display: flex; }
+  .modal-inner {
+    max-width: 800px;
+    width: 100%;
+    background: #111;
+    border: 3px solid var(--yellow);
+    padding: 30px;
+    position: relative;
+    animation: modalin 0.2s ease;
+  }
+  @keyframes modalin {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 0.15s;
+  }
+  .modal-close:hover { transform: rotate(90deg); }
+  .modal-img { width: 100%; max-height: 60vh; object-fit: contain; }
+  .modal-caption {
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    background: var(--yellow);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    padding: 14px 28px;
+    z-index: 9999;
+    transform: translateX(200%);
+    transition: transform 0.3s;
+    box-shadow: 4px 4px 0 var(--red);
+  }
+  .toast.show { transform: translateX(0); }
+
+  /* BLINK ANIM */
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .blink { animation: blink 1s step-end infinite; }
+
+  /* UTILITY */
+  .text-red { color: var(--red); }
+  .text-yellow { color: var(--yellow); }
+  .mt-4 { margin-top: 1rem; }
+  .mb-4 { margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker">
+    ⚡ BREAKING: SOMEONE GOT CLIPPED AGAIN &nbsp;|&nbsp; 🔥 NEW POST ON THE WALL &nbsp;|&nbsp; 👁️ OLI ROOM REMAINS EMPTY — ANYONE CAN FILL IT &nbsp;|&nbsp; 💀 JOIN discord.gg/jeffreyepstein &nbsp;|&nbsp; 📡 67INCHDIHCLUB.LOL IS NOW LIVE &nbsp;|&nbsp; ⚡ WE ARE CHARLIE KIRK &nbsp;|&nbsp; 🎮 GARTIC PHONE CASUALTIES MOUNTING &nbsp;|&nbsp;
+  </span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#news">NEWS</a>
+  <a href="#leaders">LEADERS</a>
+  <a href="#wall">WALL</a>
+  <a href="#oli">THE OLI ROOM</a>
+  <a href="#donate">DONATE</a>
+  <a href="https://discord.gg/jeffreyepstein" target="_blank" class="discord-btn">
+    <svg width="20" height="20" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="currentColor"/></svg>
+    JOIN SERVER
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-text">67</div>
+  <img src="https://iili.io/q5eSGHu.png" alt="67 Inch Dih Club Logo" class="hero-logo">
+  <h1 class="hero-title">67 Inch<br>Dih Club</h1>
+  <p class="hero-sub">OFFICIAL HEADQUARTERS // EST. SOMEWHERE IN TIME</p>
+  <div class="hero-btns">
+    <a href="#news" class="btn btn-primary">READ THE NEWS</a>
+    <a href="https://discord.gg/jeffreyepstein" target="_blank" class="btn btn-discord">JOIN THE SERVER</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LEADERS -->
+<div class="leaders-section" id="leaders">
+  <div class="leaders-inner">
+    <p class="section-label">THE FACES OF POWER</p>
+    <h2 class="section-title">LEADERSHIP COUNCIL</h2>
+    <div class="leaders-grid">
+
+      <div class="leader-card" data-rank="FOUNDER">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q5ey1Ax.png" alt="Zep">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">ZEP</div>
+          <div class="leader-title">// SUPREME LEADER //</div>
+        </div>
+      </div>
+
+      <div class="leader-card" data-rank="CO-FOUNDER">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q5eDIBn.png" alt="Lyko">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">LYKO</div>
+          <div class="leader-title">// TOP GLAZER //</div>
+        </div>
+      </div>
+
+      <div class="leader-card" data-rank="ADMIN">
+        <div class="leader-img-wrap">
+          <img src="https://iili.io/q5kHjyJ.png" alt="Pastaa">
+        </div>
+        <div class="leader-info">
+          <div class="leader-name">PASTAA</div>
+          <div class="leader-title">// MINISTER OF PASTA //</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- NEWS -->
+<section class="news-section" id="news">
+  <p class="section-label">BREAKING // LIVE // UNFILTERED</p>
+  <h2 class="section-title">LOCAL NEWS</h2>
+
+  <div class="news-grid">
+    <!-- FEATURED -->
+    <div class="news-featured" onclick="openModal('https://iili.io/q5e6vwu.png', 'THE GARTIC INCIDENT OF 2024 — FULL DEBRIEF')">
+      <span class="news-tag">FEATURED</span>
+      <img src="https://iili.io/q5e6vwu.png" alt="Gartic Phone Result">
+      <div class="news-content">
+        <h3 class="news-headline">THE GARTIC PHONE INCIDENT: A NATION MOURNS</h3>
+        <div class="news-meta">BREAKING — JUST NOW // SOURCE: THE SERVER</div>
+        <p class="news-body">In what investigators are calling "the most unhinged corpse gartic phone session in recorded history," members of the 67 Inch Dih Club produced the image you see before you. No further comment has been issued. Authorities are baffled. The image speaks for itself.</p>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="news-sidebar">
+      <div class="news-small" onclick="openModal('https://iili.io/q5esdjn.png', 'THE OLI ROOM — AWAITING A NEW OCCUPANT')">
+        <div class="news-small-tag">// VACANCY ALERT //</div>
+        <div class="news-small-headline">OLI ROOM STILL EMPTY WE CAN'T TELL WHEN HE'LL BE BACK</div>
+        <div class="news-small-meta">PUBLISHED: TODAY // REPORTER: ANONYMOUS</div>
+      </div>
+      <div class="news-small">
+        <div class="news-small-tag">// CLIP OF THE WEEK //</div>
+        <div class="news-small-headline">TRONIX GOT CLIPPED BEING A PЕD0</div>
+        <div class="news-small-meta">PUBLISHED: TODAY</div>
+      </div>
+      <div class="news-small">
+        <div class="news-small-tag">// SERVER UPDATE //</div>
+        <div class="news-small-headline">NEW CHANNEL CREATED, IMMEDIATELY USED FOR PORN</div>
+        <div class="news-small-meta">PUBLISHED: YESTERDAY</div>
+      </div>
+
+      <div class="news-small">
+        <div class="news-small-tag">// BACK AT IT //</div>
+        <div class="news-small-headline">TRONIX JUST SEND ME CP SOMEONE CLIP THAT</div>
+        <div class="news-small-meta">PUBLISHED: YESTERDAY</div>
+      </div>
+      
+      <div class="news-small" onclick="openModal('https://iili.io/f4hlrKJ.png', 'WE ARE CHARLIE KIRK — SERVER DOCTRINE')">
+        <div class="news-small-tag">// IDEOLOGY //</div>
+        <div class="news-small-headline">BREAKING: SERVER OFFICIALLY CONFIRMS "WE ARE CHARLIE KIRK"</div>
+        <div class="news-small-meta">PUBLISHED: LONG AGO</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT FORM -->
+  <div class="submit-form">
+    <h3>📋 SUBMIT A NEWS TIP</h3>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Your Name / Handle</label>
+        <input type="text" placeholder="Anonymous Rat">
+      </div>
+      <div class="form-field">
+        <label>Category</label>
+        <select>
+          <option>Clip / Moment</option>
+          <option>Drama</option>
+          <option>Server Update</option>
+          <option>Dumb Moment</option>
+          <option>Breaking News</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field mb-4">
+      <label>What Happened (Be Specific)</label>
+      <textarea placeholder="Tell us everything. Spare no detail. The people need to know."></textarea>
+    </div>
+    <div class="form-field mb-4">
+      <label>Evidence / Clip Link (Optional)</label>
+      <input type="text" placeholder="https://...">
+    </div>
+    <button class="btn btn-primary" onclick="handleSubmit()" style="font-size:1.2rem;padding:12px 40px;cursor:pointer;border:none;">SUBMIT TIP →</button>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CHARLIE KIRK ZONE -->
+<div class="kirk-section">
+  <div class="kirk-inner">
+    <div class="kirk-banner">WE ARE<br>CHARLIE KIRK</div>
+    <img src="https://iili.io/f4hlrKJ.png" alt="Charlie Kirk" class="kirk-img" onclick="openModal('https://iili.io/f4hlrKJ.png', 'WE ARE CHARLIE KIRK — SERVER DOCTRINE')">
+    <p style="font-family:'VT323',monospace;font-size:1.1rem;color:#888;letter-spacing:3px;margin-top:20px;">CLICK FOR FULL DOCTRINE</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- OLI ROOM -->
+<div class="oli-section" id="oli">
+  <div class="oli-inner">
+    <div class="oli-img-wrap" onclick="openModal('https://iili.io/q5esdjn.png', 'THE OLI ROOM — EMPTY AND WAITING')">
+      <img src="https://iili.io/q5esdjn.png" alt="Oli Room" class="oli-img">
+    </div>
+    <div class="oli-text">
+      <p class="section-label">EMPTY SINCE FOREVER</p>
+      <h2 class="section-title">THE OLI ROOM</h2>
+      <p>The Oli Room stands vacant. A monument to absence. A chair unfilled. A vibe unclaimed.</p>
+      <p style="margin-top:12px;">Oli, the legend in our logo, has left behind a room — and a legacy. But here's the thing: <strong style="color:var(--yellow)">anyone can be Oli.</strong> The room does not require credentials. The room does not judge. The room simply waits.</p>
+      <p style="margin-top:12px;color:var(--red);font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;">ARE YOU THE NEXT OLI?</p>
+      <a href="https://discord.gg/jeffreyepstein" target="_blank" class="btn btn-primary" style="display:inline-block;margin-top:24px;">CLAIM THE ROOM</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PHOTO WALL -->
+<div class="wall-section" id="wall">
+  <div class="wall-inner">
+    <p class="section-label">THE ARCHIVE</p>
+    <h2 class="section-title">PHOTO WALL</h2>
+    <p style="color:#888;font-family:'VT323',monospace;font-size:1rem;letter-spacing:3px;margin-top:-30px;margin-bottom:20px;">CLICK ANY PHOTO TO EXPAND</p>
+
+    <div class="photo-wall">
+      <div class="wall-item wide" onclick="openModal('https://iili.io/q5e6vwu.png', 'THE GARTIC PHONE MASTERPIECE')">
+        <img src="https://iili.io/q5e6vwu.png" alt="Gartic Phone">
+        <div class="wall-item-overlay"><div class="wall-item-caption">THE GARTIC INCIDENT</div></div>
+      </div>
+      <div class="wall-item" onclick="openModal('https://iili.io/q5eDIBn.png', 'LYKO — SUPREME LEADER')">
+        <img src="https://iili.io/q5eDIBn.png" alt="Lyko">
+        <div class="wall-item-overlay"><div class="wall-item-caption">LYKO</div></div>
+      </div>
+      <div class="wall-item" onclick="openModal('https://iili.io/q5eSGHu.png', 'THE OFFICIAL LOGO')">
+        <img src="https://iili.io/q5eSGHu.png" alt="Logo">
+        <div class="wall-item-overlay"><div class="wall-item-caption">THE CREST</div></div>
+      </div>
+      <div class="wall-item" onclick="openModal('https://iili.io/q5ey1Ax.png', 'ZEP — THE RIGHT HAND')">
+        <img src="https://iili.io/q5ey1Ax.png" alt="Zep">
+        <div class="wall-item-overlay"><div class="wall-item-caption">ZEP</div></div>
+      </div>
+      <div class="wall-item" onclick="openModal('https://iili.io/q5kHjyJ.png', 'PASTAA — MINISTER OF PASTA')">
+        <img src="https://iili.io/q5kHjyJ.png" alt="Pastaa">
+        <div class="wall-item-overlay"><div class="wall-item-caption">PASTAA</div></div>
+      </div>
+      <div class="wall-item" onclick="openModal('https://iili.io/q5esdjn.png', 'THE OLI ROOM')">
+        <img src="https://iili.io/q5esdjn.png" alt="Oli Room">
+        <div class="wall-item-overlay"><div class="wall-item-caption">THE OLI ROOM</div></div>
+      </div>
+      <div class="wall-item wide" onclick="openModal('https://iili.io/f4hlrKJ.png', 'WE ARE CHARLIE KIRK')">
+        <img src="https://iili.io/f4hlrKJ.png" alt="Charlie Kirk">
+        <div class="wall-item-overlay"><div class="wall-item-caption">WE ARE CHARLIE KIRK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- GARTIC HALL OF FAME -->
+<div class="gartic-section">
+  <div class="gartic-inner">
+    <p class="section-label">HALL OF FAME</p>
+    <h2 class="section-title" style="display:block;text-align:center;">GARTIC PHONE<br>MASTERCLASS</h2>
+    <img src="https://iili.io/q5e6vwu.png" alt="Gartic Phone Final" class="gartic-img" onclick="openModal('https://iili.io/q5e6vwu.png', 'THE GARTIC PHONE MASTERPIECE — CORPSE MODE')">
+    <div class="gartic-caption">"The final result. God have mercy on our souls."</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- DONATE -->
+<div class="donate-section" id="donate">
+  <div class="donate-inner">
+    <p class="section-label" style="text-align:center;">FINANCIAL SUPPORT</p>
+    <h2 class="section-title" style="display:block;text-align:center;">FEED THE MACHINE</h2>
+    <p style="color:#888;font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;margin-top:16px;">SCAN THE QR CODE BELOW</p>
+    <p style="color:#bbb;max-width:400px;margin:10px auto 0;font-size:0.95rem;line-height:1.7;">Goes straight to the BCGame account. You know what to do. Don't ask questions.</p>
+    <div class="qr-frame">
+      <div class="qr-corner tl"></div>
+      <div class="qr-corner tr"></div>
+      <div class="qr-corner bl"></div>
+      <div class="qr-corner br"></div>
+      <img src="https://iili.io/q5eQeQn.png" alt="Donate QR Code">
+    </div>
+    <div class="donate-sub">67INCHDIHCLUB.LOL // BCGAME DIRECT</div>
+    <div class="donate-tag">SCAN TO CONTRIBUTE</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="https://iili.io/q5eSGHu.png" alt="Logo" class="footer-logo">
+  <p style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:6px;color:var(--red);">67 INCH DIH CLUB</p>
+  <p style="font-family:'VT323',monospace;font-size:1rem;letter-spacing:4px;color:#555;margin-top:4px;">67INCHDIHCLUB.LOL</p>
+
+  <div class="footer-links">
+    <a href="#news">NEWS</a>
+    <a href="#leaders">LEADERS</a>
+    <a href="#wall">WALL</a>
+    <a href="#oli">OLI ROOM</a>
+    <a href="#donate">DONATE</a>
+    <a href="https://discord.gg/jeffreyepstein" target="_blank">DISCORD</a>
+  </div>
+
+  <p style="font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;color:#5865F2;margin-top:10px;">
+    discord.gg/jeffreyepstein
+  </p>
+
+  <div class="footer-copy">
+    © 2025 67 INCH DIH CLUB // ALL RIGHTS RESERVED // WE ARE CHARLIE KIRK
+    <br>
+    <span class="blink">▌</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <span class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕</span>
+    <img id="modal-img" src="" alt="" class="modal-img">
+    <div class="modal-caption" id="modal-caption"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">NEWS TIP RECEIVED 📡</div>
+
+<script>
+  function openModal(src, caption) {
+    document.getElementById('modal-img').src = src;
+    document.getElementById('modal-caption').textContent = caption;
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('active');
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('modal').classList.remove('active');
+  });
+
+  function handleSubmit() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
