@@ -499,6 +499,141 @@
   .form-field textarea { min-height: 100px; resize: vertical; }
   .form-field select option { background: #111; }
 
+  /* DISCORD VERIFY GATE */
+  .verify-gate {
+    background: #0d0d0d;
+    border: 2px solid #5865F2;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .verify-gate-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .verify-gate-header svg { flex-shrink: 0; }
+  .verify-gate-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: #5865F2;
+  }
+  .verify-gate-sub {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .verify-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .verify-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: #888;
+  }
+  .verify-step-num {
+    background: #5865F2;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .verify-code-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .verify-code-row input {
+    flex: 1;
+    min-width: 160px;
+    background: #0a0a0a;
+    border: 2px solid #333;
+    color: var(--white);
+    padding: 10px 14px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    outline: none;
+    border-radius: 0;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+  }
+  .verify-code-row input:focus { border-color: #5865F2; }
+  .btn-verify {
+    background: #5865F2;
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    padding: 10px 24px;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn-verify:hover { background: #4752c4; }
+  .btn-verify:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+  /* VERIFIED BADGE (replaces gate once logged in) */
+  .verified-badge {
+    background: #0a1a0a;
+    border: 2px solid #2d7a2d;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .verified-badge-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .verified-badge-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: #4ade80;
+  }
+  .verified-badge-sub {
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #2d7a2d;
+  }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid #333;
+    color: #555;
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
   /* PHOTO WALL */
   .wall-section { background: #0d0d0d; padding: 80px 20px; }
   .wall-inner { max-width: 1200px; margin: 0 auto; }
@@ -1032,32 +1167,65 @@
   <!-- SUBMIT FORM -->
   <div class="submit-form">
     <h3>SUBMIT A NEWS TIP</h3>
-    <div class="form-row">
-      <div class="form-field">
-        <label>Your Name / Handle</label>
-        <input id="tip-handle" type="text" placeholder="Anonymous Rat">
+
+    <!-- DISCORD VERIFY GATE (shown when not logged in) -->
+    <div class="verify-gate" id="verify-gate">
+      <div class="verify-gate-header">
+        <svg width="28" height="22" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="#5865F2"/></svg>
+        <div>
+          <div class="verify-gate-title">DISCORD VERIFICATION REQUIRED</div>
+          <div class="verify-gate-sub">Tips must be linked to a real Discord account. No fake names.</div>
+        </div>
       </div>
-      <div class="form-field">
-        <label>Category</label>
-        <select id="tip-category">
-          <option>Clip / Moment</option>
-          <option>Drama</option>
-          <option>Server Update</option>
-          <option>Dumb Moment</option>
-          <option>Breaking News</option>
-          <option>Other</option>
-        </select>
+      <div class="verify-steps">
+        <div class="verify-step"><div class="verify-step-num">1</div><span>Join the server at <strong style="color:#5865F2">discord.gg/jeffreyepstein</strong></span></div>
+        <div class="verify-step"><div class="verify-step-num">2</div><span>Type <strong style="color:#fff">/getcode</strong> in any channel — the bot will DM you a code</span></div>
+        <div class="verify-step"><div class="verify-step-num">3</div><span>Paste the code below and hit VERIFY</span></div>
       </div>
+      <div class="verify-code-row">
+        <input id="verify-code-input" type="text" placeholder="67DIH-XXXXXX" maxlength="12" autocomplete="off" spellcheck="false">
+        <button class="btn-verify" id="verify-btn" onclick="handleVerify()">VERIFY →</button>
+      </div>
+      <div id="verify-error" style="font-family:'VT323',monospace;font-size:0.95rem;letter-spacing:2px;color:var(--red);display:none;"></div>
     </div>
-    <div class="form-field mb-4">
-      <label>What Happened (Be Specific)</label>
-      <textarea id="tip-details" placeholder="Tell us everything. Spare no detail. The people need to know."></textarea>
+
+    <!-- VERIFIED BADGE (shown when logged in) -->
+    <div class="verified-badge" id="verified-badge" style="display:none;">
+      <div class="verified-badge-left">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div class="verified-badge-name" id="verified-name">@username</div>
+          <div class="verified-badge-sub">VERIFIED DISCORD ACCOUNT // TIPS SIGNED AS THIS USER</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">LOG OUT</button>
     </div>
-    <div class="form-field mb-4">
-      <label>Evidence / Image / Clip Link (Optional)</label>
-      <input id="tip-evidence" type="text" placeholder="https://... (image or video link)">
+
+    <!-- TIP FORM FIELDS (locked until verified) -->
+    <div id="tip-fields" style="opacity:0.35;pointer-events:none;transition:opacity 0.3s;">
+      <div class="form-row" style="margin-bottom:16px;">
+        <div class="form-field">
+          <label>Category</label>
+          <select id="tip-category">
+            <option>Clip / Moment</option>
+            <option>Drama</option>
+            <option>Server Update</option>
+            <option>Dumb Moment</option>
+            <option>Breaking News</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field mb-4">
+        <label>What Happened (Be Specific)</label>
+        <textarea id="tip-details" placeholder="Tell us everything. Spare no detail. The people need to know."></textarea>
+      </div>
+      <div class="form-field mb-4">
+        <label>Evidence / Image / Clip Link (Optional)</label>
+        <input id="tip-evidence" type="text" placeholder="https://... (image or video link)">
+      </div>
+      <button id="tip-btn" class="btn btn-primary" onclick="handleSubmit()" style="font-size:1.2rem;padding:12px 40px;cursor:pointer;border:none;">SUBMIT TIP →</button>
     </div>
-    <button id="tip-btn" class="btn btn-primary" onclick="handleSubmit()" style="font-size:1.2rem;padding:12px 40px;cursor:pointer;border:none;">SUBMIT TIP →</button>
   </div>
 </section>
 
@@ -1244,8 +1412,103 @@
     }, 4000);
   }
 
-  /* ── CLOUDFLARE WORKER PROXY ── */
-  const _PROXY = "https://67.lillykobusiness69.workers.dev/";
+  /* ── CLOUDFLARE WORKER URL ── */
+  // ⚠️ UPDATE THIS to your new auth worker URL after deploying
+  const _AUTH_WORKER = "https://67auth.YOUR_SUBDOMAIN.workers.dev";
+
+  /* ── DISCORD SESSION (localStorage) ── */
+  function getSession() {
+    try {
+      const raw = localStorage.getItem('67dih_discord');
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+  function saveSession(username, userId) {
+    localStorage.setItem('67dih_discord', JSON.stringify({ username, userId, savedAt: Date.now() }));
+  }
+  function clearSession() {
+    localStorage.removeItem('67dih_discord');
+  }
+
+  /* ── RENDER AUTH STATE ── */
+  function renderAuthState() {
+    const session = getSession();
+    const gate    = document.getElementById('verify-gate');
+    const badge   = document.getElementById('verified-badge');
+    const fields  = document.getElementById('tip-fields');
+
+    if (session && session.username) {
+      // Logged in
+      gate.style.display  = 'none';
+      badge.style.display = 'flex';
+      fields.style.opacity       = '1';
+      fields.style.pointerEvents = 'all';
+      document.getElementById('verified-name').textContent = '@' + session.username;
+    } else {
+      // Not logged in
+      gate.style.display  = '';
+      badge.style.display = 'none';
+      fields.style.opacity       = '0.35';
+      fields.style.pointerEvents = 'none';
+    }
+  }
+
+  // Run on load
+  renderAuthState();
+
+  /* ── VERIFY CODE ── */
+  async function handleVerify() {
+    const code = document.getElementById('verify-code-input').value.trim().toUpperCase();
+    const errEl = document.getElementById('verify-error');
+    errEl.style.display = 'none';
+
+    if (!code || code.length < 6) {
+      errEl.textContent = '⚠️ ENTER YOUR CODE FIRST';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('verify-btn');
+    btn.textContent = 'CHECKING... ⏳';
+    btn.disabled = true;
+
+    try {
+      const res  = await fetch(`${_AUTH_WORKER}/verify`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ code })
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success) {
+        saveSession(data.username, data.userId);
+        renderAuthState();
+        showToast('✅ VERIFIED AS @' + data.username, false);
+        document.getElementById('verify-code-input').value = '';
+      } else {
+        errEl.textContent = '⚠️ ' + (data.error || 'INVALID CODE — RUN /GETCODE IN DISCORD');
+        errEl.style.display = 'block';
+      }
+    } catch (err) {
+      errEl.textContent = '⚠️ NETWORK ERROR — TRY AGAIN';
+      errEl.style.display = 'block';
+    }
+
+    btn.textContent = 'VERIFY →';
+    btn.disabled = false;
+  }
+
+  // Allow pressing Enter in code input
+  document.getElementById('verify-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleVerify();
+  });
+
+  /* ── LOG OUT ── */
+  function handleLogout() {
+    clearSession();
+    renderAuthState();
+    showToast('LOGGED OUT', false);
+  }
 
   /* ── HELPER: is this URL an image? ── */
   function isImageUrl(url) {
@@ -1254,12 +1517,16 @@
 
   /* ── SUBMIT TIP ── */
   async function handleSubmit() {
-    const handle   = (document.getElementById('tip-handle').value.trim()   || 'Anonymous Rat');
+    const session = getSession();
+    if (!session || !session.username) {
+      showToast('⚠️ VERIFY YOUR DISCORD FIRST', true);
+      return;
+    }
+
     const category = (document.getElementById('tip-category').value.trim() || 'Other');
     const details  = document.getElementById('tip-details').value.trim();
     const evidence = document.getElementById('tip-evidence').value.trim();
 
-    // Validate
     if (!details) {
       document.getElementById('tip-details').style.borderColor = 'var(--red)';
       document.getElementById('tip-details').focus();
@@ -1271,79 +1538,35 @@
     btn.textContent = 'TRANSMITTING... 📡';
     btn.disabled = true;
 
-    const catEmoji = {
-      'Clip / Moment': '🎬',
-      'Drama':         '🔥',
-      'Server Update': '📢',
-      'Dumb Moment':   '🤡',
-      'Breaking News': '🚨',
-      'Other':         '📁'
-    };
-    const emoji = catEmoji[category] || '📁';
-
-    // Build embed fields
-    const fields = [
-      { name: '🕵️  SOURCE',          value: '```' + handle + '```',                   inline: true  },
-      { name: emoji + '  CATEGORY',   value: '```' + category + '```',                 inline: true  },
-      { name: '\u200b',               value: '\u200b',                                 inline: false },
-      { name: '📝  WHAT HAPPENED',    value: '```' + details.substring(0, 1000) + '```', inline: false }
-    ];
-
-    if (evidence) {
-      if (isImageUrl(evidence)) {
-        // image link — will show as embed image below
-        fields.push({ name: '🔗  EVIDENCE LINK', value: evidence, inline: false });
-      } else {
-        fields.push({ name: '🔗  EVIDENCE / CLIP', value: evidence.startsWith('http') ? evidence : '`' + evidence + '`', inline: false });
-      }
-    }
-
-    // Build the full Discord payload
-    const payload = {
-      username:   '📡 67 DIH CLUB — TIP LINE',
-      avatar_url: 'https://iili.io/q5eSGHu.png',
-      embeds: [{
-        author: {
-          name:     '🚨 ANONYMOUS TIP RECEIVED 🚨',
-          icon_url: 'https://iili.io/q5eSGHu.png'
-        },
-        title:       emoji + '  ' + category.toUpperCase(),
-        description: '> *"The people have spoken. The tipline has answered the call."*',
-        color:       0xFF1A1A,
-        thumbnail:   { url: 'https://iili.io/q5eSGHu.png' },
-        fields:      fields,
-        // If evidence is an image URL, Discord will show it full-size at bottom of embed
-        ...(evidence && isImageUrl(evidence) ? { image: { url: evidence } } : {}),
-        footer: {
-          text:     '67INCHDIHCLUB.LOL  ·  WE ARE CHARLIE KIRK  ·  TIPLINE v3.0',
-          icon_url: 'https://iili.io/q5eSGHu.png'
-        },
-        timestamp: new Date().toISOString()
-      }]
-    };
-
     try {
-      const res = await fetch(_PROXY, {
+      const res = await fetch(`${_AUTH_WORKER}/tip`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload)
+        body:    JSON.stringify({
+          discordUsername: session.username,
+          discordUserId:   session.userId,
+          category,
+          details,
+          evidence
+        })
       });
 
       const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
         showToast('📡 TIP RECEIVED — THE PEOPLE WILL KNOW', false);
-        document.getElementById('tip-handle').value   = '';
         document.getElementById('tip-category').selectedIndex = 0;
         document.getElementById('tip-details').value  = '';
         document.getElementById('tip-evidence').value = '';
+      } else if (res.status === 401 || res.status === 403) {
+        // Session stale — force re-verify
+        clearSession();
+        renderAuthState();
+        showToast('⚠️ SESSION EXPIRED — RE-VERIFY IN DISCORD', true);
       } else if (res.status === 429) {
-        // Rate limited — show the cooldown message from worker
-        const msg = data.error || 'TIPLINE ON COOLDOWN — TRY AGAIN LATER';
-        showToast('⏳ ' + msg, true);
+        showToast('⏳ ' + (data.error || 'SLOW DOWN — WAIT A FEW MINUTES'), true);
       } else {
-        const msg = data.error || ('ERROR ' + res.status);
-        showToast('⚠️ ' + msg, true);
+        showToast('⚠️ ' + (data.error || 'ERROR — TRY AGAIN'), true);
       }
     } catch (err) {
       console.error('Fetch error:', err);
