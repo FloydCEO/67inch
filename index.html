@@ -1035,11 +1035,11 @@
     <div class="form-row">
       <div class="form-field">
         <label>Your Name / Handle</label>
-        <input type="text" placeholder="Anonymous Rat">
+        <input id="tip-handle" type="text" placeholder="Anonymous Rat">
       </div>
       <div class="form-field">
         <label>Category</label>
-        <select>
+        <select id="tip-category">
           <option>Clip / Moment</option>
           <option>Drama</option>
           <option>Server Update</option>
@@ -1051,13 +1051,13 @@
     </div>
     <div class="form-field mb-4">
       <label>What Happened (Be Specific)</label>
-      <textarea placeholder="Tell us everything. Spare no detail. The people need to know."></textarea>
+      <textarea id="tip-details" placeholder="Tell us everything. Spare no detail. The people need to know."></textarea>
     </div>
     <div class="form-field mb-4">
-      <label>Evidence / Clip Link (Optional)</label>
-      <input type="text" placeholder="https://...">
+      <label>Evidence / Image / Clip Link (Optional)</label>
+      <input id="tip-evidence" type="text" placeholder="https://... (image or video link)">
     </div>
-    <button class="btn btn-primary" onclick="handleSubmit()" style="font-size:1.2rem;padding:12px 40px;cursor:pointer;border:none;">SUBMIT TIP →</button>
+    <button id="tip-btn" class="btn btn-primary" onclick="handleSubmit()" style="font-size:1.2rem;padding:12px 40px;cursor:pointer;border:none;">SUBMIT TIP →</button>
   </div>
 </section>
 
@@ -1207,36 +1207,152 @@
 <div class="toast" id="toast">NEWS TIP RECEIVED 📡</div>
 
 <script>
+  /* ── MODAL ── */
   function openModal(src, caption) {
     document.getElementById('modal-img').src = src;
     document.getElementById('modal-caption').textContent = caption;
     document.getElementById('modal').classList.add('active');
   }
-
   function closeModal(e) {
-    if (e.target === document.getElementById('modal')) {
+    if (e.target === document.getElementById('modal'))
       document.getElementById('modal').classList.remove('active');
-    }
   }
-
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') document.getElementById('modal').classList.remove('active');
   });
 
-  function handleSubmit() {
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  // Smooth scroll
+  /* ── SMOOTH SCROLL ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+
+  /* ── TOAST ── */
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = isError ? '#ff1a1a' : '';
+    toast.style.color = isError ? '#fff' : '';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.style.background = '';
+      toast.style.color = '';
+    }, 4000);
+  }
+
+  /* ── CLOUDFLARE WORKER PROXY ── */
+  const _PROXY = "https://67.lillykobusiness69.workers.dev/";
+
+  /* ── HELPER: is this URL an image? ── */
+  function isImageUrl(url) {
+    return /\.(png|jpe?g|gif|webp|bmp|svg|tiff?)(\?.*)?$/i.test(url);
+  }
+
+  /* ── SUBMIT TIP ── */
+  async function handleSubmit() {
+    const handle   = (document.getElementById('tip-handle').value.trim()   || 'Anonymous Rat');
+    const category = (document.getElementById('tip-category').value.trim() || 'Other');
+    const details  = document.getElementById('tip-details').value.trim();
+    const evidence = document.getElementById('tip-evidence').value.trim();
+
+    // Validate
+    if (!details) {
+      document.getElementById('tip-details').style.borderColor = 'var(--red)';
+      document.getElementById('tip-details').focus();
+      return;
+    }
+    document.getElementById('tip-details').style.borderColor = '';
+
+    const btn = document.getElementById('tip-btn');
+    btn.textContent = 'TRANSMITTING... 📡';
+    btn.disabled = true;
+
+    const catEmoji = {
+      'Clip / Moment': '🎬',
+      'Drama':         '🔥',
+      'Server Update': '📢',
+      'Dumb Moment':   '🤡',
+      'Breaking News': '🚨',
+      'Other':         '📁'
+    };
+    const emoji = catEmoji[category] || '📁';
+
+    // Build embed fields
+    const fields = [
+      { name: '🕵️  SOURCE',          value: '```' + handle + '```',                   inline: true  },
+      { name: emoji + '  CATEGORY',   value: '```' + category + '```',                 inline: true  },
+      { name: '\u200b',               value: '\u200b',                                 inline: false },
+      { name: '📝  WHAT HAPPENED',    value: '```' + details.substring(0, 1000) + '```', inline: false }
+    ];
+
+    if (evidence) {
+      if (isImageUrl(evidence)) {
+        // image link — will show as embed image below
+        fields.push({ name: '🔗  EVIDENCE LINK', value: evidence, inline: false });
+      } else {
+        fields.push({ name: '🔗  EVIDENCE / CLIP', value: evidence.startsWith('http') ? evidence : '`' + evidence + '`', inline: false });
+      }
+    }
+
+    // Build the full Discord payload
+    const payload = {
+      username:   '📡 67 DIH CLUB — TIP LINE',
+      avatar_url: 'https://iili.io/q5eSGHu.png',
+      embeds: [{
+        author: {
+          name:     '🚨 ANONYMOUS TIP RECEIVED 🚨',
+          icon_url: 'https://iili.io/q5eSGHu.png'
+        },
+        title:       emoji + '  ' + category.toUpperCase(),
+        description: '> *"The people have spoken. The tipline has answered the call."*',
+        color:       0xFF1A1A,
+        thumbnail:   { url: 'https://iili.io/q5eSGHu.png' },
+        fields:      fields,
+        // If evidence is an image URL, Discord will show it full-size at bottom of embed
+        ...(evidence && isImageUrl(evidence) ? { image: { url: evidence } } : {}),
+        footer: {
+          text:     '67INCHDIHCLUB.LOL  ·  WE ARE CHARLIE KIRK  ·  TIPLINE v3.0',
+          icon_url: 'https://iili.io/q5eSGHu.png'
+        },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const res = await fetch(_PROXY, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        showToast('📡 TIP RECEIVED — THE PEOPLE WILL KNOW', false);
+        document.getElementById('tip-handle').value   = '';
+        document.getElementById('tip-category').selectedIndex = 0;
+        document.getElementById('tip-details').value  = '';
+        document.getElementById('tip-evidence').value = '';
+      } else if (res.status === 429) {
+        // Rate limited — show the cooldown message from worker
+        const msg = data.error || 'TIPLINE ON COOLDOWN — TRY AGAIN LATER';
+        showToast('⏳ ' + msg, true);
+      } else {
+        const msg = data.error || ('ERROR ' + res.status);
+        showToast('⚠️ ' + msg, true);
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      showToast('⚠️ NETWORK ERROR — TRY AGAIN', true);
+    }
+
+    btn.textContent = 'SUBMIT TIP →';
+    btn.disabled = false;
+  }
 </script>
 </body>
 </html>
