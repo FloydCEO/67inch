@@ -273,10 +273,7 @@
     border-bottom: 4px solid var(--yellow);
   }
   @media(max-width: 560px) { .leaders-section { padding: 50px 16px; } }
-  .leaders-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+  .leaders-inner { max-width: 1200px; margin: 0 auto; }
   .leaders-grid {
     display: flex;
     flex-wrap: wrap;
@@ -289,21 +286,17 @@
     flex: 0 0 calc(33% - 16px);
     min-width: 240px;
     max-width: 320px;
-  }
-  @media(max-width: 900px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 12px); min-width: 0; } }
-  @media(max-width: 560px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 8px); min-width: 0; max-width: 100%; } }
-  @media(max-width: 360px) { .leaders-grid .leader-card { flex: 0 0 100%; max-width: 100%; } }
-
-  .leader-card {
     background: #111;
     border: 2px solid #333;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s, border-color 0.2s;
   }
+  @media(max-width: 900px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 12px); min-width: 0; } }
+  @media(max-width: 560px) { .leaders-grid .leader-card { flex: 0 0 calc(50% - 8px); min-width: 0; max-width: 100%; } }
+  @media(max-width: 360px) { .leaders-grid .leader-card { flex: 0 0 100%; max-width: 100%; } }
   .leader-card:hover { transform: translateY(-6px) rotate(-1deg); border-color: var(--yellow); }
   .leader-card:nth-child(2):hover { transform: translateY(-6px) rotate(1deg); }
-
   .leader-card::before {
     content: attr(data-rank);
     position: absolute;
@@ -316,7 +309,6 @@
     padding: 2px 8px;
     z-index: 3;
   }
-
   .leader-img-wrap {
     width: 100%;
     aspect-ratio: 1/1;
@@ -338,11 +330,7 @@
     transition: transform 0.4s, filter 0.4s;
   }
   .leader-card:hover .leader-img-wrap img { transform: scale(1.07); filter: grayscale(0%) contrast(1.2); }
-
-  .leader-info {
-    padding: 16px 20px 20px;
-    position: relative;
-  }
+  .leader-info { padding: 16px 20px 20px; position: relative; }
   .leader-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.2rem;
@@ -380,6 +368,7 @@
     overflow: hidden;
     position: relative;
     transition: border-color 0.2s;
+    cursor: pointer;
   }
   .news-featured:hover { border-color: var(--red); }
   .news-featured img {
@@ -391,7 +380,6 @@
     transition: opacity 0.3s;
   }
   .news-featured:hover img { opacity: 1; }
-
   .news-tag {
     position: absolute;
     top: 14px; left: 14px;
@@ -402,7 +390,6 @@
     letter-spacing: 3px;
     padding: 4px 12px;
   }
-
   .news-content { padding: 20px; }
   .news-headline {
     font-family: 'Bebas Neue', sans-serif;
@@ -424,7 +411,6 @@
     line-height: 1.7;
     color: #bbb;
   }
-
   .news-sidebar { display: flex; flex-direction: column; gap: 16px; }
   .news-small {
     background: #111;
@@ -456,7 +442,7 @@
     letter-spacing: 2px;
   }
 
-  /* SUBMIT NEWS */
+  /* SUBMIT FORM */
   .submit-form {
     background: #111;
     border: 2px solid #333;
@@ -509,11 +495,7 @@
     flex-direction: column;
     gap: 14px;
   }
-  .verify-gate-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .verify-gate-header { display: flex; align-items: center; gap: 12px; }
   .verify-gate-header svg { flex-shrink: 0; }
   .verify-gate-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -528,11 +510,7 @@
     color: #666;
     line-height: 1.5;
   }
-  .verify-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .verify-steps { display: flex; flex-direction: column; gap: 8px; }
   .verify-step {
     display: flex;
     align-items: flex-start;
@@ -555,11 +533,7 @@
     flex-shrink: 0;
     margin-top: 1px;
   }
-  .verify-code-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+  .verify-code-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .verify-code-row input {
     flex: 1;
     min-width: 160px;
@@ -592,7 +566,7 @@
   .btn-verify:hover { background: #4752c4; }
   .btn-verify:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-  /* VERIFIED BADGE (replaces gate once logged in) */
+  /* VERIFIED BADGE */
   .verified-badge {
     background: #0a1a0a;
     border: 2px solid #2d7a2d;
@@ -604,11 +578,7 @@
     margin-bottom: 24px;
     flex-wrap: wrap;
   }
-  .verified-badge-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .verified-badge-left { display: flex; align-items: center; gap: 10px; }
   .verified-badge-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.2rem;
@@ -637,14 +607,12 @@
   /* PHOTO WALL */
   .wall-section { background: #0d0d0d; padding: 80px 20px; }
   .wall-inner { max-width: 1200px; margin: 0 auto; }
-
   .photo-wall {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 8px;
     margin-top: 40px;
   }
-
   .wall-item {
     position: relative;
     overflow: hidden;
@@ -663,7 +631,6 @@
     filter: grayscale(10%) contrast(1.05);
   }
   .wall-item:hover img { transform: scale(1.1); filter: grayscale(0%) contrast(1.15) brightness(1.1); }
-
   .wall-item-overlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -679,11 +646,10 @@
     letter-spacing: 2px;
     color: var(--yellow);
   }
-
   .wall-item.tall { grid-row: span 2; aspect-ratio: unset; }
   .wall-item.wide { grid-column: span 2; aspect-ratio: unset; min-height: 220px; }
 
-  /* DONATE / QR */
+  /* DONATE */
   .donate-section {
     background: #111;
     border-top: 4px solid var(--yellow);
@@ -750,6 +716,7 @@
     border: 6px solid var(--yellow);
     box-shadow: 16px 16px 0 var(--red), 32px 32px 0 rgba(255,26,26,0.3);
     animation: kirkwobble 6s ease-in-out infinite;
+    cursor: pointer;
   }
   @keyframes kirkwobble {
     0%, 100% { transform: rotate(-2deg); }
@@ -766,10 +733,7 @@
   }
 
   /* OLI ZONE */
-  .oli-section {
-    background: #0a0a0a;
-    padding: 80px 20px;
-  }
+  .oli-section { background: #0a0a0a; padding: 80px 20px; }
   .oli-inner {
     max-width: 1000px;
     margin: 0 auto;
@@ -783,12 +747,12 @@
     width: 100%;
     border: 4px solid #333;
     filter: brightness(0.7) contrast(1.2);
-    position: relative;
     transition: filter 0.3s;
   }
   .oli-img-wrap:hover .oli-img { filter: brightness(1) contrast(1.1); }
   .oli-img-wrap {
     position: relative;
+    cursor: pointer;
   }
   .oli-img-wrap::after {
     content: '???';
@@ -803,26 +767,18 @@
   }
   .oli-img-wrap:hover::after { opacity: 0; }
   .oli-text .section-title { font-size: 3.5rem; }
-  .oli-text p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: #bbb;
-    margin-top: 16px;
-  }
+  .oli-text p { font-size: 1.05rem; line-height: 1.8; color: #bbb; margin-top: 16px; }
   .oli-text .btn { margin-top: 24px; font-size: 1.2rem; }
 
   /* GARTIC */
-  .gartic-section {
-    background: var(--gray);
-    padding: 80px 20px;
-    text-align: center;
-  }
+  .gartic-section { background: var(--gray); padding: 80px 20px; text-align: center; }
   .gartic-inner { max-width: 900px; margin: 0 auto; }
   .gartic-img {
     width: 100%;
     border: 4px solid #333;
     box-shadow: 0 20px 60px rgba(0,0,0,0.8);
     transition: transform 0.3s;
+    cursor: pointer;
   }
   .gartic-img:hover { transform: scale(1.02); }
   .gartic-caption {
@@ -926,14 +882,14 @@
     font-size: 1.1rem;
     letter-spacing: 3px;
     padding: 14px 28px;
-    z-index: 9999;
+    z-index: 10000;
     transform: translateX(200%);
     transition: transform 0.3s;
     box-shadow: 4px 4px 0 var(--red);
   }
   .toast.show { transform: translateX(0); }
 
-  /* BLINK ANIM */
+  /* BLINK */
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   .blink { animation: blink 1s step-end infinite; }
 
@@ -945,46 +901,26 @@
 
   /* ===================== MOBILE ===================== */
   @media(max-width: 560px) {
-
-    /* NEWS */
     .news-headline { font-size: 1.4rem; }
     .news-body { font-size: 0.9rem; }
     .submit-form { padding: 20px 16px; }
     .submit-form h3 { font-size: 1.5rem; }
-
-    /* PHOTO WALL */
     .wall-section { padding: 50px 16px; }
     .photo-wall { grid-template-columns: repeat(2, 1fr); gap: 6px; }
     .wall-item.wide { grid-column: span 2; }
-
-    /* CHARLIE KIRK */
     .kirk-section { padding: 50px 16px; }
     .kirk-banner { font-size: clamp(2.2rem, 10vw, 4rem); letter-spacing: 3px; }
-
-    /* OLI */
     .oli-section { padding: 50px 16px; }
     .oli-text .section-title { font-size: 2.5rem; }
     .oli-text p { font-size: 0.95rem; }
-
-    /* GARTIC */
     .gartic-section { padding: 50px 16px; }
-
-    /* DONATE */
     .donate-section { padding: 50px 16px; }
     .qr-frame { width: 200px; height: 200px; }
-
-    /* MODAL */
     .modal-inner { padding: 20px 16px; }
     .modal-img { max-height: 50vh; }
-
-    /* FOOTER */
     footer { padding: 40px 16px 30px; }
     .footer-links { gap: 16px; }
-
-    /* SECTION TITLES */
     .section-title { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 28px; }
-
-    /* TOAST */
     .toast { bottom: 16px; right: 16px; left: 16px; text-align: center; font-size: 1rem; padding: 12px 20px; }
   }
 </style>
@@ -994,7 +930,7 @@
 <!-- TICKER -->
 <div class="ticker-wrap">
   <span class="ticker">
-    JUST IN THE NEWS, TRONIX IS BACK, AND HES KINDA CHILL?? | WHAT? | Ollies chair is sitting empty, when will he return! | SPOOKS | Tronix got arrested at one point, but he wont talk about it | Quiz | What kind of pasta is pastaa? Dont't ask him,he'll block you for a full calendar year. | WAR | Iran lowkey is being a bitch and is bombing zync and tenzos spot, wtf iran. | Kate is still in love with lyko | A nice guy bought this domain wowzers | Have you donated to my bgame ltc wallet yet? You prollyshould | tronix tried to play on rise but sucks | YOO octo is a bitch fr his client sucks omm | BREAKING NEWS | Pasgo just got his masters degree in mixing at mixing school, incredible stuff | Tronix and his family donated 6 Tron coins towards human trafficking | JUST IN | CLPZ is back as well after the client feud, and now both clients are dead, they might as well be friends again | QUIZ | is kirk client an exit scam? ........... FIVE............ FOUR............. THREE............... TWO.............. ONE............... .................. ding ding ding ding THE ANSWER IS NOOOOOOOOOO | Breaking news . . .
+    JUST IN THE NEWS, TRONIX IS BACK, AND HES KINDA CHILL?? | WHAT? | Ollies chair is sitting empty, when will he return! | SPOOKS | Tronix got arrested at one point, but he wont talk about it | Quiz | What kind of pasta is pastaa? Dont't ask him, he'll block you for a full calendar year. | WAR | Iran lowkey is being a bitch and is bombing zync and tenzos spot, wtf iran. | Kate is still in love with lyko | A nice guy bought this domain wowzers | Have you donated to my bgame ltc wallet yet? You prolly should | tronix tried to play on rise but sucks | YOO octo is a bitch fr his client sucks omm | BREAKING NEWS | Pasgo just got his masters degree in mixing at mixing school, incredible stuff | Tronix and his family donated 6 Tron coins towards human trafficking | JUST IN | CLPZ is back as well after the client feud, and now both clients are dead, they might as well be friends again | QUIZ | is kirk client an exit scam? ........... FIVE............ FOUR............. THREE............... TWO.............. ONE............... .................. ding ding ding ding THE ANSWER IS NOOOOOOOOOO | Breaking news . . .
   </span>
 </div>
 
@@ -1149,13 +1085,11 @@
         <div class="news-small-headline">NEW CHANNEL CREATED, IMMEDIATELY USED FOR PORN</div>
         <div class="news-small-meta">PUBLISHED: YESTERDAY</div>
       </div>
-
       <div class="news-small">
         <div class="news-small-tag">// BACK AT IT //</div>
         <div class="news-small-headline">TRONIX JUST SEND ME CP SOMEONE CLIP THAT</div>
         <div class="news-small-meta">PUBLISHED: YESTERDAY</div>
       </div>
-      
       <div class="news-small" onclick="openModal('https://iili.io/f4hlrKJ.png', 'WE ARE CHARLIE KIRK   SERVER DOCTRINE')">
         <div class="news-small-tag">// IDEOLOGY //</div>
         <div class="news-small-headline">BREAKING: SERVER OFFICIALLY CONFIRMS "WE ARE CHARLIE KIRK"</div>
@@ -1168,7 +1102,7 @@
   <div class="submit-form">
     <h3>SUBMIT A NEWS TIP</h3>
 
-    <!-- DISCORD VERIFY GATE (shown when not logged in) -->
+    <!-- DISCORD VERIFY GATE -->
     <div class="verify-gate" id="verify-gate">
       <div class="verify-gate-header">
         <svg width="28" height="22" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="#5865F2"/></svg>
@@ -1189,7 +1123,7 @@
       <div id="verify-error" style="font-family:'VT323',monospace;font-size:0.95rem;letter-spacing:2px;color:var(--red);display:none;"></div>
     </div>
 
-    <!-- VERIFIED BADGE (shown when logged in) -->
+    <!-- VERIFIED BADGE -->
     <div class="verified-badge" id="verified-badge" style="display:none;">
       <div class="verified-badge-left">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1201,7 +1135,7 @@
       <button class="btn-logout" onclick="handleLogout()">LOG OUT</button>
     </div>
 
-    <!-- TIP FORM FIELDS (locked until verified) -->
+    <!-- TIP FIELDS -->
     <div id="tip-fields" style="opacity:0.35;pointer-events:none;transition:opacity 0.3s;">
       <div class="form-row" style="margin-bottom:16px;">
         <div class="form-field">
@@ -1252,7 +1186,7 @@
       <p class="section-label">EMPTY SINCE FOREVER</p>
       <h2 class="section-title">THE OLI ROOM</h2>
       <p>The Oli Room stands vacant. A monument to absence. A chair unfilled. A vibe unclaimed.</p>
-      <p style="margin-top:12px;">Oli, the legend in our logo, has left behind a room   and a legacy. But here's the thing: <strong style="color:var(--yellow)">anyone can be Oli.</strong> The room does not require credentials. The room does not judge. The room simply waits.</p>
+      <p style="margin-top:12px;">Oli, the legend in our logo, has left behind a room — and a legacy. But here's the thing: <strong style="color:var(--yellow)">anyone can be Oli.</strong> The room does not require credentials. The room does not judge. The room simply waits.</p>
       <p style="margin-top:12px;color:var(--red);font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;">ARE YOU THE NEXT OLI?</p>
       <a href="https://discord.gg/jeffreyepstein" target="_blank" class="btn btn-primary" style="display:inline-block;margin-top:24px;">CLAIM THE ROOM</a>
     </div>
@@ -1267,7 +1201,6 @@
     <p class="section-label">THE ARCHIVE</p>
     <h2 class="section-title">PHOTO WALL</h2>
     <p style="color:#888;font-family:'VT323',monospace;font-size:1rem;letter-spacing:3px;margin-top:-30px;margin-bottom:20px;">CLICK ANY PHOTO TO EXPAND</p>
-
     <div class="photo-wall">
       <div class="wall-item wide" onclick="openModal('https://iili.io/q5e6vwu.png', 'THE GARTIC PHONE MASTERPIECE')">
         <img src="https://iili.io/q5e6vwu.png" alt="Gartic Phone">
@@ -1341,7 +1274,6 @@
   <img src="https://iili.io/q5eSGHu.png" alt="Logo" class="footer-logo">
   <p style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:6px;color:var(--red);">67 INCH DIH CLUB</p>
   <p style="font-family:'VT323',monospace;font-size:1rem;letter-spacing:4px;color:#555;margin-top:4px;">67INCHDIHCLUB.LOL</p>
-
   <div class="footer-links">
     <a href="#news">NEWS</a>
     <a href="#leaders">LEADERS</a>
@@ -1350,11 +1282,9 @@
     <a href="#donate">DONATE</a>
     <a href="https://discord.gg/jeffreyepstein" target="_blank">DISCORD</a>
   </div>
-
   <p style="font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;color:#5865F2;margin-top:10px;">
     discord.gg/jeffreyepstein
   </p>
-
   <div class="footer-copy">
     © 2025 67 INCH DIH CLUB // ALL RIGHTS RESERVED // WE ARE CHARLIE KIRK
     <br>
@@ -1412,53 +1342,58 @@
     }, 4000);
   }
 
-  /* ── CLOUDFLARE WORKER URL ── */
-  // ⚠️ UPDATE THIS to your new auth worker URL after deploying
+  /* ── WORKER URL ── */
   const _AUTH_WORKER = "https://fragrant-water-c0ef.lillykobusiness69.workers.dev";
 
-  /* ── DISCORD SESSION (localStorage) ── */
+  /* ── SESSION ──
+     Only stores: username (display only) + sessionToken (opaque server-issued token).
+     userId / discordId are NEVER stored in the browser.
+  ── */
   function getSession() {
     try {
-      const raw = localStorage.getItem('67dih_discord');
+      const raw = localStorage.getItem('67dih_session');
       return raw ? JSON.parse(raw) : null;
     } catch { return null; }
   }
-  function saveSession(username, userId) {
-    localStorage.setItem('67dih_discord', JSON.stringify({ username, userId, savedAt: Date.now() }));
+  function saveSession(username, sessionToken) {
+    localStorage.setItem('67dih_session', JSON.stringify({ username, sessionToken, savedAt: Date.now() }));
   }
   function clearSession() {
-    localStorage.removeItem('67dih_discord');
+    localStorage.removeItem('67dih_session');
+    localStorage.removeItem('67dih_discord'); // clear old insecure key too
   }
 
   /* ── RENDER AUTH STATE ── */
   function renderAuthState() {
     const session = getSession();
-    const gate    = document.getElementById('verify-gate');
-    const badge   = document.getElementById('verified-badge');
-    const fields  = document.getElementById('tip-fields');
+    const gate   = document.getElementById('verify-gate');
+    const badge  = document.getElementById('verified-badge');
+    const fields = document.getElementById('tip-fields');
 
-    if (session && session.username) {
-      // Logged in
-      gate.style.display  = 'none';
-      badge.style.display = 'flex';
+    if (session && session.username && session.sessionToken) {
+      gate.style.display         = 'none';
+      badge.style.display        = 'flex';
       fields.style.opacity       = '1';
       fields.style.pointerEvents = 'all';
       document.getElementById('verified-name').textContent = '@' + session.username;
     } else {
-      // Not logged in
-      gate.style.display  = '';
-      badge.style.display = 'none';
+      gate.style.display         = '';
+      badge.style.display        = 'none';
       fields.style.opacity       = '0.35';
       fields.style.pointerEvents = 'none';
     }
   }
 
-  // Run on load
+  // Migrate + boot any old-style sessions that stored userId
+  (function () {
+    const old = localStorage.getItem('67dih_discord');
+    if (old) localStorage.removeItem('67dih_discord');
+  })();
   renderAuthState();
 
   /* ── VERIFY CODE ── */
   async function handleVerify() {
-    const code = document.getElementById('verify-code-input').value.trim().toUpperCase();
+    const code  = document.getElementById('verify-code-input').value.trim().toUpperCase();
     const errEl = document.getElementById('verify-error');
     errEl.style.display = 'none';
 
@@ -1481,7 +1416,8 @@
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.success) {
-        saveSession(data.username, data.userId);
+        // Save token + display name ONLY — no userId ever touches localStorage
+        saveSession(data.username, data.sessionToken);
         renderAuthState();
         showToast('✅ VERIFIED AS @' + data.username, false);
         document.getElementById('verify-code-input').value = '';
@@ -1489,7 +1425,7 @@
         errEl.textContent = '⚠️ ' + (data.error || 'INVALID CODE — RUN /GETCODE IN DISCORD');
         errEl.style.display = 'block';
       }
-    } catch (err) {
+    } catch {
       errEl.textContent = '⚠️ NETWORK ERROR — TRY AGAIN';
       errEl.style.display = 'block';
     }
@@ -1498,7 +1434,6 @@
     btn.disabled = false;
   }
 
-  // Allow pressing Enter in code input
   document.getElementById('verify-code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleVerify();
   });
@@ -1510,15 +1445,10 @@
     showToast('LOGGED OUT', false);
   }
 
-  /* ── HELPER: is this URL an image? ── */
-  function isImageUrl(url) {
-    return /\.(png|jpe?g|gif|webp|bmp|svg|tiff?)(\?.*)?$/i.test(url);
-  }
-
   /* ── SUBMIT TIP ── */
   async function handleSubmit() {
     const session = getSession();
-    if (!session || !session.username) {
+    if (!session || !session.sessionToken) {
       showToast('⚠️ VERIFY YOUR DISCORD FIRST', true);
       return;
     }
@@ -1543,8 +1473,7 @@
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
-          discordUsername: session.username,
-          discordUserId:   session.userId,
+          sessionToken: session.sessionToken, // ← only the token, never username/userId
           category,
           details,
           evidence
@@ -1559,7 +1488,6 @@
         document.getElementById('tip-details').value  = '';
         document.getElementById('tip-evidence').value = '';
       } else if (res.status === 401 || res.status === 403) {
-        // Session stale — force re-verify
         clearSession();
         renderAuthState();
         showToast('⚠️ SESSION EXPIRED — RE-VERIFY IN DISCORD', true);
@@ -1568,8 +1496,7 @@
       } else {
         showToast('⚠️ ' + (data.error || 'ERROR — TRY AGAIN'), true);
       }
-    } catch (err) {
-      console.error('Fetch error:', err);
+    } catch {
       showToast('⚠️ NETWORK ERROR — TRY AGAIN', true);
     }
 
