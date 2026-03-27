@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ZEP</title>
+  <link rel="icon" type="image/png" href="https://iili.io/qD6itgn.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
@@ -22,6 +23,23 @@
       font-family: 'Playfair Display', serif;
       overflow-x: hidden;
     }
+
+    /* TOP NAV */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: flex-end; align-items: center;
+      padding: 16px 28px; gap: 20px;
+      background: linear-gradient(to bottom, rgba(12,12,12,0.92) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .top-nav a {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; text-decoration: none; color: #555;
+      transition: color 0.2s; pointer-events: all;
+    }
+    .top-nav a:hover { color: var(--paper); }
+    .top-nav .nav-email { color: var(--green); }
+    .top-nav .nav-sep { color: #2a2a2a; font-size: 10px; }
 
     /* TICKER */
     .ticker { background: var(--paper); color: var(--ink); padding: 10px 0; overflow: hidden; }
@@ -61,7 +79,7 @@
       overflow: hidden; border: 3px solid var(--paper);
       flex-shrink: 0; background: #c8c0b4;
     }
-    .profile-circle svg { width: 100%; height: 100%; display: block; }
+    .profile-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .profile-labels { padding-bottom: 10px; }
     .profile-labels .ntag {
       background: rgba(12,12,12,0.85); color: var(--paper);
@@ -186,11 +204,17 @@
 </head>
 <body>
 
-<div class="ticker">
-  <div class="ticker-inner">
-    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
-    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
-    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
+<!-- TOP CONTACT NAV -->
+<nav class="top-nav">
+  <a href="mailto:zepdalovesmusic@gmail.com" class="nav-email">zepdalovesmusic@gmail.com</a>
+  <span class="nav-sep">/</span>
+  <a href="mailto:demorkur@gmail.com">demorkur@gmail.com</a>
+</nav>
+
+<!-- ZEP RIGA RUNNING BANNER — TOP -->
+<div class="run-banner">
+  <div class="run-text">
+    ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp;
   </div>
 </div>
 
@@ -198,52 +222,8 @@
   <div class="hero-bg"><span>Z</span></div>
 
   <div class="hero-profile">
-    <!-- SVG portrait inspired by his Spotify photo: plaid jacket, bucket hat, curly hair, hand-at-chin pose -->
     <div class="profile-circle">
-      <svg viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="84" cy="84" r="84" fill="#c9c2b6"/>
-        <!-- Jacket/body -->
-        <ellipse cx="84" cy="148" rx="56" ry="38" fill="#3c3830"/>
-        <ellipse cx="84" cy="142" rx="48" ry="32" fill="#302e28"/>
-        <!-- Plaid lines on jacket -->
-        <line x1="56" y1="124" x2="52" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
-        <line x1="70" y1="122" x2="68" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
-        <line x1="84" y1="121" x2="84" y2="168" stroke="#555048" stroke-width="1.5" opacity="0.7"/>
-        <line x1="98" y1="122" x2="100" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
-        <line x1="112" y1="124" x2="116" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
-        <!-- Neck -->
-        <rect x="76" y="100" width="16" height="20" rx="4" fill="#8c6e52"/>
-        <!-- Face/head -->
-        <ellipse cx="84" cy="80" rx="34" ry="37" fill="#7d5e44"/>
-        <!-- Bucket hat brim -->
-        <ellipse cx="84" cy="47" rx="38" ry="7.5" fill="#585040"/>
-        <!-- Hat top -->
-        <ellipse cx="84" cy="42" rx="30" ry="20" fill="#686050"/>
-        <!-- Hat plaid pattern -->
-        <rect x="56" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
-        <rect x="70" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
-        <rect x="84" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
-        <rect x="98" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
-        <rect x="63" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
-        <rect x="77" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
-        <rect x="91" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
-        <!-- Eyes -->
-        <ellipse cx="73" cy="77" rx="5" ry="5.5" fill="#1a0e06"/>
-        <ellipse cx="96" cy="77" rx="5" ry="5.5" fill="#1a0e06"/>
-        <circle cx="74" cy="76" r="1.5" fill="#fff" opacity="0.35"/>
-        <circle cx="97" cy="76" r="1.5" fill="#fff" opacity="0.35"/>
-        <!-- Nose -->
-        <ellipse cx="84" cy="88" rx="4.5" ry="3.8" fill="#6e4e34"/>
-        <!-- Hand at chin — thinking pose -->
-        <ellipse cx="73" cy="105" rx="11" ry="8" fill="#8c6e52"/>
-        <ellipse cx="73" cy="104" rx="8" ry="6" fill="#9a7a5e"/>
-        <!-- Curly hair around sides / escaping hat -->
-        <circle cx="52" cy="64" r="8" fill="#160c04" opacity="0.95"/>
-        <circle cx="47" cy="73" r="7" fill="#160c04" opacity="0.9"/>
-        <circle cx="50" cy="82" r="6" fill="#160c04" opacity="0.85"/>
-        <circle cx="57" cy="58" r="7" fill="#160c04" opacity="0.9"/>
-        <circle cx="66" cy="54" r="5" fill="#160c04" opacity="0.8"/>
-      </svg>
+      <img src="https://iili.io/qD6itgn.png" alt="Zep" />
     </div>
     <div class="profile-labels">
       <div class="ntag"><h1>zep</h1></div>
@@ -286,13 +266,6 @@
   </div>
 </section>
 
-<!-- RUNNING BANNER -->
-<div class="run-banner">
-  <div class="run-text">
-    ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp;
-  </div>
-</div>
-
 <!-- CONTACT -->
 <section class="contact">
   <div class="contact-l">
@@ -300,7 +273,7 @@
     <h2>CONTACT<br>&amp; REACH.</h2>
     <p>For <b>bookings, features, collaborations,</b> or any press and media inquiries — reach out directly through the contact below.</p>
     <p>All <b>Spotify for Artists</b> platform verifications and account matters are handled by Zep's representative, Domeniks Seipuls.</p>
-    <a class="cta" href="mailto:demorkur@gmail.com">Send a message</a>
+    <a class="cta" href="mailto:zepdalovesmusic@gmail.com">Send a message</a>
   </div>
   <div class="contact-r">
     <div class="card">
@@ -320,7 +293,7 @@
     <div class="card">
       <div class="card-type">General / All Inquiries</div>
       <div class="card-name">Zep</div>
-      <div class="card-email">demorkur@gmail.com</div>
+      <div class="card-email">zepdalovesmusic@gmail.com</div>
     </div>
   </div>
 </section>
