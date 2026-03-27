@@ -440,23 +440,36 @@
     z-index: 2;
   }
   .bio-close:hover { transform: rotate(90deg); }
-  .leader-bio-btn {
+  .leader-card-link {
     display: block;
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-top: 1px solid #222;
-    color: var(--yellow);
-    font-family: 'VT323', monospace;
-    font-size: 0.9rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    padding: 10px;
+    text-decoration: none;
+    color: inherit;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    text-align: center;
   }
-  .leader-bio-btn:hover { background: var(--yellow); color: #000; }
+  .leader-img-wrap .img-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 230, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.25s;
+  }
+  .leader-img-wrap .img-overlay span {
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 5px;
+    color: #000;
+    background: var(--yellow);
+    padding: 6px 18px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    text-transform: uppercase;
+  }
+  .leader-card:hover .img-overlay { background: rgba(255, 230, 0, 0.18); }
+  .leader-card:hover .img-overlay span { opacity: 1; transform: translateY(0); }
 
   /* NEWS */
   .news-section { background: var(--darker); }
@@ -1075,76 +1088,76 @@
     <div class="leaders-grid">
 
       <!-- OLIVER -->
-      <div class="leader-card icon-card" data-rank="LEGEND">
+      <a href="/oli" class="leader-card icon-card leader-card-link" data-rank="LEGEND">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5eSGHu.png" alt="Oliver Brandon Ernest Good">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">OLIVER BRANDON ERNEST GOOD</div>
           <div class="leader-title">// LEGEND &amp; MASSIVE ICON //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('oliver')">// READ BIO //</button>
-      </div>
+      </a>
 
       <!-- ZEP -->
-      <div class="leader-card" data-rank="FOUNDER">
+      <a href="/zep" class="leader-card leader-card-link" data-rank="FOUNDER">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5ey1Ax.png" alt="Zep">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">ZEP</div>
           <div class="leader-title">// SUPREME LEADER //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('zep')">// READ BIO //</button>
-      </div>
+      </a>
 
       <!-- PASTAA -->
-      <div class="leader-card" data-rank="CO-FOUNDER">
+      <a href="/pastaa" class="leader-card leader-card-link" data-rank="CO-FOUNDER">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5kHjyJ.png" alt="Pastaa">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">PASTAA</div>
           <div class="leader-title">// MINISTER OF PASTA //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('pastaa')">// READ BIO //</button>
-      </div>
+      </a>
 
       <!-- LYKO -->
-      <div class="leader-card" data-rank="ADMIN">
+      <a href="/lyko" class="leader-card leader-card-link" data-rank="ADMIN">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q5eDIBn.png" alt="Lyko">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">LYKO</div>
           <div class="leader-title">// TOP GLAZER //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('lyko')">// READ BIO //</button>
-      </div>
+      </a>
 
       <!-- LANI -->
-      <div class="leader-card" data-rank="lyko huzz">
+      <a href="/lani" class="leader-card leader-card-link" data-rank="lyko huzz">
         <div class="leader-img-wrap">
           <img src="https://iili.io/qEFgbDl.png" alt="Lani">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">LANI</div>
           <div class="leader-title">// LYKO'S HUZZ //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('lani')">// READ BIO //</button>
-      </div>
+      </a>
 
       <!-- TRONIX -->
-      <div class="leader-card" data-rank="MEMBER">
+      <a href="/tronix" class="leader-card leader-card-link" data-rank="MEMBER">
         <div class="leader-img-wrap">
           <img src="https://iili.io/q7rMOcx.png" alt="Tronix">
+          <div class="img-overlay"><span>// VIEW PAGE //</span></div>
         </div>
         <div class="leader-info">
           <div class="leader-name">TRONIX</div>
           <div class="leader-title sus">CONVICTED SO (ALLEGEDLY) //</div>
         </div>
-        <button class="leader-bio-btn" onclick="openBio('tronix')">// READ BIO //</button>
-      </div>
+      </a>
 
 
 
