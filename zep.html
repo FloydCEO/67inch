@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZEP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --ink: #0c0c0c;
+      --paper: #f5f0e8;
+      --mid: #d4cbbf;
+      --faint: #e8e2d8;
+      --green: #3ddc84;
+    }
+    body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Playfair Display', serif;
+      overflow-x: hidden;
+    }
+
+    /* TICKER */
+    .ticker { background: var(--paper); color: var(--ink); padding: 10px 0; overflow: hidden; }
+    .ticker-inner { display: flex; width: max-content; animation: tick 28s linear infinite; }
+    .ticker-inner span {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.25em;
+      text-transform: uppercase; white-space: nowrap; padding: 0 32px;
+      border-right: 1px solid rgba(0,0,0,0.15);
+    }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* HERO */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: grid; grid-template-rows: auto 1fr auto;
+      overflow: hidden; border-bottom: 2px solid #1a1a1a;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .hero-bg span {
+      font-family: 'Anton', sans-serif; font-size: 58vw; line-height: 0.9;
+      color: transparent; -webkit-text-stroke: 1.5px #161616;
+      user-select: none; transform: rotate(-5deg) translateY(8%); letter-spacing: -0.04em;
+    }
+
+    /* Profile row */
+    .hero-profile {
+      position: relative; z-index: 3;
+      padding: 70px 64px 0;
+      display: flex; align-items: flex-end; gap: 28px;
+      opacity: 0; animation: up 0.9s ease forwards 0.1s;
+    }
+    .profile-circle {
+      width: 168px; height: 168px; border-radius: 50%;
+      overflow: hidden; border: 3px solid var(--paper);
+      flex-shrink: 0; background: #c8c0b4;
+    }
+    .profile-circle svg { width: 100%; height: 100%; display: block; }
+    .profile-labels { padding-bottom: 10px; }
+    .profile-labels .ntag {
+      background: rgba(12,12,12,0.85); color: var(--paper);
+      display: inline-block; padding: 5px 18px; margin-bottom: 5px;
+      backdrop-filter: blur(4px);
+    }
+    .profile-labels .ntag h1 { font-family: 'Anton', sans-serif; font-size: 36px; letter-spacing: 0.06em; }
+    .profile-labels .ltag {
+      background: rgba(12,12,12,0.7); display: inline-block; padding: 4px 14px;
+      backdrop-filter: blur(4px);
+    }
+    .profile-labels .ltag p { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); }
+
+    /* Hero body */
+    .hero-body {
+      position: relative; z-index: 3;
+      padding: 52px 64px 72px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+      opacity: 0; animation: up 1s ease forwards 0.4s;
+    }
+    .hero-hed {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(72px, 13vw, 170px);
+      line-height: 0.87; letter-spacing: -0.02em; color: var(--paper);
+    }
+    .hero-hed .out { -webkit-text-stroke: 2px var(--paper); color: transparent; }
+    .hero-sub p {
+      font-size: 18px; font-style: italic; line-height: 1.8; color: #888; margin-bottom: 22px;
+    }
+    .hero-sub p b { color: var(--paper); font-style: normal; }
+    .cue { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: #2e2e2e; display: flex; align-items: center; gap: 14px; }
+    .cue::after { content: ''; display: block; width: 44px; height: 1px; background: #2e2e2e; }
+
+    @keyframes up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* SECTIONS */
+    section { border-bottom: 1px solid #1a1a1a; }
+    .lbl { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.5em; text-transform: uppercase; color: #3a3a3a; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; }
+    .lbl::before { content: ''; display: block; width: 20px; height: 1px; background: #3a3a3a; }
+
+    /* ABOUT */
+    .about { display: grid; grid-template-columns: 240px 1fr; }
+    .about-side {
+      padding: 72px 36px; border-right: 1px solid #1a1a1a;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .about-side .big { font-family: 'Anton', sans-serif; font-size: 100px; line-height: 1; color: #1a1a1a; -webkit-text-stroke: 1px #252525; }
+    .about-side .meta { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em; color: #2e2e2e; text-transform: uppercase; line-height: 2.5; }
+    .about-main { padding: 72px 64px; }
+    .about-main h2 { font-family: 'Anton', sans-serif; font-size: clamp(44px, 5.5vw, 76px); line-height: 0.9; margin-bottom: 38px; }
+    .about-main h2 em { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.72em; color: var(--mid); }
+    .about-main p { font-size: 18px; line-height: 1.87; color: #777; margin-bottom: 22px; max-width: 560px; }
+    .about-main p b { color: var(--paper); }
+    .pull { margin: 44px 0; padding-left: 26px; border-left: 2px solid var(--paper); }
+    .pull p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px !important; color: var(--paper) !important; line-height: 1.6 !important; }
+
+    /* RUNNING BANNER */
+    .run-banner {
+      height: 200px; background: var(--paper); overflow: hidden;
+      display: flex; align-items: center; border-bottom: 1px solid #ccc;
+    }
+    .run-text {
+      font-family: 'Anton', sans-serif; font-size: 17vw; line-height: 1;
+      color: var(--ink); white-space: nowrap; letter-spacing: -0.02em;
+      animation: run 11s linear infinite;
+    }
+    .run-text .ghost { -webkit-text-stroke: 2px var(--ink); color: transparent; margin-left: 64px; }
+    @keyframes run { from { transform: translateX(0); } to { transform: translateX(-33.33%); } }
+
+    /* CONTACT */
+    .contact { display: grid; grid-template-columns: 1fr 1fr; }
+    .contact-l { padding: 80px 64px; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: center; }
+    .contact-l h2 { font-family: 'Anton', sans-serif; font-size: clamp(50px, 6.5vw, 86px); line-height: 0.88; margin-bottom: 30px; letter-spacing: -0.01em; }
+    .contact-l p { font-size: 18px; line-height: 1.82; color: #777; margin-bottom: 18px; max-width: 400px; }
+    .contact-l p b { color: var(--paper); }
+    .cta {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--paper); color: var(--ink);
+      padding: 16px 30px; font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+      text-decoration: none; margin-top: 10px;
+      transition: background 0.25s, color 0.25s, outline 0.25s;
+    }
+    .cta:hover { background: var(--ink); color: var(--paper); outline: 1px solid var(--paper); }
+    .cta::after { content: '→'; font-size: 14px; }
+
+    .contact-r { padding: 80px 64px; display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+
+    .card {
+      border: 1px solid #1e1e1e; padding: 34px 32px; position: relative;
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: #3a3a3a; }
+    .card-badge {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 22px;
+    }
+    .s-dot { width: 30px; height: 30px; background: #1db954; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .s-dot svg { width: 17px; height: 17px; fill: #000; }
+    .card-badge span { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #1db954; }
+    .card-type { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.45em; text-transform: uppercase; color: #333; margin-bottom: 14px; }
+    .card-name { font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 0.04em; color: var(--paper); margin-bottom: 8px; }
+    .card-email { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--green); letter-spacing: 0.05em; }
+
+    /* FOOTER */
+    footer { padding: 44px 64px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .f-logo { font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.18em; color: #1e1e1e; }
+    .f-r { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #222; text-align: right; line-height: 2.3; }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) {
+      .hero-profile { padding: 70px 28px 0; }
+      .hero-body { grid-template-columns: 1fr; padding: 40px 28px 60px; }
+      .about { grid-template-columns: 1fr; }
+      .about-side { border-right: none; border-bottom: 1px solid #1a1a1a; padding: 44px 28px; flex-direction: row; align-items: center; gap: 28px; }
+      .about-main { padding: 50px 28px; }
+      .contact { grid-template-columns: 1fr; }
+      .contact-l { border-right: none; border-bottom: 1px solid #1a1a1a; padding: 60px 28px; }
+      .contact-r { padding: 60px 28px; }
+      footer { padding: 36px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
+    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
+    <span>Zep</span><span>Riga, Latvia</span><span>Rapper</span><span>Independent</span><span>Baltic Hip-Hop</span><span>Since Day One</span><span>Unmistakable</span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg"><span>Z</span></div>
+
+  <div class="hero-profile">
+    <!-- SVG portrait inspired by his Spotify photo: plaid jacket, bucket hat, curly hair, hand-at-chin pose -->
+    <div class="profile-circle">
+      <svg viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="84" cy="84" r="84" fill="#c9c2b6"/>
+        <!-- Jacket/body -->
+        <ellipse cx="84" cy="148" rx="56" ry="38" fill="#3c3830"/>
+        <ellipse cx="84" cy="142" rx="48" ry="32" fill="#302e28"/>
+        <!-- Plaid lines on jacket -->
+        <line x1="56" y1="124" x2="52" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
+        <line x1="70" y1="122" x2="68" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
+        <line x1="84" y1="121" x2="84" y2="168" stroke="#555048" stroke-width="1.5" opacity="0.7"/>
+        <line x1="98" y1="122" x2="100" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
+        <line x1="112" y1="124" x2="116" y2="168" stroke="#4a4840" stroke-width="1.5" opacity="0.7"/>
+        <!-- Neck -->
+        <rect x="76" y="100" width="16" height="20" rx="4" fill="#8c6e52"/>
+        <!-- Face/head -->
+        <ellipse cx="84" cy="80" rx="34" ry="37" fill="#7d5e44"/>
+        <!-- Bucket hat brim -->
+        <ellipse cx="84" cy="47" rx="38" ry="7.5" fill="#585040"/>
+        <!-- Hat top -->
+        <ellipse cx="84" cy="42" rx="30" ry="20" fill="#686050"/>
+        <!-- Hat plaid pattern -->
+        <rect x="56" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
+        <rect x="70" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
+        <rect x="84" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
+        <rect x="98" y="28" width="7" height="7" fill="#807868" opacity="0.65" rx="1"/>
+        <rect x="63" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
+        <rect x="77" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
+        <rect x="91" y="36" width="7" height="7" fill="#807868" opacity="0.55" rx="1"/>
+        <!-- Eyes -->
+        <ellipse cx="73" cy="77" rx="5" ry="5.5" fill="#1a0e06"/>
+        <ellipse cx="96" cy="77" rx="5" ry="5.5" fill="#1a0e06"/>
+        <circle cx="74" cy="76" r="1.5" fill="#fff" opacity="0.35"/>
+        <circle cx="97" cy="76" r="1.5" fill="#fff" opacity="0.35"/>
+        <!-- Nose -->
+        <ellipse cx="84" cy="88" rx="4.5" ry="3.8" fill="#6e4e34"/>
+        <!-- Hand at chin — thinking pose -->
+        <ellipse cx="73" cy="105" rx="11" ry="8" fill="#8c6e52"/>
+        <ellipse cx="73" cy="104" rx="8" ry="6" fill="#9a7a5e"/>
+        <!-- Curly hair around sides / escaping hat -->
+        <circle cx="52" cy="64" r="8" fill="#160c04" opacity="0.95"/>
+        <circle cx="47" cy="73" r="7" fill="#160c04" opacity="0.9"/>
+        <circle cx="50" cy="82" r="6" fill="#160c04" opacity="0.85"/>
+        <circle cx="57" cy="58" r="7" fill="#160c04" opacity="0.9"/>
+        <circle cx="66" cy="54" r="5" fill="#160c04" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="profile-labels">
+      <div class="ntag"><h1>zep</h1></div>
+      <div class="ltag"><p>Riga, Latvia</p></div>
+    </div>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-hed">
+      BARS<br>FROM<br><span class="out">RIGA.</span>
+    </div>
+    <div class="hero-sub">
+      <p>A rapper who's been building <b>longer than most</b> have been listening. Raw craft, real words — Baltic cold in every bar.</p>
+      <p>Independent. Uncompromising. <b>Zep.</b></p>
+      <div class="cue">Scroll down</div>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-side">
+    <div class="big">LV</div>
+    <div class="meta">
+      <p>Riga</p>
+      <p>Latvia</p>
+      <p>Independent</p>
+      <p>Hip-Hop / Rap</p>
+    </div>
+  </div>
+  <div class="about-main">
+    <div class="lbl">About</div>
+    <h2>THE LONG<br>GAME <em>— always has been.</em></h2>
+    <p>Zep has been making music <b>for years</b> — long before it was easy to be heard, long before streaming made everyone an overnight act. He's a rapper from Riga, Latvia who put in the reps when nobody was watching.</p>
+    <p>His style is <b>sharp, cinematic, and deliberate</b> — lyricism that earns its weight, beats that hit with intention. There's a reason his catalog keeps growing: because he never stopped.</p>
+    <div class="pull">
+      <p>"He doesn't chase the wave — he's been making it since before the wave had a name."</p>
+    </div>
+    <p>From the streets of Riga to wherever music travels, Zep is one of the Baltic's most <b>authentic independent voices</b> in hip-hop today.</p>
+  </div>
+</section>
+
+<!-- RUNNING BANNER -->
+<div class="run-banner">
+  <div class="run-text">
+    ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp; <span class="ghost">ZEP</span> &nbsp; <span class="ghost">RIGA</span> &nbsp; ZEP &nbsp; RIGA &nbsp;
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact">
+  <div class="contact-l">
+    <div class="lbl">Get in touch</div>
+    <h2>CONTACT<br>&amp; REACH.</h2>
+    <p>For <b>bookings, features, collaborations,</b> or any press and media inquiries — reach out directly through the contact below.</p>
+    <p>All <b>Spotify for Artists</b> platform verifications and account matters are handled by Zep's representative, Domeniks Seipuls.</p>
+    <a class="cta" href="mailto:demorkur@gmail.com">Send a message</a>
+  </div>
+  <div class="contact-r">
+    <div class="card">
+      <div class="card-badge">
+        <div class="s-dot">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+        </div>
+        <span>Spotify for Artists — Verified Contact</span>
+      </div>
+      <div class="card-type">Artist Representative</div>
+      <div class="card-name">Domeniks Seipuls</div>
+      <div class="card-email">demorkur@gmail.com</div>
+    </div>
+
+    <div class="card">
+      <div class="card-type">General / All Inquiries</div>
+      <div class="card-name">Zep</div>
+      <div class="card-email">demorkur@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">ZEP — RIGA, LV</div>
+  <div class="f-r">
+    <p>© Zep. All Rights Reserved.</p>
+    <p>Independent — Latvia</p>
+  </div>
+</footer>
+
+</body>
+</html>
