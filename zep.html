@@ -24,6 +24,23 @@
       overflow-x: hidden;
     }
 
+    /* TOP NAV */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: flex-end; align-items: center;
+      padding: 16px 28px; gap: 20px;
+      background: linear-gradient(to bottom, rgba(12,12,12,0.92) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .top-nav a {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; text-decoration: none; color: #555;
+      transition: color 0.2s; pointer-events: all;
+    }
+    .top-nav a:hover { color: var(--paper); }
+    .top-nav .nav-email { color: var(--green); }
+    .top-nav .nav-sep { color: #2a2a2a; font-size: 10px; }
+
     /* TICKER */
     .ticker { background: var(--paper); color: var(--ink); padding: 10px 0; overflow: hidden; }
     .ticker-inner { display: flex; width: max-content; animation: tick 28s linear infinite; }
@@ -187,6 +204,12 @@
 </head>
 <body>
 
+<!-- TOP CONTACT NAV -->
+<nav class="top-nav">
+  <a href="mailto:zepdalovesmusic@gmail.com" class="nav-email">zepdalovesmusic@gmail.com</a>
+  <span class="nav-sep">/</span>
+  <a href="mailto:demorkur@gmail.com">demorkur@gmail.com</a>
+</nav>
 
 <!-- ZEP RIGA RUNNING BANNER — TOP -->
 <div class="run-banner">
@@ -196,7 +219,7 @@
 </div>
 
 <header class="hero">
-  <div class="hero-bg"><span>67</span></div>
+  <div class="hero-bg"><span>Z</span></div>
 
   <div class="hero-profile">
     <div class="profile-circle">
@@ -250,7 +273,7 @@
     <h2>CONTACT<br>&amp; REACH.</h2>
     <p>For <b>bookings, features, collaborations,</b> or any press and media inquiries — reach out directly through the contact below.</p>
     <p>All <b>Spotify for Artists</b> platform verifications and account matters are handled by Zep's representative, Domeniks Seipuls.</p>
-    <a class="cta" href="/cdn-cgi/l/email-protection#d4aeb1a4b0b5b8bba2b1a7b9a1a7bdb794b3b9b5bdb8fab7bbb9">Send a message</a>
+    <a class="cta" href="mailto:zepdalovesmusic@gmail.com">Send a message</a>
   </div>
   <div class="contact-r">
     <div class="card">
@@ -264,4 +287,24 @@
       </div>
       <div class="card-type">Artist Representative</div>
       <div class="card-name">Domeniks Seipuls</div>
-      <div class="card-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6004050d0f120b151220070d01090c4e030
+      <div class="card-email">demorkur@gmail.com</div>
+    </div>
+
+    <div class="card">
+      <div class="card-type">General / All Inquiries</div>
+      <div class="card-name">Zep</div>
+      <div class="card-email">zepdalovesmusic@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">ZEP — RIGA, LV</div>
+  <div class="f-r">
+    <p>© Zep. All Rights Reserved.</p>
+    <p>Independent — Latvia</p>
+  </div>
+</footer>
+
+</body>
+</html>

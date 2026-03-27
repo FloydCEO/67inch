@@ -352,6 +352,112 @@
   }
   .leader-card.icon-card:hover { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255,230,0,0.4); }
 
+  /* BIO MODAL */
+  .bio-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.94);
+    z-index: 9997;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .bio-modal.active { display: flex; }
+  .bio-inner {
+    max-width: 600px;
+    width: 100%;
+    background: #0d0d0d;
+    border: 3px solid var(--yellow);
+    position: relative;
+    animation: modalin 0.2s ease;
+    overflow: hidden;
+  }
+  .bio-header {
+    display: flex;
+    gap: 0;
+  }
+  .bio-img-col {
+    width: 160px;
+    flex-shrink: 0;
+  }
+  .bio-img-col img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(20%) contrast(1.1);
+  }
+  .bio-text-col {
+    padding: 20px 22px;
+    flex: 1;
+    border-left: 3px solid var(--yellow);
+  }
+  .bio-rank-tag {
+    font-family: 'VT323', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    color: var(--yellow);
+    background: rgba(255,230,0,0.1);
+    display: inline-block;
+    padding: 2px 10px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,230,0,0.3);
+  }
+  .bio-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .bio-title-tag {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    color: var(--red);
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+  }
+  .bio-body {
+    border-top: 1px solid #222;
+    padding: 20px 22px;
+  }
+  .bio-body p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #bbb;
+  }
+  .bio-close {
+    position: absolute;
+    top: 10px; right: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 0.15s;
+    z-index: 2;
+  }
+  .bio-close:hover { transform: rotate(90deg); }
+  .leader-bio-btn {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-top: 1px solid #222;
+    color: var(--yellow);
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    text-align: center;
+  }
+  .leader-bio-btn:hover { background: var(--yellow); color: #000; }
+
   /* NEWS */
   .news-section { background: var(--darker); }
   .news-grid {
@@ -977,6 +1083,7 @@
           <div class="leader-name">OLIVER BRANDON ERNEST GOOD</div>
           <div class="leader-title">// LEGEND &amp; MASSIVE ICON //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('oliver')">// READ BIO //</button>
       </div>
 
       <!-- ZEP -->
@@ -988,6 +1095,7 @@
           <div class="leader-name">ZEP</div>
           <div class="leader-title">// SUPREME LEADER //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('zep')">// READ BIO //</button>
       </div>
 
       <!-- PASTAA -->
@@ -999,6 +1107,7 @@
           <div class="leader-name">PASTAA</div>
           <div class="leader-title">// MINISTER OF PASTA //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('pastaa')">// READ BIO //</button>
       </div>
 
       <!-- LYKO -->
@@ -1010,6 +1119,7 @@
           <div class="leader-name">LYKO</div>
           <div class="leader-title">// TOP GLAZER //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('lyko')">// READ BIO //</button>
       </div>
 
       <!-- LANI -->
@@ -1021,6 +1131,7 @@
           <div class="leader-name">LANI</div>
           <div class="leader-title">// LYKO'S HUZZ //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('lani')">// READ BIO //</button>
       </div>
 
       <!-- TRONIX -->
@@ -1032,6 +1143,7 @@
           <div class="leader-name">TRONIX</div>
           <div class="leader-title sus">CONVICTED SO (ALLEGEDLY) //</div>
         </div>
+        <button class="leader-bio-btn" onclick="openBio('tronix')">// READ BIO //</button>
       </div>
 
 
@@ -1283,7 +1395,26 @@
   </div>
 </footer>
 
-<!-- MODAL -->
+<!-- BIO MODAL -->
+<div class="bio-modal" id="bio-modal" onclick="closeBioModal(event)">
+  <div class="bio-inner">
+    <span class="bio-close" onclick="document.getElementById('bio-modal').classList.remove('active')">✕</span>
+    <div class="bio-header">
+      <div class="bio-img-col">
+        <img id="bio-img" src="" alt="">
+      </div>
+      <div class="bio-text-col">
+        <div class="bio-rank-tag" id="bio-rank"></div>
+        <div class="bio-name" id="bio-name"></div>
+        <div class="bio-title-tag" id="bio-title"></div>
+      </div>
+    </div>
+    <div class="bio-body">
+      <p id="bio-text"></p>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="modal" onclick="closeModal(event)">
   <div class="modal-inner">
     <span class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕</span>
@@ -1296,7 +1427,71 @@
 <div class="toast" id="toast">NEWS TIP RECEIVED 📡</div>
 
 <script>
-  /* ── MODAL ── */
+  /* ── BIO DATA ── */
+  const BIOS = {
+    oliver: {
+      img: 'https://iili.io/q5eSGHu.png',
+      rank: 'LEGEND',
+      name: 'OLIVER BRANDON ERNEST GOOD',
+      title: '// LEGEND & MASSIVE ICON //',
+      text: 'Oliver Brandon Ernest Good is not a man — he is a monument. Born into greatness and refusing to let anyone forget it, Oliver ascended to the rank of Legend before most members even knew his middle names (all three of them). His chair sits empty. His legacy does not. Historians within the Club estimate that 34% of all major decisions made in the server were either inspired by, dedicated to, or blamed on Oliver. He has never confirmed nor denied any of this. A true icon.'
+    },
+    zep: {
+      img: 'https://iili.io/q5ey1Ax.png',
+      rank: 'FOUNDER',
+      name: 'ZEP',
+      title: '// SUPREME LEADER //',
+      text: 'Zep is a rapper and Supreme Leader hailing from Riga, Latvia — a city that shaped him, and a scene he quietly helped define. He has been making music for years, long before playlists and algorithms made it easy, recording bars with the kind of dedication that doesn\'t need an audience to keep going. As founder of the 67 Inch Dih Club, Zep governs with a loose hand and an iron vibe. His word is law. His music is the prophecy. Whether in the booth or in the server, Zep operates on a frequency most people haven\'t tuned into yet.'
+    },
+    pastaa: {
+      img: 'https://iili.io/q5kHjyJ.png',
+      rank: 'CO-FOUNDER',
+      name: 'PASTAA',
+      title: '// MINISTER OF PASTA //',
+      text: 'Pastaa is the Co-Founder of the 67 Inch Dih Club and the self-appointed Minister of Pasta — a title no one questioned because no one dared. A man of few words and strong opinions about carbohydrates, Pastaa built the structural foundation of the Club from the ground up alongside Zep. Legend has it he once blocked a member for a full calendar year simply for asking what kind of pasta he preferred. The pasta in question has never been identified. The member has since recovered. Do not ask him about the pasta.'
+    },
+    lyko: {
+      img: 'https://iili.io/q5eDIBn.png',
+      rank: 'ADMIN',
+      name: 'LYKO',
+      title: '// TOP GLAZER //',
+      text: 'Logan Sokolov, more professionally known as Lyko (formerly Lil Lyko), is an underground recording artist who traces his roots back to Riga, Latvia, before finding refuge in Covington, Kentucky. His early life was turbulent, marked by instability and a period of confinement in a Latvian mental health asylum. What emerged from that chapter was not broken — it was refined. Lyko channels that history into music that hits different, and into a glazing ability so powerful it has been described as "unnatural" and "slightly concerning." He is the Club\'s top admin, its most loyal amplifier, and, according to at least one source, Kate is still in love with him.'
+    },
+    lani: {
+      img: 'https://iili.io/qEFgbDl.png',
+      rank: 'LYKO HUZZ',
+      name: 'LANI',
+      title: '// LYKO\'S HUZZ //',
+      text: 'Lani holds the distinguished and entirely official title of Lyko\'s Huzz — a rank earned not through combat or application, but through sheer romantic jurisdiction. She is a permanent fixture of the Club\'s inner circle, present at every major cultural moment and responsible for keeping Lyko at least partially grounded. Members who have attempted to understand the full nature of the Lyko-Lani dynamic have reported mild confusion and a strong urge to mind their own business. The Club respects this. She does what she wants.'
+    },
+    tronix: {
+      img: 'https://iili.io/q7rMOcx.png',
+      rank: 'MEMBER',
+      name: 'TRONIX',
+      title: '// CONVICTED SO (ALLEGEDLY) //',
+      text: 'Tronix is a member of the 67 Inch Dih Club with a résumé that includes — allegedly — a brush with the law that he refuses to discuss in any detail. What is confirmed: he gambled over $150 and lost it all at 1.05x crash, immediately blaming Lyko. He has attempted to play competitively on Rise and struggled. He is also reported to be "kinda chill" after his return, which is considered progress. Tronix does not deny the allegations. He does not confirm them either. He simply exists, somewhat chaotically, and the Club is better for it.'
+    }
+  };
+
+  function openBio(id) {
+    const b = BIOS[id];
+    if (!b) return;
+    document.getElementById('bio-img').src = b.img;
+    document.getElementById('bio-rank').textContent = b.rank;
+    document.getElementById('bio-name').textContent = b.name;
+    document.getElementById('bio-title').textContent = b.title;
+    document.getElementById('bio-text').textContent = b.text;
+    document.getElementById('bio-modal').classList.add('active');
+  }
+  function closeBioModal(e) {
+    if (e.target === document.getElementById('bio-modal'))
+      document.getElementById('bio-modal').classList.remove('active');
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('bio-modal').classList.remove('active');
+  });
+
+
   function openModal(src, caption) {
     document.getElementById('modal-img').src = src;
     document.getElementById('modal-caption').textContent = caption;
