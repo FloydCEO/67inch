@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OLIVER BRANDON ERNEST GOOD — 67 Inch Dih Club</title>
+  <link rel="icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --ink: #0c0c0c;
+      --paper: #f5f0e8;
+      --mid: #d4cbbf;
+      --faint: #e8e2d8;
+      --accent: #ffe600;
+      --red: #ff1a1a;
+    }
+    body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Playfair Display', serif;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* BACK NAV */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 28px;
+      background: linear-gradient(to bottom, rgba(12,12,12,0.95) 0%, transparent 100%);
+    }
+    .nav-back {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; text-decoration: none; color: #555;
+      transition: color 0.2s; display: flex; align-items: center; gap: 8px;
+    }
+    .nav-back::before { content: '←'; font-size: 12px; }
+    .nav-back:hover { color: var(--paper); }
+    .nav-right { display: flex; gap: 20px; align-items: center; }
+    .nav-right a {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; text-decoration: none; color: #555; transition: color 0.2s;
+    }
+    .nav-right a:hover { color: var(--paper); }
+    .nav-email { color: var(--accent) !important; }
+    .nav-sep { color: #2a2a2a; font-size: 10px; }
+
+    /* RUNNING BANNER */
+    .run-banner {
+      height: 160px; background: var(--paper); overflow: hidden;
+      display: flex; align-items: center; border-bottom: 1px solid #ccc;
+    }
+    .run-text {
+      font-family: 'Anton', sans-serif; font-size: 14vw; line-height: 1;
+      color: var(--ink); white-space: nowrap; letter-spacing: -0.02em;
+      animation: run 11s linear infinite;
+    }
+    .run-text .ghost { -webkit-text-stroke: 2px var(--ink); color: transparent; margin-left: 64px; }
+    @keyframes run { from { transform: translateX(0); } to { transform: translateX(-33.33%); } }
+
+    /* HERO */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: grid; grid-template-rows: auto 1fr auto;
+      overflow: hidden; border-bottom: 2px solid #1a1a1a;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .hero-bg span {
+      font-family: 'Anton', sans-serif; font-size: 42vw; line-height: 0.9;
+      color: transparent; -webkit-text-stroke: 1.5px #161616;
+      user-select: none; transform: rotate(-5deg) translateY(8%); letter-spacing: -0.04em;
+    }
+    .hero-profile {
+      position: relative; z-index: 3;
+      padding: 80px 64px 0;
+      display: flex; align-items: flex-end; gap: 28px;
+      opacity: 0; animation: up 0.9s ease forwards 0.1s;
+    }
+    .profile-circle {
+      width: 168px; height: 168px; border-radius: 50%;
+      overflow: hidden; border: 3px solid var(--paper);
+      flex-shrink: 0; background: #c8c0b4;
+    }
+    .profile-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-labels { padding-bottom: 10px; }
+    .profile-labels .ntag {
+      background: rgba(12,12,12,0.85); color: var(--paper);
+      display: inline-block; padding: 5px 18px; margin-bottom: 5px;
+      backdrop-filter: blur(4px);
+    }
+    .profile-labels .ntag h1 { font-family: 'Anton', sans-serif; font-size: 36px; letter-spacing: 0.06em; }
+    .profile-labels .rtag {
+      background: var(--accent); display: inline-block; padding: 3px 14px; margin-bottom: 5px;
+    }
+    .profile-labels .rtag p { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #000; font-weight: 500; }
+    .profile-labels .ltag {
+      background: rgba(12,12,12,0.7); display: inline-block; padding: 4px 14px;
+      backdrop-filter: blur(4px);
+    }
+    .profile-labels .ltag p { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); }
+    .hero-body {
+      position: relative; z-index: 3;
+      padding: 52px 64px 72px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+      opacity: 0; animation: up 1s ease forwards 0.4s;
+    }
+    .hero-hed {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(60px, 11vw, 150px);
+      line-height: 0.87; letter-spacing: -0.02em; color: var(--paper);
+    }
+    .hero-hed .out { -webkit-text-stroke: 2px var(--paper); color: transparent; }
+    .hero-sub p { font-size: 18px; font-style: italic; line-height: 1.8; color: #888; margin-bottom: 22px; }
+    .hero-sub p b { color: var(--paper); font-style: normal; }
+    .cue { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: #2e2e2e; display: flex; align-items: center; gap: 14px; }
+    .cue::after { content: ''; display: block; width: 44px; height: 1px; background: #2e2e2e; }
+    @keyframes up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* SECTIONS */
+    section { border-bottom: 1px solid #1a1a1a; }
+    .lbl { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.5em; text-transform: uppercase; color: #3a3a3a; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; }
+    .lbl::before { content: ''; display: block; width: 20px; height: 1px; background: #3a3a3a; }
+
+    /* ABOUT */
+    .about { display: grid; grid-template-columns: 240px 1fr; }
+    .about-side {
+      padding: 72px 36px; border-right: 1px solid #1a1a1a;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .about-side .big { font-family: 'Anton', sans-serif; font-size: 80px; line-height: 1; color: #1a1a1a; -webkit-text-stroke: 1px #252525; }
+    .about-side .meta { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em; color: #2e2e2e; text-transform: uppercase; line-height: 2.5; }
+    .about-main { padding: 72px 64px; }
+    .about-main h2 { font-family: 'Anton', sans-serif; font-size: clamp(36px, 4.5vw, 64px); line-height: 0.9; margin-bottom: 38px; }
+    .about-main h2 em { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.72em; color: var(--mid); }
+    .about-main p { font-size: 18px; line-height: 1.87; color: #777; margin-bottom: 22px; max-width: 600px; }
+    .about-main p b { color: var(--paper); }
+    .pull { margin: 44px 0; padding-left: 26px; border-left: 2px solid var(--accent); }
+    .pull p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px !important; color: var(--paper) !important; line-height: 1.6 !important; }
+
+    /* MEMBERS STRIP */
+    .members-strip { background: #080808; border-bottom: 1px solid #1a1a1a; padding: 48px 64px; }
+    .members-strip .lbl { margin-bottom: 30px; }
+    .members-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .member-chip {
+      border: 1px solid #1e1e1e; padding: 14px 20px;
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .member-chip:hover { border-color: var(--accent); background: #101008; }
+    .member-chip img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; filter: grayscale(30%); }
+    .member-chip-info { }
+    .member-chip-name { font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 0.1em; color: var(--paper); }
+    .member-chip-rank { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: #444; margin-top: 2px; }
+    .member-chip.active { border-color: var(--accent); }
+    .member-chip.active .member-chip-name { color: var(--accent); }
+
+    /* FOOTER */
+    footer { padding: 44px 64px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .f-logo { font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.18em; color: #1e1e1e; }
+    .f-logo a { color: #2a2a2a; text-decoration: none; transition: color 0.2s; }
+    .f-logo a:hover { color: #444; }
+    .f-r { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #222; text-align: right; line-height: 2.3; }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) {
+      .hero-profile { padding: 80px 28px 0; }
+      .hero-body { grid-template-columns: 1fr; padding: 40px 28px 60px; }
+      .about { grid-template-columns: 1fr; }
+      .about-side { border-right: none; border-bottom: 1px solid #1a1a1a; padding: 44px 28px; flex-direction: row; align-items: center; gap: 28px; }
+      .about-main { padding: 50px 28px; }
+      .members-strip { padding: 40px 28px; }
+      footer { padding: 36px 28px; }
+      .top-nav { padding: 14px 18px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/" class="nav-back">67 Inch Dih Club</a>
+  <div class="nav-right">
+    
+  </div>
+</nav>
+
+<div class="run-banner">
+  <div class="run-text">
+    OLIVER &nbsp; 67 &nbsp; <span class="ghost">OLIVER</span> &nbsp; <span class="ghost">67</span> &nbsp; OLIVER &nbsp; 67 &nbsp; <span class="ghost">OLIVER</span> &nbsp; <span class="ghost">67</span> &nbsp; OLIVER &nbsp; 67 &nbsp;
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg"><span>OLI</span></div>
+
+  <div class="hero-profile">
+    <div class="profile-circle">
+      <img src="https://iili.io/q5eSGHu.png" alt="OLIVER BRANDON ERNEST GOOD" />
+    </div>
+    <div class="profile-labels">
+      <div class="ntag"><h1>oliver brandon ernest good</h1></div>
+      <div class="rtag"><p>LEGEND</p></div>
+      <div class="ltag"><p>The Annals of History</p></div>
+    </div>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-hed">
+      LEGEND<br>&amp;<br><span class="out">ICON.</span>
+    </div>
+    <div class="hero-sub">
+      <p>Not a man — <b>a monument.</b> Born into greatness and refusing to let anyone forget it.</p>
+      <p>His chair sits empty. <b>His legacy does not.</b></p>
+      <div class="cue">Scroll down</div>
+    </div>
+  </div>
+</header>
+
+<section class="about">
+  <div class="about-side">
+    <div class="big">OLI</div>
+    <div class="meta">
+      <p>Legend</p><p>All Ranks</p><p>Massive Icon</p><p>Est. Day One</p>
+    </div>
+  </div>
+  <div class="about-main">
+    <div class="lbl">About</div>
+    <h2>BORN INTO<br>GREATNESS <em>— refuses to let you forget it.</em></h2>
+    <p>Oliver Brandon Ernest Good is not a man — he is a monument. Born into greatness and refusing to let anyone forget it, Oliver ascended to the rank of Legend before most members even knew his middle names (all three of them).</p>
+    <div class="pull">
+      <p>"His chair sits empty. His legacy does not."</p>
+    </div>
+    <p>Historians within the Club estimate that <b>34% of all major decisions</b> made in the server were either inspired by, dedicated to, or blamed on Oliver. He has never confirmed nor denied any of this. A true icon.</p>
+    
+  </div>
+</section>
+
+<div class="members-strip">
+  <div class="lbl">All Members</div>
+  <div class="members-row">
+    
+      <a href="/zep" class="member-chip ">
+        <img src="https://iili.io/q5ey1Ax.png" alt="ZEP">
+        <div class="member-chip-info">
+          <div class="member-chip-name">ZEP</div>
+          <div class="member-chip-rank">FOUNDER</div>
+        </div>
+      </a>
+      <a href="/." class="member-chip active">
+        <img src="https://iili.io/q5eSGHu.png" alt="OLI">
+        <div class="member-chip-info">
+          <div class="member-chip-name">OLI</div>
+          <div class="member-chip-rank">LEGEND</div>
+        </div>
+      </a>
+      <a href="/lyko" class="member-chip ">
+        <img src="https://iili.io/q5eDIBn.png" alt="LYKO">
+        <div class="member-chip-info">
+          <div class="member-chip-name">LYKO</div>
+          <div class="member-chip-rank">ADMIN</div>
+        </div>
+      </a>
+      <a href="/lani" class="member-chip ">
+        <img src="https://iili.io/qEFgbDl.png" alt="LANI">
+        <div class="member-chip-info">
+          <div class="member-chip-name">LANI</div>
+          <div class="member-chip-rank">LYKO HUZZ</div>
+        </div>
+      </a>
+      <a href="/tronix" class="member-chip ">
+        <img src="https://iili.io/q7rMOcx.png" alt="TRONIX">
+        <div class="member-chip-info">
+          <div class="member-chip-name">TRONIX</div>
+          <div class="member-chip-rank">MEMBER</div>
+        </div>
+      </a>
+      <a href="/pastaa" class="member-chip ">
+        <img src="https://iili.io/q5kHjyJ.png" alt="PASTAA">
+        <div class="member-chip-info">
+          <div class="member-chip-name">PASTAA</div>
+          <div class="member-chip-rank">CO-FOUNDER</div>
+        </div>
+      </a>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo"><a href="/">67 INCH DIH CLUB</a> — OLIVER BRANDON ERNEST GOOD</div>
+  <div class="f-r">
+    <p>© 67 Inch Dih Club. All Rights Reserved.</p>
+    <p>67inchdihclub.lol/oli</p>
+  </div>
+</footer>
+
+</body>
+</html>
