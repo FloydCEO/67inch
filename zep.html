@@ -24,23 +24,6 @@
       overflow-x: hidden;
     }
 
-    /* TOP NAV */
-    .top-nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; justify-content: flex-end; align-items: center;
-      padding: 16px 28px; gap: 20px;
-      background: linear-gradient(to bottom, rgba(12,12,12,0.92) 0%, transparent 100%);
-      pointer-events: none;
-    }
-    .top-nav a {
-      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
-      text-transform: uppercase; text-decoration: none; color: #555;
-      transition: color 0.2s; pointer-events: all;
-    }
-    .top-nav a:hover { color: var(--paper); }
-    .top-nav .nav-email { color: var(--green); }
-    .top-nav .nav-sep { color: #2a2a2a; font-size: 10px; }
-
     /* TICKER */
     .ticker { background: var(--paper); color: var(--ink); padding: 10px 0; overflow: hidden; }
     .ticker-inner { display: flex; width: max-content; animation: tick 28s linear infinite; }
@@ -204,12 +187,6 @@
 </head>
 <body>
 
-<!-- TOP CONTACT NAV -->
-<nav class="top-nav">
-  <a href="/cdn-cgi/l/email-protection#0a706f7a6e6b66657c6f79677f7963694a6d676b636624696567" class="nav-email"><span class="__cf_email__" data-cfemail="3d47584d595c51524b584e50484e545e7d5a505c5451135e5250">[email&#160;protected]</span></a>
-  <span class="nav-sep">/</span>
-  <a href="/cdn-cgi/l/email-protection#4125242c2e332a343301262c20282d6f222e2c"><span class="__cf_email__" data-cfemail="0165646c6e736a747341666c60686d2f626e6c">[email&#160;protected]</span></a>
-</nav>
 
 <!-- ZEP RIGA RUNNING BANNER — TOP -->
 <div class="run-banner">
