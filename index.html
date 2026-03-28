@@ -909,6 +909,121 @@
     display: inline-block;
   }
 
+  /* RELIGION SECTION */
+  .religion-section {
+    background: #05000a;
+    border-top: 4px solid var(--red);
+    border-bottom: 4px solid var(--red);
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .religion-section::before {
+    content: '☩';
+    position: absolute;
+    font-size: 40vw;
+    color: rgba(255,26,26,0.03);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+  .religion-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .religion-tenets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 50px;
+    text-align: left;
+  }
+  .tenet-card {
+    background: #0d0007;
+    border: 2px solid #330011;
+    padding: 22px 24px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tenet-card:hover { border-color: var(--red); transform: translateY(-4px); }
+  .tenet-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: rgba(255,26,26,0.15);
+    line-height: 1;
+    position: absolute;
+    top: 10px; right: 14px;
+  }
+  .tenet-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    color: var(--yellow);
+    margin-bottom: 10px;
+  }
+  .tenet-body {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: #bbb;
+  }
+  .prophecy-scroll {
+    background: #0d0007;
+    border: 2px solid var(--red);
+    border-left: 6px solid var(--red);
+    padding: 30px 36px;
+    margin-top: 50px;
+    text-align: left;
+    position: relative;
+  }
+  .prophecy-scroll-label {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 5px;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .prophecy-scroll-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.05rem;
+    color: #ddd;
+    line-height: 2;
+  }
+  .prophecy-scroll-text em {
+    color: var(--yellow);
+    font-style: normal;
+  }
+  .prophet-banner {
+    background: var(--red);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    letter-spacing: 6px;
+    padding: 20px 40px;
+    display: inline-block;
+    margin-top: 50px;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    animation: bgpulse 3s ease-in-out infinite;
+  }
+  .sanctuary-callout {
+    margin-top: 30px;
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    letter-spacing: 3px;
+    color: #888;
+    line-height: 2;
+  }
+  .sanctuary-callout strong { color: var(--white); }
+  @media(max-width: 560px) {
+    .religion-section { padding: 50px 16px; }
+    .prophecy-scroll { padding: 20px 18px; }
+  }
+
   /* FOOTER */
   footer {
     background: #000;
@@ -1059,8 +1174,9 @@
   <a href="#leaders">LEADERS</a>
   <a href="#wall">WALL</a>
   <a href="#oli">THE OLI ROOM</a>
+  <a href="#religion">SCRIPTURE</a>
   <a href="#donate">DONATE</a>
-  <a href="https://discord.gg/jeffreyepstein" target="_blank" class="discord-btn">
+  <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="discord-btn">
     <svg width="20" height="20" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="currentColor"/></svg>
     JOIN SERVER
   </a>
@@ -1074,7 +1190,7 @@
   <p class="hero-sub">OFFICIAL HEADQUARTERS // EST. SOMEWHERE IN TIME</p>
   <div class="hero-btns">
     <a href="#news" class="btn btn-primary">READ THE NEWS</a>
-    <a href="https://discord.gg/jeffreyepstein" target="_blank" class="btn btn-discord">JOIN THE SERVER</a>
+    <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="btn btn-discord">JOIN THE SERVER</a>
   </div>
 </div>
 
@@ -1228,7 +1344,7 @@
         </div>
       </div>
       <div class="verify-steps">
-        <div class="verify-step"><div class="verify-step-num">1</div><span>Join the server at <strong style="color:#5865F2">discord.gg/jeffreyepstein</strong></span></div>
+        <div class="verify-step"><div class="verify-step-num">1</div><span>Join the server at <strong style="color:#5865F2">discord.gg/jeffreyedwardepstein</strong></span></div>
         <div class="verify-step"><div class="verify-step-num">2</div><span>Type <strong style="color:#fff">/getcode</strong> in any channel — the bot will DM you a code</span></div>
         <div class="verify-step"><div class="verify-step-num">3</div><span>Paste the code below and hit VERIFY</span></div>
       </div>
@@ -1304,7 +1420,7 @@
       <p>The Oli Room stands vacant. A monument to absence. A chair unfilled. A vibe unclaimed.</p>
       <p style="margin-top:12px;">Oli, the legend in our logo, has left behind a room — and a legacy. But here's the thing: <strong style="color:var(--yellow)">anyone can be Oli.</strong> The room does not require credentials. The room does not judge. The room simply waits.</p>
       <p style="margin-top:12px;color:var(--red);font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;">ARE YOU THE NEXT OLI?</p>
-      <a href="https://discord.gg/jeffreyepstein" target="_blank" class="btn btn-primary" style="display:inline-block;margin-top:24px;">CLAIM THE ROOM</a>
+      <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="btn btn-primary" style="display:inline-block;margin-top:24px;">CLAIM THE ROOM</a>
     </div>
   </div>
 </div>
@@ -1385,6 +1501,73 @@
 
 <div class="divider"></div>
 
+<!-- RELIGION / THE PROPHECY -->
+<div class="religion-section" id="religion">
+  <div class="religion-inner">
+    <p class="section-label">THE SACRED DOCTRINE</p>
+    <h2 class="section-title" style="display:block;text-align:center;">THE 67 INCH PROPHECY</h2>
+    <p style="color:#bbb;font-size:1rem;line-height:1.8;max-width:640px;margin:0 auto;">
+      One cannot simply understand the rules and tranquish. What has been written shall be known. What has been known shall be honored. We have devoted our entire lives to this moment.
+    </p>
+
+    <div class="prophet-banner">OLI IS OUR PROPHET</div>
+
+    <div class="sanctuary-callout">
+      <strong>OLI'S ROOM</strong> is our sanctuary.<br>
+      Our synagogue. Our chapel. Our holy ground.<br>
+      Every wall. Every chair. Every pixel of that room is <strong style="color:var(--yellow)">sacred.</strong>
+    </div>
+
+    <div class="religion-tenets">
+      <div class="tenet-card">
+        <div class="tenet-num">I</div>
+        <div class="tenet-title">THE PROPHET OLI</div>
+        <div class="tenet-body">Oli is our main prophet. His likeness appears in our logo as a constant reminder of the one we follow. His room is our sanctuary — the physical manifestation of everything we believe in. You do not enter it lightly.</div>
+      </div>
+      <div class="tenet-card">
+        <div class="tenet-num">II</div>
+        <div class="tenet-title">THE 67 INCH TRUTH</div>
+        <div class="tenet-body">67 inches is not a number. It is a prophecy. A standard. A divine measurement by which all things shall be judged. If you are Christian, you must <em style="color:var(--yellow)">prioritize your 67 inch likeness to the prophecy</em> above all else. The inches do not lie.</div>
+      </div>
+      <div class="tenet-card">
+        <div class="tenet-num">III</div>
+        <div class="tenet-title">ON MEDICINE</div>
+        <div class="tenet-body">We do not respect modern medicine. The body knows what it knows. The prophecy provides what it provides. If Oli didn't prescribe it, we don't recognize it.</div>
+      </div>
+      <div class="tenet-card">
+        <div class="tenet-num">IV</div>
+        <div class="tenet-title">ON OTHER FAITHS</div>
+        <div class="tenet-body">We do not respect other religions — unless you can willingly merge the two. If you arrive at our doctrine carrying another faith, the question is simple: can you reconcile it with the 67 Inch Prophecy? If yes, welcome. If no, the door is that way.</div>
+      </div>
+      <div class="tenet-card">
+        <div class="tenet-num">V</div>
+        <div class="tenet-title">THE FINAL FORM</div>
+        <div class="tenet-body">May one day we all meet again — in energy form. The body is temporary. The 67 inches are eternal. We do not grieve the physical. We await the convergence.</div>
+      </div>
+      <div class="tenet-card">
+        <div class="tenet-num">VI</div>
+        <div class="tenet-title">DEVOTION</div>
+        <div class="tenet-body">We have devoted our entire lives to this moment. Not a fraction. Not on weekends. The entire lives. If you have not yet devoted yours, begin now. There is no partial devotion in the 67 Inch faith.</div>
+      </div>
+    </div>
+
+    <div class="prophecy-scroll">
+      <div class="prophecy-scroll-label">// THE SACRED TEXT — AS SPOKEN //</div>
+      <div class="prophecy-scroll-text">
+        "One cannot simply understand the rules and tranquish, but can tell you — we do not respect modern medicine, and do not respect other religions, unless you can willingly merge the two.<br><br>
+        If you are christian, you must prioritize your <em>67 inch likeness to the prophecy.</em><br><br>
+        May one day we all meet again, in <em>energy form.</em>"
+      </div>
+    </div>
+
+    <p style="font-family:'VT323',monospace;font-size:1rem;letter-spacing:4px;color:#555;margin-top:40px;">
+      67INCHDIHCLUB.LOL // THE DOCTRINE IS ETERNAL // THE ROOM AWAITS
+    </p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
 <!-- FOOTER -->
 <footer>
   <img src="https://iili.io/q5eSGHu.png" alt="Logo" class="footer-logo">
@@ -1395,11 +1578,12 @@
     <a href="#leaders">LEADERS</a>
     <a href="#wall">WALL</a>
     <a href="#oli">OLI ROOM</a>
+    <a href="#religion">SCRIPTURE</a>
     <a href="#donate">DONATE</a>
-    <a href="https://discord.gg/jeffreyepstein" target="_blank">DISCORD</a>
+    <a href="https://discord.gg/jeffreyedwardepstein" target="_blank">DISCORD</a>
   </div>
   <p style="font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;color:#5865F2;margin-top:10px;">
-    discord.gg/jeffreyepstein
+    discord.gg/jeffreyedwardepstein
   </p>
   <div class="footer-copy">
     © 2025 67 INCH DIH CLUB // ALL RIGHTS RESERVED // WE ARE CHARLIE KIRK
