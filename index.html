@@ -2408,6 +2408,9 @@
 
     function gStartCountdown(endMs, elId, onEnd) {
       const el = $(elId);
+      // endMs may be a unix timestamp in ms (>1e12) or seconds — normalise to ms
+      if(endMs < 1e12) endMs = endMs * 1000;
+      if(!endMs || isNaN(endMs)) endMs = Date.now() + 600000; // fallback 10 min
       function tick() {
         const rem = Math.max(0, endMs - Date.now());
         const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
@@ -2511,8 +2514,9 @@
       const d = await res.json();
       $('g-lb-word').textContent = d.word||'---';
       if(gCountdownTimer) clearInterval(gCountdownTimer);
-      const ms = gParseTime(d.nextWordIn);
-      gCountdownTimer = gStartCountdown(Date.now()+ms,'g-countdown',()=>location.reload());
+      // prefer expiresAt (epoch ms) over the string nextWordIn
+      const endMs = d.expiresAt || (d.nextWordIn ? Date.now() + gParseTime(d.nextWordIn) : Date.now() + 600000);
+      gCountdownTimer = gStartCountdown(endMs,'g-countdown',()=>location.reload());
       const el = $('g-lb-entries');
       if(!d.leaderboard||d.leaderboard.length===0){
         el.innerHTML='<div class="g-empty">NO WINNERS YET — BE THE FIRST</div>'; return;
@@ -2641,15 +2645,24 @@
     }
 
     async function gSubmitResult(won,attempts){
-      const res=await fetch(`${G_WORKER}/api/game/submit`,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint,guesses:gGuesses,won,attempts})});
-      const d=await res.json();
-      if(d.success){
-        gStats=d.stats;
-        const g2=await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
-        const gd=await g2.json();
-        gShowDone({word:gTargetWord,won,attempts,guesses:gGuesses},gd.expiresAt);
+      try {
+        const res=await fetch(`${G_WORKER}/api/game/submit`,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint,guesses:gGuesses,won,attempts})});
+        const d=await res.json();
+        if(d.success) gStats=d.stats||gStats;
+        // use expiresAt from submit response if available, else fetch leaderboard for it
+        let expiresAt = d.expiresAt;
+        if(!expiresAt){
+          try {
+            const lb=await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+            const lbd=await lb.json();
+            expiresAt = lbd.expiresAt || Date.now()+600000;
+          } catch(e){ expiresAt = Date.now()+600000; }
+        }
+        gShowDone({word:gTargetWord,won,attempts,guesses:gGuesses},expiresAt);
+      } catch(e){
+        // network error — still show done screen with fallback timer
+        gShowDone({word:gTargetWord,won,attempts,guesses:gGuesses},Date.now()+600000);
       }
     }
 
@@ -2674,16 +2687,19 @@
     async function gLoadPersonalRank(){
       const res=await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
       const d=await res.json();
-      const me=d.leaderboard.find(e=>e.name===gUser.name);
+      // match by name case-insensitively
+      const myName = gUser.name.toLowerCase();
+      const me=d.leaderboard.find(e=>e.name.toLowerCase()===myName);
       const el=$('g-personal-rank');
       if(me){
+        const rank = me.rank || (d.leaderboard.indexOf(me)+1);
         el.innerHTML=`<div class="g-lb-entry top3">
-          <div class="g-rank ${me.rank===1?'gold':me.rank===2?'silver':me.rank===3?'bronze':''}">${me.rank}</div>
+          <div class="g-rank ${rank===1?'gold':rank===2?'silver':rank===3?'bronze':''}">${rank}</div>
           <div class="g-player">YOU</div>
           <div class="g-tries">${me.attempts} ${me.attempts===1?'TRY':'TRIES'}</div>
         </div>`;
       } else {
-        el.innerHTML='<div class="g-empty">COMPLETE THE WORD TO SEE YOUR RANK</div>';
+        el.innerHTML='<div class="g-empty">NOT ON THE BOARD YET</div>';
       }
     }
 
