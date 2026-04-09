@@ -1757,8 +1757,7 @@
         <div id="g-lb-content">
           <div class="g-lb-box">
             <div class="g-lb-header">
-              <h3>🏆 CURRENT WORD</h3>
-              <span class="g-lb-word" id="g-lb-word">...</span>
+              <h3>🏆 CURRENT WORD LEADERBOARD</h3>
             </div>
             <div id="g-lb-entries"><div class="g-empty">NO WINNERS YET — BE THE FIRST</div></div>
           </div>
@@ -2380,6 +2379,7 @@
     let gGuesses = [], gStats = {games:0, won:0, streak:0};
     let gCountdownTimer = null, gDoneCountdownTimer = null;
     let gFingerprint = '';
+    let gPlayedWordId = null; // tracks which word the user has already completed this session
 
     // Sections
     const $ = id => document.getElementById(id);
@@ -2474,8 +2474,13 @@
         body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
       const d = await res.json();
       if(d.error==='VPN detected'){ gShowError('Access Denied',d.message); return; }
-      if(d.status==='completed'&&d.previousGame) gShowDone(d.previousGame,d.expiresAt);
-      else gShowLb();
+      if(d.status==='completed' && d.previousGame){
+        gPlayedWordId = d.wordId; // lock out this rotation
+        gShowDone(d.previousGame, d.expiresAt);
+      } else {
+        gPlayedWordId = null;
+        gShowLb();
+      }
     }
 
     function gShowError(title,msg) {
@@ -2512,9 +2517,8 @@
     async function gLoadLb() {
       const res = await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); 
       const d = await res.json();
-      $('g-lb-word').textContent = d.word||'---';
+      // deliberately NOT displaying d.word — players shouldn't see it
       if(gCountdownTimer) clearInterval(gCountdownTimer);
-      // prefer expiresAt (epoch ms) over the string nextWordIn
       const endMs = d.expiresAt || (d.nextWordIn ? Date.now() + gParseTime(d.nextWordIn) : Date.now() + 600000);
       gCountdownTimer = gStartCountdown(endMs,'g-countdown',()=>location.reload());
       const el = $('g-lb-entries');
