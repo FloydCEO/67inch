@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>67Guessr</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #121213;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.2rem;
+        }
+        
+        .subtitle {
+            color: #818384;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        #auth-section, #game-section {
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-box {
+            background: #3a3a3c;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .auth-box h2 {
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .auth-box p {
+            color: #818384;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .warning {
+            background: #b59f3b;
+            color: #000;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .g_id_signin {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #3a3a3c;
+            border-radius: 8px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #538d4e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .user-details h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .user-details p {
+            margin: 5px 0 0;
+            color: #818384;
+            font-size: 0.85rem;
+        }
+        
+        .logout-btn {
+            background: #ff4444;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn:hover {
+            background: #ff6666;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            background: #538d4e;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        
+        button:hover {
+            background: #6aaa64;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #818384;
+        }
+        
+        .stats span {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        #game-board {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .row {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .tile {
+            width: 62px;
+            height: 62px;
+            border: 2px solid #3a3a3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: transform 0.1s;
+            background: #121213;
+            color: #fff;
+        }
+        
+        .tile.filled {
+            border-color: #565758;
+            animation: pop 0.1s ease;
+        }
+        
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .tile.flip {
+            animation: flip 0.5s ease forwards;
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(-90deg); }
+            100% { transform: rotateX(0); }
+        }
+        
+        .tile.correct {
+            background-color: #538d4e;
+            border-color: #538d4e;
+        }
+        
+        .tile.present {
+            background-color: #b59f3b;
+            border-color: #b59f3b;
+        }
+        
+        .tile.absent {
+            background-color: #3a3a3c;
+            border-color: #3a3a3c;
+        }
+        
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .keyboard-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .key {
+            height: 58px;
+            min-width: 43px;
+            padding: 0 8px;
+            border: none;
+            border-radius: 4px;
+            background: #818384;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            flex: 1;
+            max-width: 70px;
+        }
+        
+        .key:hover {
+            background: #a0a1a2;
+        }
+        
+        .key.wide {
+            min-width: 65px;
+            flex: 1.5;
+            max-width: 100px;
+            font-size: 0.8rem;
+        }
+        
+        .key.correct { background: #538d4e; }
+        .key.present { background: #b59f3b; }
+        .key.absent { background: #3a3a3c; }
+        
+        .message {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .message.error {
+            background: #ff4444;
+            color: white;
+        }
+        
+        .message.success {
+            background: #538d4e;
+            color: white;
+        }
+        
+        .message.info {
+            background: #818384;
+            color: white;
+        }
+        
+        .message.warning {
+            background: #b59f3b;
+            color: #000;
+        }
+        
+        #new-game-btn {
+            margin-top: 20px;
+            background: #818384;
+        }
+        
+        #new-game-btn:hover {
+            background: #a0a1a2;
+        }
+        
+        .word-reveal {
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        
+        .error-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .error-screen h2 {
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>67GUESSR</h1>
+    <p class="subtitle">One account per device • No VPNs</p>
+    
+    <div id="auth-section">
+        <div class="auth-box">
+            <h2>Sign in to Play</h2>
+            <div class="warning">
+                ⚠️ One Google account per device. VPN usage is blocked.
+            </div>
+            <p>Your device will be permanently linked to your Google account</p>
+            
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+        </div>
+    </div>
+    
+    <div id="error-section" class="hidden">
+        <div class="auth-box error-screen">
+            <h2 id="error-title">Access Denied</h2>
+            <p id="error-message"></p>
+            <button onclick="location.reload()">Try Again</button>
+        </div>
+    </div>
+    
+    <div id="game-section" class="hidden">
+        <div class="user-info">
+            <div class="user-avatar" id="user-initial">?</div>
+            <div class="user-details">
+                <h3 id="user-name">Player</h3>
+                <p id="user-email">email@example.com</p>
+            </div>
+        </div>
+        
+        <div class="stats">
+            Games: <span id="games-played">0</span> | 
+            Won: <span id="games-won">0</span> | 
+            Streak: <span id="current-streak">0</span>
+        </div>
+        
+        <div id="game-board"></div>
+        
+        <div class="keyboard" id="keyboard"></div>
+        
+        <button id="new-game-btn" class="hidden" onclick="newGame()">New Word</button>
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+
+    <div id="message-container"></div>
+
+    <script>
+        // REPLACE WITH YOUR ACTUAL WORKER URL
+        const WORKER_URL = 'https://67.lillykobusiness69.workers.dev';
+        
+        // REPLACE WITH YOUR GOOGLE CLIENT ID
+        const GOOGLE_CLIENT_ID = '353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com';
+        
+        // Update the Google button with your client ID
+        document.getElementById('g_id_onload').setAttribute('data-client_id', GOOGLE_CLIENT_ID);
+        
+        let currentUser = null;
+        let targetWord = '';
+        let currentRow = 0;
+        let currentTile = 0;
+        let gameOver = false;
+        let userStats = { games: 0, won: 0, streak: 0 };
+        let isAnimating = false;
+        let deviceFingerprint = '';
+        
+        const keyboardLayout = [
+            ['Q','W','E','R','T','Y','U','I','O','P'],
+            ['A','S','D','F','G','H','J','K','L'],
+            ['ENTER','Z','X','C','V','B','N','M','BACKSPACE']
+        ];
+        
+        // Generate device fingerprint
+        function generateDeviceFingerprint() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                navigator.platform,
+                screen.colorDepth,
+                screen.availWidth + 'x' + screen.availHeight,
+                new Date().getTimezoneOffset(),
+                !!window.sessionStorage,
+                !!window.localStorage,
+                navigator.hardwareConcurrency || 'unknown',
+                navigator.deviceMemory || 'unknown'
+            ];
+            
+            // Create hash
+            const str = components.join('###');
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            
+            return 'fp_' + Math.abs(hash).toString(16);
+        }
+        
+        // Initialize
+        deviceFingerprint = generateDeviceFingerprint();
+        
+        // Check for stored session
+        window.onload = function() {
+            const savedSession = localStorage.getItem('67guessr_session');
+            if (savedSession) {
+                try {
+                    const session = JSON.parse(savedSession);
+                    if (session.googleId && session.deviceFingerprint === deviceFingerprint) {
+                        restoreSession(session);
+                    } else {
+                        localStorage.removeItem('67guessr_session');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('67guessr_session');
+                }
+            }
+        };
+        
+        async function restoreSession(session) {
+            currentUser = session;
+            updateUserDisplay();
+            await loadUserData();
+            showGame();
+        }
+        
+        // Google Sign In Handler
+        async function handleGoogleSignIn(response) {
+            try {
+                // Decode JWT to get user info
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                
+                const authData = {
+                    googleId: payload.sub,
+                    email: payload.email,
+                    name: payload.name,
+                    picture: payload.picture,
+                    idToken: response.credential,
+                    deviceFingerprint: deviceFingerprint
+                };
+                
+                // Send to worker for verification
+                const res = await fetch(`${WORKER_URL}/api/auth/google`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(authData)
+                });
+                
+                const data = await res.json();
+                
+                if (!data.success) {
+                    showError(data.error || 'Authentication failed', data.message);
+                    return;
+                }
+                
+                // Save session
+                currentUser = {
+                    googleId: payload.sub,
+                    email: payload.email,
+                    name: payload.name,
+                    deviceFingerprint: deviceFingerprint
+                };
+                
+                localStorage.setItem('67guessr_session', JSON.stringify(currentUser));
+                
+                userStats = data.user.stats || { games: 0, won: 0, streak: 0 };
+                updateStats();
+                updateUserDisplay();
+                showGame();
+                
+            } catch (e) {
+                showError('Sign-in Error', 'Failed to authenticate. Please try again.');
+                console.error(e);
+            }
+        }
+        
+        function updateUserDisplay() {
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-email').textContent = currentUser.email;
+            document.getElementById('user-initial').textContent = currentUser.name.charAt(0).toUpperCase();
+        }
+        
+        function showError(title, message) {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('game-section').classList.add('hidden');
+            document.getElementById('error-section').classList.remove('hidden');
+            document.getElementById('error-title').textContent = title;
+            document.getElementById('error-message').textContent = message;
+        }
+        
+        function showGame() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('error-section').classList.add('hidden');
+            document.getElementById('game-section').classList.remove('hidden');
+            newGame();
+        }
+        
+        function logout() {
+            localStorage.removeItem('67guessr_session');
+            currentUser = null;
+            location.reload();
+        }
+        
+        // Game functions
+        function initKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            keyboard.innerHTML = '';
+            
+            keyboardLayout.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
+                
+                row.forEach(key => {
+                    const btn = document.createElement('button');
+                    btn.className = 'key' + (key.length > 1 ? ' wide' : '');
+                    btn.textContent = key === 'BACKSPACE' ? '←' : key;
+                    btn.onclick = () => handleKey(key);
+                    btn.id = `key-${key}`;
+                    rowDiv.appendChild(btn);
+                });
+                
+                keyboard.appendChild(rowDiv);
+            });
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (gameOver || !currentUser || isAnimating) return;
+            
+            if (e.key === 'Enter') handleKey('ENTER');
+            else if (e.key === 'Backspace') handleKey('BACKSPACE');
+            else if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) handleKey(e.key.toUpperCase());
+        });
+        
+        function handleKey(key) {
+            if (gameOver || isAnimating || !currentUser) return;
+            
+            if (key === 'ENTER') {
+                submitGuess();
+            } else if (key === 'BACKSPACE') {
+                if (currentTile > 0) {
+                    currentTile--;
+                    updateTile(currentRow, currentTile, '');
+                }
+            } else if (currentTile < targetWord.length && key.length === 1) {
+                updateTile(currentRow, currentTile, key);
+                currentTile++;
+            }
+        }
+        
+        function updateTile(row, col, letter) {
+            const tile = document.getElementById(`tile-${row}-${col}`);
+            tile.textContent = letter;
+            tile.classList.toggle('filled', letter !== '');
+        }
+        
+        function createBoard(wordLength) {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                for (let j = 0; j < wordLength; j++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${i}-${j}`;
+                    row.appendChild(tile);
+                }
+                
+                board.appendChild(row);
+            }
+        }
+        
+        async function loadUserData() {
+            try {
+                const response = await fetch(`${WORKER_URL}/api/user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        googleId: currentUser.googleId,
+                        deviceFingerprint: deviceFingerprint
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success && data.stats) {
+                    userStats = data.stats;
+                    updateStats();
+                }
+            } catch (e) {
+                console.error('Failed to load user data:', e);
+            }
+        }
+        
+        async function newGame() {
+            try {
+                const response = await fetch(`${WORKER_URL}/api/game`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        googleId: currentUser.googleId,
+                        deviceFingerprint: deviceFingerprint
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    if (data.error === 'VPN detected' || data.error === 'Device mismatch') {
+                        showError('Access Denied', data.message);
+                        return;
+                    }
+                    showMessage(data.error, 'error');
+                    return;
+                }
+                
+                targetWord = data.word.toUpperCase().replace(/\s/g, '');
+                
+                currentRow = 0;
+                currentTile = 0;
+                gameOver = false;
+                isAnimating = false;
+                
+                createBoard(targetWord.length);
+                initKeyboard();
+                
+                document.getElementById('new-game-btn').classList.add('hidden');
+                clearMessage();
+                
+            } catch (e) {
+                showMessage('Connection error', 'error');
+            }
+        }
+        
+        async function submitGuess() {
+            if (isAnimating || !currentUser) return;
+            
+            const guess = [];
+            for (let i = 0; i < targetWord.length; i++) {
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                guess.push(tile.textContent);
+            }
+            
+            const guessWord = guess.join('');
+            
+            if (guessWord.length < targetWord.length) {
+                showMessage('Not enough letters', 'error');
+                return;
+            }
+            
+            isAnimating = true;
+            
+            const evaluation = evaluateGuess(guessWord);
+            
+            for (let i = 0; i < targetWord.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                const key = document.getElementById(`key-${guess[i]}`);
+                
+                tile.classList.add('flip');
+                
+                setTimeout(() => {
+                    tile.classList.add(evaluation[i]);
+                    
+                    if (key) {
+                        const currentClass = key.classList.contains('correct') ? 'correct' : 
+                                           key.classList.contains('present') ? 'present' : 
+                                           key.classList.contains('absent') ? 'absent' : null;
+                        
+                        if (!currentClass || 
+                            (currentClass === 'absent' && (evaluation[i] === 'present' || evaluation[i] === 'correct')) ||
+                            (currentClass === 'present' && evaluation[i] === 'correct')) {
+                            key.classList.remove('correct', 'present', 'absent');
+                            key.classList.add(evaluation[i]);
+                        }
+                    }
+                }, 250);
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            isAnimating = false;
+            
+            if (guessWord === targetWord) {
+                gameOver = true;
+                userStats.games++;
+                userStats.won++;
+                userStats.streak++;
+                updateStats();
+                await saveUserData(true);
+                
+                showMessage('🎉 GENIUS!', 'success');
+                document.getElementById('new-game-btn').classList.remove('hidden');
+                
+            } else if (currentRow === 5) {
+                gameOver = true;
+                userStats.games++;
+                userStats.streak = 0;
+                updateStats();
+                await saveUserData(false);
+                
+                showMessage(`The word was ${targetWord}`, 'error');
+                document.getElementById('new-game-btn').classList.remove('hidden');
+            }
+            
+            currentRow++;
+            currentTile = 0;
+        }
+        
+        function evaluateGuess(guess) {
+            const result = new Array(targetWord.length).fill('absent');
+            const targetLetters = targetWord.split('');
+            const guessLetters = guess.split('');
+            
+            for (let i = 0; i < targetWord.length; i++) {
+                if (guessLetters[i] === targetLetters[i]) {
+                    result[i] = 'correct';
+                    targetLetters[i] = null;
+                    guessLetters[i] = null;
+                }
+            }
+            
+            for (let i = 0; i < targetWord.length; i++) {
+                if (guessLetters[i] !== null) {
+                    const index = targetLetters.indexOf(guessLetters[i]);
+                    if (index !== -1) {
+                        result[i] = 'present';
+                        targetLetters[index] = null;
+                    }
+                }
+            }
+            
+            return result;
+        }
+        
+        function updateStats() {
+            document.getElementById('games-played').textContent = userStats.games;
+            document.getElementById('games-won').textContent = userStats.won;
+            document.getElementById('current-streak').textContent = userStats.streak;
+        }
+        
+        async function saveUserData(won) {
+            try {
+                await fetch(`${WORKER_URL}/api/user/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        googleId: currentUser.googleId,
+                        deviceFingerprint: deviceFingerprint,
+                        stats: userStats
+                    })
+                });
+            } catch (e) {
+                console.error('Failed to save:', e);
+            }
+        }
+        
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="message ${type}">${text}</div>`;
+            
+            if (type !== 'success' && type !== 'error') {
+                setTimeout(clearMessage, 2000);
+            }
+        }
+        
+        function clearMessage() {
+            document.getElementById('message-container').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
