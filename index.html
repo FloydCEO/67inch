@@ -8,6 +8,7 @@
 <link rel="shortcut icon" type="image/png" href="https://iili.io/q5eSGHu.png">
 <link rel="apple-touch-icon" href="https://iili.io/q5eSGHu.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bangers&family=Permanent+Marker&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root {
     --red: #ff1a1a;
@@ -1133,6 +1134,380 @@
   .mt-4 { margin-top: 1rem; }
   .mb-4 { margin-bottom: 1rem; }
 
+  /* ===================== GUESSR ===================== */
+  .guessr-section {
+    background: var(--gray);
+    padding: 80px 20px;
+    border-top: 4px solid var(--yellow);
+    border-bottom: 4px solid var(--yellow);
+  }
+  @media(max-width:560px){ .guessr-section { padding: 50px 16px; } }
+  .guessr-inner { max-width: 560px; margin: 0 auto; }
+
+  #guessr-app {
+    margin-top: 30px;
+    font-family: 'Oswald', sans-serif;
+    color: var(--white);
+  }
+
+  .g-timer {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #538d4e;
+    color: #fff;
+    padding: 8px 18px;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    margin: 0 auto 20px;
+    width: fit-content;
+    clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  }
+  .g-timer.show { display: flex; }
+  .g-timer.cooldown { background: var(--yellow); color: #000; }
+
+  /* AUTH BOX */
+  .g-auth-box {
+    background: #111;
+    border: 2px solid #333;
+    padding: 36px 30px;
+    text-align: center;
+  }
+  .g-auth-box h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+  .g-auth-box p {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  .g-warning {
+    background: var(--yellow);
+    color: #000;
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  .g-google-wrap { display: flex; justify-content: center; margin: 20px 0; }
+
+  /* ERROR / LOADING */
+  .g-error-box {
+    background: #111;
+    border: 2px solid var(--red);
+    padding: 36px 30px;
+    text-align: center;
+  }
+  .g-error-box h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+  .g-error-box p {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .g-loading {
+    text-align: center;
+    padding: 40px;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    letter-spacing: 4px;
+    color: #555;
+  }
+
+  /* NAV TABS */
+  .g-nav { display: flex; gap: 8px; margin-bottom: 20px; }
+  .g-nav-btn {
+    flex: 1;
+    padding: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    background: #111;
+    border: 2px solid #333;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.15s;
+    clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  }
+  .g-nav-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .g-nav-btn.active { background: #538d4e; border-color: #538d4e; color: #fff; }
+
+  /* USER BAR */
+  .g-user-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #111;
+    border: 2px solid #222;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+  .g-avatar {
+    width: 46px; height: 46px;
+    background: #538d4e;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .g-user-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .g-user-stats {
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #666;
+    margin-top: 2px;
+  }
+  .g-logout {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #333;
+    color: #555;
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: auto;
+    clip-path: none;
+    border-radius: 0;
+    text-transform: uppercase;
+  }
+  .g-logout:hover { border-color: var(--red); color: var(--red); background: transparent; }
+
+  /* LEADERBOARD */
+  .g-lb-box {
+    background: #111;
+    border: 2px solid #222;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .g-lb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #2a2a2a;
+    margin-bottom: 16px;
+  }
+  .g-lb-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .g-lb-word {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: #538d4e;
+  }
+  .g-lb-entry {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    transition: border-color 0.15s;
+  }
+  .g-lb-entry:hover { border-color: #333; }
+  .g-lb-entry.top3 { border-left: 3px solid #538d4e; background: linear-gradient(90deg,#538d4e18,#0a0a0a); }
+  .g-rank {
+    width: 36px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: #555;
+  }
+  .g-rank.gold { color: #ffd700; }
+  .g-rank.silver { color: #c0c0c0; }
+  .g-rank.bronze { color: #cd7f32; }
+  .g-player { flex: 1; font-family: 'Oswald', sans-serif; font-size: 0.95rem; letter-spacing: 1px; }
+  .g-tries { color: #538d4e; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; }
+  .g-empty {
+    text-align: center;
+    padding: 30px;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    color: #444;
+  }
+
+  /* HISTORY */
+  .g-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+  .g-history-word { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; color: var(--white); }
+  .g-history-winner { font-family: 'VT323', monospace; letter-spacing: 2px; color: #538d4e; font-size: 0.95rem; }
+
+  /* PLAY BTN */
+  .g-play-btn {
+    width: 100%;
+    padding: 15px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 6px;
+    border: none;
+    background: var(--red);
+    color: var(--yellow);
+    cursor: pointer;
+    transition: all 0.15s;
+    clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+    box-shadow: 4px 4px 0 #800;
+    margin-top: 16px;
+  }
+  .g-play-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #800; background: #ff3333; }
+  .g-play-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* GAME BOARD */
+  #g-board {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .g-row { display: flex; gap: 5px; }
+  .g-tile {
+    width: 62px; height: 62px;
+    border: 2px solid #2a2a2a;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    background: #0a0a0a;
+    color: var(--white);
+    transition: border-color 0.1s;
+  }
+  .g-tile.filled { border-color: #444; animation: gpop 0.1s ease; }
+  @keyframes gpop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+  .g-tile.flip { animation: gflip 0.5s ease forwards; }
+  @keyframes gflip { 0%{transform:rotateX(0)} 50%{transform:rotateX(-90deg)} 100%{transform:rotateX(0)} }
+  .g-tile.correct { background: #538d4e; border-color: #538d4e; }
+  .g-tile.present { background: var(--yellow); border-color: var(--yellow); color: #000; }
+  .g-tile.absent  { background: #3a3a3c; border-color: #3a3a3c; }
+
+  /* KEYBOARD */
+  .g-keyboard { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; }
+  .g-kb-row { display: flex; gap: 6px; justify-content: center; width: 100%; }
+  .g-key {
+    height: 54px;
+    min-width: 40px;
+    padding: 0 6px;
+    border: none;
+    background: #555;
+    color: var(--white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    flex: 1;
+    max-width: 66px;
+    clip-path: polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+  }
+  .g-key:hover { background: #777; }
+  .g-key.wide { min-width: 58px; flex: 1.5; max-width: 90px; font-size: 0.75rem; }
+  .g-key.correct { background: #538d4e; }
+  .g-key.present { background: var(--yellow); color: #000; }
+  .g-key.absent  { background: #2a2a2a; }
+
+  /* COMPLETED SCREEN */
+  .g-completed-box {
+    background: #111;
+    border: 2px solid #333;
+    padding: 28px;
+    text-align: center;
+  }
+  .g-result {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .g-result.won { background: #538d4e22; color: #538d4e; border: 2px solid #538d4e44; }
+  .g-result.lost { background: #ff444422; color: var(--red); border: 2px solid #ff444444; }
+  .g-word-reveal {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 8px;
+    color: var(--yellow);
+    text-shadow: 3px 3px 0 var(--red);
+    margin: 16px 0;
+  }
+  .g-next-timer {
+    background: #1a1500;
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    padding: 12px 16px;
+    margin: 16px 0;
+  }
+  .g-recap { margin: 16px 0; }
+  .g-recap-row { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
+  .g-recap-tile {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+  }
+  .g-recap-tile.correct { background: #538d4e; color: #fff; }
+  .g-recap-tile.present { background: var(--yellow); color: #000; }
+  .g-recap-tile.absent  { background: #2a2a2a; color: #fff; }
+
+  /* MSG TOAST (guessr) */
+  .g-msg {
+    position: fixed;
+    top: 80px; left: 50%; transform: translateX(-50%);
+    padding: 14px 24px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    z-index: 10001;
+    pointer-events: none;
+    animation: fadeIn 0.3s ease;
+    clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+    white-space: nowrap;
+  }
+  .g-msg.error   { background: var(--red); color: var(--yellow); }
+  .g-msg.success { background: #538d4e; color: #fff; }
+  .g-msg.info    { background: #555; color: #fff; }
+
   /* ===================== MOBILE ===================== */
   @media(max-width: 560px) {
     .news-headline { font-size: 1.4rem; }
@@ -1172,6 +1547,7 @@
 <nav>
   <a href="#news">NEWS</a>
   <a href="#leaders">LEADERS</a>
+  <a href="#guessr">67GUESSR</a>
   <a href="#wall">WALL</a>
   <a href="#oli">THE OLI ROOM</a>
   <a href="#religion">SCRIPTURE</a>
@@ -1312,6 +1688,128 @@
       </a>
 
     </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 67GUESSR -->
+<div class="guessr-section" id="guessr">
+  <div class="guessr-inner">
+    <p class="section-label">WORD GAME // NEW WORD EVERY 10 MINUTES</p>
+    <h2 class="section-title">67GUESSR</h2>
+
+    <div id="guessr-app">
+
+      <!-- TIMER BAR -->
+      <div class="g-timer" id="g-timer">⏱ NEXT WORD IN: <span id="g-countdown">10:00</span></div>
+
+      <!-- AUTH -->
+      <div id="g-auth">
+        <div class="g-auth-box">
+          <h2>SIGN IN TO PLAY</h2>
+          <div class="g-warning">⚠ ONE GOOGLE ACCOUNT PER DEVICE // NO VPNs</div>
+          <p>YOUR DEVICE WILL BE PERMANENTLY LINKED TO YOUR GOOGLE ACCOUNT</p>
+          <div id="g_id_onload"
+               data-client_id="353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com"
+               data-callback="gHandleSignIn"
+               data-auto_prompt="false"></div>
+          <div class="g-google-wrap">
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="filled_black"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+      <div id="g-error" style="display:none;">
+        <div class="g-error-box">
+          <h2 id="g-error-title">ACCESS DENIED</h2>
+          <p id="g-error-msg"></p>
+          <button class="g-play-btn" onclick="location.reload()">TRY AGAIN</button>
+        </div>
+      </div>
+
+      <!-- LOADING -->
+      <div id="g-loading" style="display:none;">
+        <div class="g-loading">LOADING...</div>
+      </div>
+
+      <!-- LEADERBOARD VIEW -->
+      <div id="g-lb-view" style="display:none;">
+        <div class="g-nav">
+          <button class="g-nav-btn active" id="g-tab-lb" onclick="gShowLbTab()">🏆 LEADERBOARD</button>
+          <button class="g-nav-btn" id="g-tab-hist" onclick="gShowHistTab()">📜 HISTORY</button>
+        </div>
+        <div class="g-user-bar">
+          <div class="g-avatar" id="g-lb-avatar">?</div>
+          <div>
+            <div class="g-user-name" id="g-lb-name">PLAYER</div>
+            <div class="g-user-stats" id="g-lb-stats">GAMES: 0 | WON: 0 | STREAK: 0</div>
+          </div>
+          <button class="g-logout" onclick="gLogout()">LOG OUT</button>
+        </div>
+        <div id="g-lb-content">
+          <div class="g-lb-box">
+            <div class="g-lb-header">
+              <h3>🏆 CURRENT WORD</h3>
+              <span class="g-lb-word" id="g-lb-word">...</span>
+            </div>
+            <div id="g-lb-entries"><div class="g-empty">NO WINNERS YET — BE THE FIRST</div></div>
+          </div>
+        </div>
+        <div id="g-hist-content" style="display:none;">
+          <div class="g-lb-box">
+            <div class="g-lb-header"><h3>📜 PAST WORDS</h3></div>
+            <div id="g-hist-entries"><div class="g-empty">NO HISTORY AVAILABLE</div></div>
+          </div>
+        </div>
+        <button class="g-play-btn" onclick="gStartGame()">▶ PLAY NOW</button>
+      </div>
+
+      <!-- GAME VIEW -->
+      <div id="g-game-view" style="display:none;">
+        <div class="g-nav">
+          <button class="g-nav-btn" onclick="gBackToLb()">🏆 LEADERBOARD</button>
+          <button class="g-nav-btn" onclick="gBackToHist()">📜 HISTORY</button>
+        </div>
+        <div class="g-user-bar">
+          <div class="g-avatar" id="g-game-avatar">?</div>
+          <div>
+            <div class="g-user-name" id="g-game-name">PLAYER</div>
+            <div class="g-user-stats" id="g-game-subtxt">GUESSING...</div>
+          </div>
+        </div>
+        <div id="g-board"></div>
+        <div class="g-keyboard" id="g-keyboard"></div>
+      </div>
+
+      <!-- COMPLETED VIEW -->
+      <div id="g-done-view" style="display:none;">
+        <div class="g-nav">
+          <button class="g-nav-btn" onclick="gBackToLb()">🏆 LEADERBOARD</button>
+          <button class="g-nav-btn" onclick="gBackToHist()">📜 HISTORY</button>
+        </div>
+        <div class="g-completed-box">
+          <div class="g-result" id="g-result-msg"></div>
+          <div class="g-word-reveal" id="g-done-word"></div>
+          <div class="g-recap" id="g-recap"></div>
+          <div class="g-next-timer">⏱ NEXT WORD IN: <span id="g-done-countdown">10:00</span></div>
+          <div class="g-lb-box" style="margin-top:16px;text-align:left;">
+            <div class="g-lb-header"><h3>🏆 YOUR RANK</h3></div>
+            <div id="g-personal-rank"><div class="g-empty">LOADING...</div></div>
+          </div>
+          <button class="g-play-btn" onclick="gBackToLb()">VIEW LEADERBOARD</button>
+          <button class="g-logout" style="margin-top:10px;width:100%;text-align:center;padding:10px;" onclick="gLogout()">SIGN OUT</button>
+        </div>
+      </div>
+
+    </div><!-- /guessr-app -->
   </div>
 </div>
 
@@ -1610,6 +2108,7 @@
   <div class="footer-links">
     <a href="#news">NEWS</a>
     <a href="#leaders">LEADERS</a>
+    <a href="#guessr">67GUESSR</a>
     <a href="#wall">WALL</a>
     <a href="#oli">OLI ROOM</a>
     <a href="#religion">SCRIPTURE</a>
@@ -1868,6 +2367,361 @@
   document.getElementById('verify-code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleVerify();
   });
+
+  /* ============================================================
+     67GUESSR — embedded game logic
+  ============================================================ */
+  (function() {
+    const G_WORKER = 'https://67.lillykobusiness69.workers.dev';
+    const G_CLIENT_ID = '353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com';
+
+    let gUser = null, gTargetWord = '', gWordId = null;
+    let gRow = 0, gTile = 0, gOver = false, gAnimating = false;
+    let gGuesses = [], gStats = {games:0, won:0, streak:0};
+    let gCountdownTimer = null, gDoneCountdownTimer = null;
+    let gFingerprint = '';
+
+    // Sections
+    const $ = id => document.getElementById(id);
+
+    function gFp() {
+      const c = [navigator.userAgent,navigator.language,navigator.platform,
+        screen.colorDepth,screen.availWidth+'x'+screen.availHeight,
+        new Date().getTimezoneOffset(),!!window.sessionStorage,!!window.localStorage,
+        navigator.hardwareConcurrency||'x'];
+      let h=0; const s=c.join('###');
+      for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}
+      return 'fp_'+Math.abs(h).toString(16);
+    }
+    gFingerprint = gFp();
+
+    function gShowOnly(id) {
+      ['g-auth','g-error','g-loading','g-lb-view','g-game-view','g-done-view']
+        .forEach(s => $(s).style.display = s===id ? '' : 'none');
+    }
+
+    function gTimerShow(show, cooldown=false) {
+      const el = $('g-timer');
+      el.classList.toggle('show', show);
+      el.classList.toggle('cooldown', cooldown);
+    }
+
+    function gStartCountdown(endMs, elId, onEnd) {
+      const el = $(elId);
+      function tick() {
+        const rem = Math.max(0, endMs - Date.now());
+        const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
+        el.textContent = m+':'+(s+'').padStart(2,'0');
+        if(rem<=0){ clearInterval(t); if(onEnd) onEnd(); }
+      }
+      tick();
+      const t = setInterval(tick,1000);
+      return t;
+    }
+
+    function gUpdateUserBar() {
+      if(!gUser) return;
+      const init = gUser.name.charAt(0).toUpperCase();
+      $('g-lb-avatar').textContent = init;
+      $('g-lb-name').textContent = gUser.name.toUpperCase();
+      $('g-lb-stats').textContent = `GAMES: ${gStats.games} | WON: ${gStats.won} | STREAK: ${gStats.streak}`;
+      $('g-game-avatar').textContent = init;
+      $('g-game-name').textContent = gUser.name.toUpperCase();
+    }
+
+    // Boot from saved session
+    window.addEventListener('load', function() {
+      const raw = localStorage.getItem('67guessr_session');
+      if(raw) {
+        try {
+          const s = JSON.parse(raw);
+          if(s.googleId && s.deviceFingerprint === gFingerprint) {
+            gUser = s; gRestoreSession();
+          } else { localStorage.removeItem('67guessr_session'); }
+        } catch(e) { localStorage.removeItem('67guessr_session'); }
+      }
+    });
+
+    async function gRestoreSession() {
+      gShowOnly('g-loading');
+      const res = await fetch(`${G_WORKER}/api/auth/google`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({googleId:gUser.googleId,email:gUser.email,name:gUser.name,deviceFingerprint:gFingerprint})});
+      const d = await res.json();
+      if(d.success){ gStats=d.user.stats||gStats; gCheckStatus(); }
+      else { gShowError(d.error||'Error',d.message||'Could not restore session.'); }
+    }
+
+    window.gHandleSignIn = async function(response) {
+      try {
+        const p = JSON.parse(atob(response.credential.split('.')[1]));
+        gShowOnly('g-loading');
+        const res = await fetch(`${G_WORKER}/api/auth/google`,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({googleId:p.sub,email:p.email,name:p.name,deviceFingerprint:gFingerprint})});
+        const d = await res.json();
+        if(!d.success){ gShowError(d.error||'Error',d.message||'Authentication failed.'); return; }
+        gUser = {googleId:p.sub,email:p.email,name:p.name,deviceFingerprint:gFingerprint};
+        localStorage.setItem('67guessr_session',JSON.stringify(gUser));
+        gStats = d.user.stats||gStats;
+        gCheckStatus();
+      } catch(e){ gShowError('Sign-in Error','Failed to authenticate.'); }
+    };
+
+    async function gCheckStatus() {
+      const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
+      const d = await res.json();
+      if(d.error==='VPN detected'){ gShowError('Access Denied',d.message); return; }
+      if(d.status==='completed'&&d.previousGame) gShowDone(d.previousGame,d.expiresAt);
+      else gShowLb();
+    }
+
+    function gShowError(title,msg) {
+      gShowOnly('g-error');
+      $('g-error-title').textContent = title.toUpperCase();
+      $('g-error-msg').textContent = msg;
+      gTimerShow(false);
+    }
+
+    // ── LEADERBOARD ──
+    async function gShowLb() {
+      gShowOnly('g-lb-view');
+      gTimerShow(true);
+      gUpdateUserBar();
+      gShowLbTab();
+      await gLoadLb();
+    }
+
+    window.gShowLbTab = function() {
+      $('g-tab-lb').classList.add('active');
+      $('g-tab-hist').classList.remove('active');
+      $('g-lb-content').style.display='';
+      $('g-hist-content').style.display='none';
+    };
+
+    window.gShowHistTab = async function() {
+      $('g-tab-lb').classList.remove('active');
+      $('g-tab-hist').classList.add('active');
+      $('g-lb-content').style.display='none';
+      $('g-hist-content').style.display='';
+      await gLoadHist();
+    };
+
+    async function gLoadLb() {
+      const res = await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); 
+      const d = await res.json();
+      $('g-lb-word').textContent = d.word||'---';
+      if(gCountdownTimer) clearInterval(gCountdownTimer);
+      const ms = gParseTime(d.nextWordIn);
+      gCountdownTimer = gStartCountdown(Date.now()+ms,'g-countdown',()=>location.reload());
+      const el = $('g-lb-entries');
+      if(!d.leaderboard||d.leaderboard.length===0){
+        el.innerHTML='<div class="g-empty">NO WINNERS YET — BE THE FIRST</div>'; return;
+      }
+      el.innerHTML = d.leaderboard.map((e,i)=>`
+        <div class="g-lb-entry ${i<3?'top3':''}">
+          <div class="g-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+          <div class="g-player">${gEsc(e.name)}</div>
+          <div class="g-tries">${e.attempts} ${e.attempts===1?'TRY':'TRIES'}</div>
+        </div>`).join('');
+    }
+
+    async function gLoadHist() {
+      const res = await fetch(`${G_WORKER}/api/leaderboard/history`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      const d = await res.json();
+      const el = $('g-hist-entries');
+      if(!d.history||d.history.length===0){ el.innerHTML='<div class="g-empty">NO HISTORY AVAILABLE</div>'; return; }
+      el.innerHTML = d.history.map(h=>`
+        <div class="g-history-item">
+          <span class="g-history-word">${gEsc(h.word)}</span>
+          <span class="g-history-winner">${gEsc(h.winner.name)} (${h.bestScore} TRIES) · ${h.totalPlayers} PLAYERS</span>
+        </div>`).join('');
+    }
+
+    // ── START GAME ──
+    window.gStartGame = async function() {
+      const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
+      const d = await res.json();
+      if(d.status==='completed'){ gShowDone(d.previousGame,d.expiresAt); return; }
+      gTargetWord = d.word.toUpperCase().replace(/\s/g,'');
+      gWordId = d.wordId;
+      gRow=0; gTile=0; gOver=false; gAnimating=false; gGuesses=[];
+      gShowOnly('g-game-view');
+      gTimerShow(true);
+      gUpdateUserBar();
+      $('g-game-subtxt').textContent = 'GUESS THE WORD';
+      gBuildBoard(gTargetWord.length);
+      gBuildKeyboard();
+      if(gCountdownTimer) clearInterval(gCountdownTimer);
+      gCountdownTimer = gStartCountdown(d.expiresAt,'g-countdown',()=>location.reload());
+    };
+
+    window.gBackToLb = function(){ gShowLb(); };
+    window.gBackToHist = function(){ gShowLb(); setTimeout(gShowHistTab,50); };
+
+    // ── BOARD ──
+    function gBuildBoard(len) {
+      const b = $('g-board'); b.innerHTML='';
+      for(let r=0;r<6;r++){
+        const row=document.createElement('div'); row.className='g-row';
+        for(let c=0;c<len;c++){
+          const t=document.createElement('div');
+          t.className='g-tile'; t.id=`gt-${r}-${c}`;
+          row.appendChild(t);
+        }
+        b.appendChild(row);
+      }
+    }
+
+    // ── KEYBOARD ──
+    const G_KEYS=[['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['ENTER','Z','X','C','V','B','N','M','BACKSPACE']];
+    function gBuildKeyboard(){
+      const kb=$('g-keyboard'); kb.innerHTML='';
+      G_KEYS.forEach(row=>{
+        const r=document.createElement('div'); r.className='g-kb-row';
+        row.forEach(k=>{
+          const b=document.createElement('button');
+          b.className='g-key'+(k.length>1?' wide':'');
+          b.textContent=k==='BACKSPACE'?'←':k;
+          b.onclick=()=>gKey(k); b.id=`gk-${k}`;
+          r.appendChild(b);
+        });
+        kb.appendChild(r);
+      });
+    }
+
+    document.addEventListener('keydown',e=>{
+      if(gOver||gAnimating) return;
+      if($('g-game-view').style.display==='none') return;
+      if(e.key==='Enter') gKey('ENTER');
+      else if(e.key==='Backspace') gKey('BACKSPACE');
+      else if(e.key.length===1&&/[a-zA-Z]/.test(e.key)) gKey(e.key.toUpperCase());
+    });
+
+    function gKey(k){
+      if(gOver||gAnimating) return;
+      if(k==='ENTER'){ gSubmit(); return; }
+      if(k==='BACKSPACE'){ if(gTile>0){ gTile--; gSetTile(gRow,gTile,''); } return; }
+      if(gTile<gTargetWord.length&&k.length===1){ gSetTile(gRow,gTile,k); gTile++; }
+    }
+
+    function gSetTile(r,c,letter){
+      const t=$(`gt-${r}-${c}`);
+      t.textContent=letter;
+      t.classList.toggle('filled',letter!=='');
+    }
+
+    async function gSubmit(){
+      if(gAnimating) return;
+      const guess=[];
+      for(let i=0;i<gTargetWord.length;i++) guess.push($(`gt-${gRow}-${i}`).textContent);
+      const word=guess.join('');
+      if(word.length<gTargetWord.length){ gMsg('NOT ENOUGH LETTERS','error'); return; }
+      gAnimating=true; gGuesses.push(word);
+      const ev=gEval(word);
+      for(let i=0;i<gTargetWord.length;i++){
+        await new Promise(r=>setTimeout(r,300));
+        const tile=$(`gt-${gRow}-${i}`), key=$(`gk-${guess[i]}`);
+        tile.classList.add('flip');
+        setTimeout(()=>{
+          tile.classList.add(ev[i]);
+          if(key){
+            const cur=key.classList.contains('correct')?'correct':key.classList.contains('present')?'present':key.classList.contains('absent')?'absent':null;
+            if(!cur||(cur==='absent'&&(ev[i]==='present'||ev[i]==='correct'))||(cur==='present'&&ev[i]==='correct')){
+              key.classList.remove('correct','present','absent'); key.classList.add(ev[i]);
+            }
+          }
+        },250);
+      }
+      await new Promise(r=>setTimeout(r,500));
+      gAnimating=false;
+      const won=word===gTargetWord;
+      if(won||gRow===5){ gOver=true; await gSubmitResult(won,gGuesses.length); }
+      gRow++; gTile=0;
+    }
+
+    async function gSubmitResult(won,attempts){
+      const res=await fetch(`${G_WORKER}/api/game/submit`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint,guesses:gGuesses,won,attempts})});
+      const d=await res.json();
+      if(d.success){
+        gStats=d.stats;
+        const g2=await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
+        const gd=await g2.json();
+        gShowDone({word:gTargetWord,won,attempts,guesses:gGuesses},gd.expiresAt);
+      }
+    }
+
+    // ── COMPLETED ──
+    function gShowDone(game,expiresAt){
+      gShowOnly('g-done-view');
+      gTimerShow(true,true);
+      const rm=$('g-result-msg');
+      if(game.won){ rm.className='g-result won'; rm.textContent=`🎉 WON IN ${game.attempts} ${game.attempts===1?'TRY':'TRIES'}!`; }
+      else { rm.className='g-result lost'; rm.textContent='😔 BETTER LUCK NEXT TIME'; }
+      $('g-done-word').textContent=game.word;
+      // recap
+      $('g-recap').innerHTML=(game.guesses||[]).map(g=>{
+        const ev=gEvalFor(g,game.word);
+        return '<div class="g-recap-row">'+g.split('').map((l,i)=>`<div class="g-recap-tile ${ev[i]}">${l}</div>`).join('')+'</div>';
+      }).join('');
+      if(gDoneCountdownTimer) clearInterval(gDoneCountdownTimer);
+      gDoneCountdownTimer=gStartCountdown(expiresAt,'g-done-countdown',()=>location.reload());
+      gLoadPersonalRank();
+    }
+
+    async function gLoadPersonalRank(){
+      const res=await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      const d=await res.json();
+      const me=d.leaderboard.find(e=>e.name===gUser.name);
+      const el=$('g-personal-rank');
+      if(me){
+        el.innerHTML=`<div class="g-lb-entry top3">
+          <div class="g-rank ${me.rank===1?'gold':me.rank===2?'silver':me.rank===3?'bronze':''}">${me.rank}</div>
+          <div class="g-player">YOU</div>
+          <div class="g-tries">${me.attempts} ${me.attempts===1?'TRY':'TRIES'}</div>
+        </div>`;
+      } else {
+        el.innerHTML='<div class="g-empty">COMPLETE THE WORD TO SEE YOUR RANK</div>';
+      }
+    }
+
+    // ── HELPERS ──
+    function gEval(guess){
+      const res=new Array(gTargetWord.length).fill('absent');
+      const tl=gTargetWord.split(''), gl=guess.split('');
+      for(let i=0;i<gTargetWord.length;i++){if(gl[i]===tl[i]){res[i]='correct';tl[i]=null;gl[i]=null;}}
+      for(let i=0;i<gTargetWord.length;i++){if(gl[i]!==null){const x=tl.indexOf(gl[i]);if(x!==-1){res[i]='present';tl[x]=null;}}}
+      return res;
+    }
+    function gEvalFor(guess,target){
+      const res=new Array(target.length).fill('absent');
+      const tl=target.split(''), gl=guess.split('');
+      for(let i=0;i<target.length;i++){if(gl[i]===tl[i]){res[i]='correct';tl[i]=null;gl[i]=null;}}
+      for(let i=0;i<target.length;i++){if(gl[i]!==null){const x=tl.indexOf(gl[i]);if(x!==-1){res[i]='present';tl[x]=null;}}}
+      return res;
+    }
+    function gParseTime(str){
+      if(!str) return 600000;
+      const [m,s]=str.split(':').map(Number); return (m*60+s)*1000;
+    }
+    function gEsc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+    function gMsg(txt,type){
+      const old=document.querySelector('.g-msg'); if(old) old.remove();
+      const m=document.createElement('div'); m.className=`g-msg ${type}`; m.textContent=txt;
+      document.body.appendChild(m); setTimeout(()=>m.remove(),2000);
+    }
+    window.gLogout=function(){
+      localStorage.removeItem('67guessr_session');
+      gUser=null; gOver=false;
+      if(gCountdownTimer) clearInterval(gCountdownTimer);
+      if(gDoneCountdownTimer) clearInterval(gDoneCountdownTimer);
+      gTimerShow(false);
+      gShowOnly('g-auth');
+    };
+
+  })();
 
   /* ── LOG OUT ── */
   function handleLogout() {
