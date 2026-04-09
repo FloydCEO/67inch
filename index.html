@@ -2497,6 +2497,24 @@
       gUpdateUserBar();
       gShowLbTab();
       await gLoadLb();
+      // Always re-check with server whether this user has already played
+      await gRefreshPlayButton();
+    }
+
+    async function gRefreshPlayButton() {
+      const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
+      const d = await res.json();
+      const btn = $('g-play-btn');
+      if(d.status==='completed'){
+        gPlayedWordId = d.wordId;
+        btn.disabled = true;
+        btn.textContent = '✓ ALREADY PLAYED — WAIT FOR NEXT WORD';
+      } else {
+        gPlayedWordId = null;
+        btn.disabled = false;
+        btn.textContent = '▶ PLAY NOW';
+      }
     }
 
     window.gShowLbTab = function() {
@@ -2547,10 +2565,23 @@
 
     // ── START GAME ──
     window.gStartGame = async function() {
+      const btn = $('g-play-btn');
+      btn.disabled = true;
+      // Always verify with server first — never trust client-side state alone
       const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
       const d = await res.json();
-      if(d.status==='completed'){ gShowDone(d.previousGame,d.expiresAt); return; }
+      if(d.status==='completed'){
+        // Already played this rotation — show done screen, do not start game
+        gPlayedWordId = d.wordId;
+        gShowDone(d.previousGame, d.expiresAt);
+        return;
+      }
+      if(!d.canPlay || d.status!=='active'){
+        btn.disabled = false;
+        gMsg('CANNOT PLAY RIGHT NOW', 'error');
+        return;
+      }
       gTargetWord = d.word.toUpperCase().replace(/\s/g,'');
       gWordId = d.wordId;
       gRow=0; gTile=0; gOver=false; gAnimating=false; gGuesses=[];
@@ -2690,21 +2721,26 @@
     }
 
     async function gLoadPersonalRank(){
-      const res=await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-      const d=await res.json();
-      // match by name case-insensitively
-      const myName = gUser.name.toLowerCase();
-      const me=d.leaderboard.find(e=>e.name.toLowerCase()===myName);
-      const el=$('g-personal-rank');
-      if(me){
-        const rank = me.rank || (d.leaderboard.indexOf(me)+1);
-        el.innerHTML=`<div class="g-lb-entry top3">
-          <div class="g-rank ${rank===1?'gold':rank===2?'silver':rank===3?'bronze':''}">${rank}</div>
-          <div class="g-player">YOU</div>
-          <div class="g-tries">${me.attempts} ${me.attempts===1?'TRY':'TRIES'}</div>
-        </div>`;
-      } else {
-        el.innerHTML='<div class="g-empty">NOT ON THE BOARD YET</div>';
+      try {
+        const res=await fetch(`${G_WORKER}/api/leaderboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+        const d=await res.json();
+        const el=$('g-personal-rank');
+        const entries = d.leaderboard || [];
+        // match by googleId first, fallback to case-insensitive name
+        const myName = gUser.name.toLowerCase();
+        const me = entries.find(e=>e.googleId===gUser.googleId) || entries.find(e=>e.name.toLowerCase()===myName);
+        if(me){
+          const rank = me.rank || (entries.indexOf(me)+1);
+          el.innerHTML=`<div class="g-lb-entry top3">
+            <div class="g-rank ${rank===1?'gold':rank===2?'silver':rank===3?'bronze':''}">${rank}</div>
+            <div class="g-player">YOU</div>
+            <div class="g-tries">${me.attempts} ${me.attempts===1?'TRY':'TRIES'}</div>
+          </div>`;
+        } else {
+          el.innerHTML='<div class="g-empty">NOT ON THE BOARD — ONLY WINNERS ARE RANKED</div>';
+        }
+      } catch(e) {
+        $('g-personal-rank').innerHTML='<div class="g-empty">COULD NOT LOAD RANK</div>';
       }
     }
 
