@@ -2595,8 +2595,9 @@
     }
 
     document.addEventListener('keydown',e=>{
-      if(gOver||gAnimating) return;
       if($('g-game-view').style.display==='none') return;
+      if(e.key===' ') { e.preventDefault(); return; }
+      if(gOver||gAnimating) return;
       if(e.key==='Enter') gKey('ENTER');
       else if(e.key==='Backspace') gKey('BACKSPACE');
       else if(e.key.length===1&&/[a-zA-Z]/.test(e.key)) gKey(e.key.toUpperCase());
