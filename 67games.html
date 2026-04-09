@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>67GAMES | 67 Inch Dih Club</title>
+<link rel="icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link rel="shortcut icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link rel="apple-touch-icon" href="https://iili.io/q5eSGHu.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #ff1a1a;
+    --yellow: #ffe600;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --white: #f5f5f5;
+    --gray: #1a1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--red);
+    padding: 6px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 3px solid var(--yellow);
+    flex-shrink: 0;
+  }
+  .ticker {
+    display: inline-block;
+    animation: ticker 55s linear infinite;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--yellow);
+  }
+  @keyframes ticker {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* NAV */
+  nav {
+    background: #0d0d0d;
+    border-bottom: 3px solid var(--yellow);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    padding: 14px 28px;
+    border-right: 1px solid #222;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  nav a:hover { background: #1a1a1a; color: var(--yellow); }
+  nav a:hover::after { transform: scaleX(1); }
+  nav a.active-page { color: var(--yellow); }
+  nav a.active-page::after { transform: scaleX(1); }
+  nav a.discord-btn {
+    background: #5865F2;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  nav a.discord-btn:hover { background: #4752c4; }
+  nav a.discord-btn::after { display: none; }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--red) 0px, var(--red) 20px, var(--yellow) 20px, var(--yellow) 40px, #0a0a0a 40px, #0a0a0a 60px);
+    flex-shrink: 0;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    background: radial-gradient(ellipse at center, #1a0000 0%, #000 70%);
+    padding: 70px 20px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 6px solid var(--red);
+    flex-shrink: 0;
+  }
+  .page-header-bg {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28vw;
+    color: rgba(255,26,26,0.04);
+    letter-spacing: -5px;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: bgpulse 4s ease-in-out infinite;
+  }
+  @keyframes bgpulse { 0%,100%{opacity:0.04} 50%{opacity:0.08} }
+
+  .page-header-logo {
+    width: 90px;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 24px rgba(255,26,26,0.7));
+    margin-bottom: 18px;
+    animation: logobob 3s ease-in-out infinite;
+  }
+  @keyframes logobob {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
+  }
+
+  .page-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 10rem);
+    letter-spacing: 8px;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--red), 8px 8px 0 #000;
+    position: relative;
+    z-index: 2;
+    line-height: 1;
+  }
+  .page-header-sub {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #888;
+    letter-spacing: 4px;
+    position: relative;
+    z-index: 2;
+    margin-top: 10px;
+  }
+  .page-header-sub span {
+    color: var(--red);
+  }
+
+  /* GAMES SECTION */
+  .games-section {
+    flex: 1;
+    padding: 70px 20px 90px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .games-label {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 6px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .games-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: 4px;
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .games-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 4px;
+    background: var(--yellow);
+  }
+
+  /* GAME CARDS GRID */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+  }
+  @media(max-width: 768px) {
+    .games-grid { grid-template-columns: 1fr; gap: 20px; }
+  }
+  @media(min-width: 769px) and (max-width: 960px) {
+    .games-grid { grid-template-columns: repeat(2, 1fr); }
+    .game-card:last-child { grid-column: 1 / -1; max-width: 420px; margin: 0 auto; }
+  }
+
+  .game-card {
+    background: #111;
+    border: 2px solid #2a2a2a;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .game-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--yellow);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,230,0,0.15);
+  }
+  .game-card.coming-soon {
+    cursor: default;
+    opacity: 0.6;
+  }
+  .game-card.coming-soon:hover {
+    transform: none;
+    border-color: #2a2a2a;
+    box-shadow: none;
+  }
+
+  /* CARD TOP ACCENT BAR */
+  .game-card-accent {
+    height: 5px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .game-card.word .game-card-accent { background: #538d4e; }
+  .game-card.guessr .game-card-accent { background: var(--red); }
+  .game-card.coming-soon .game-card-accent { background: #333; }
+
+  /* CARD STATUS BADGE */
+  .game-card-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: 'VT323', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    padding: 3px 10px;
+    border: 1px solid;
+  }
+  .game-card-badge.live {
+    color: #538d4e;
+    border-color: #538d4e;
+    background: rgba(83,141,78,0.1);
+  }
+  .game-card-badge.soon {
+    color: #555;
+    border-color: #333;
+    background: transparent;
+  }
+
+  /* CARD BODY */
+  .game-card-body {
+    padding: 28px 28px 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-card-icon {
+    font-size: 2.8rem;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+
+  .game-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 5px;
+    color: var(--yellow);
+    text-shadow: 2px 2px 0 var(--red);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .game-card.coming-soon .game-card-title {
+    color: #555;
+    text-shadow: none;
+  }
+
+  .game-card-desc {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: #888;
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 24px;
+  }
+
+  .game-card-meta {
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: #444;
+    border-top: 1px solid #1e1e1e;
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .game-card-meta .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #538d4e;
+    flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .game-card.coming-soon .game-card-meta .dot {
+    background: #333;
+    animation: none;
+  }
+
+  /* CTA ARROW on live cards */
+  .game-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    color: var(--white);
+    margin-top: 0;
+    transition: color 0.15s, gap 0.15s;
+  }
+  .game-card:hover .game-card-cta { color: var(--yellow); gap: 14px; }
+  .game-card-cta-arrow {
+    font-size: 1.4rem;
+    transition: transform 0.15s;
+  }
+  .game-card:hover .game-card-cta-arrow { transform: translateX(4px); }
+
+  /* HOVER OVERLAY SHIMMER */
+  .game-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,230,0,0.03) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .game-card:hover::after { opacity: 1; }
+  .game-card.coming-soon::after { display: none; }
+
+  /* FOOTER */
+  footer {
+    background: #000;
+    border-top: 4px solid var(--red);
+    padding: 50px 20px 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .footer-logo {
+    width: 80px;
+    filter: drop-shadow(0 0 20px rgba(255,26,26,0.5));
+    margin-bottom: 16px;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .footer-links a {
+    color: #666;
+    text-decoration: none;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-copy {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    color: #333;
+    letter-spacing: 2px;
+    margin-top: 24px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .blink { animation: blink 1s step-end infinite; }
+
+  @media(max-width: 560px) {
+    .page-header { padding: 50px 16px 44px; }
+    .games-section { padding: 50px 16px 70px; }
+    .game-card-body { padding: 22px 20px 26px; }
+    .game-card-title { font-size: 2.2rem; }
+    footer { padding: 36px 16px 28px; }
+    .footer-links { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker">
+    67GAMES IS LIVE // THREE GAMES // MORE COMING // PLAY 67WORD NOW // 67GUESSR DROPPING SOON // JUST IN THE NEWS, TRONIX IS BACK, AND HES KINDA CHILL?? | WHAT? | Ollies chair is sitting empty, when will he return! | SPOOKS | Tronix got arrested at one point, but he wont talk about it | Quiz | What kind of pasta is pastaa? Don't ask him, he'll block you for a full calendar year. | WAR | Kate is still in love with lyko | Have you donated to my bgame ltc wallet yet? You prolly should | BREAKING NEWS | Pasgo just got his masters degree in mixing at mixing school, incredible stuff
+  </span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="/">HOME</a>
+  <a href="/games" class="active-page">67GAMES</a>
+  <a href="/games/67word">67WORD</a>
+  <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="discord-btn">
+    <svg width="20" height="20" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="currentColor"/></svg>
+    JOIN SERVER
+  </a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-bg">67</div>
+  <img src="https://iili.io/q5eSGHu.png" alt="67 Inch Dih Club Logo" class="page-header-logo">
+  <h1>67GAMES</h1>
+  <p class="page-header-sub">THE OFFICIAL GAME VAULT // <span>67 INCH DIH CLUB</span></p>
+</div>
+
+<div class="divider"></div>
+
+<!-- GAMES SECTION -->
+<div class="games-section">
+  <p class="games-label">PICK YOUR POISON</p>
+  <h2 class="games-heading">CHOOSE A GAME</h2>
+
+  <div class="games-grid">
+
+    <!-- 67WORD -->
+    <a href="/games/67word" class="game-card word">
+      <div class="game-card-accent"></div>
+      <div class="game-card-badge live">● LIVE</div>
+      <div class="game-card-body">
+        <div class="game-card-icon">🟩</div>
+        <div class="game-card-title">67WORD</div>
+        <div class="game-card-desc">
+          GUESS THE SECRET WORD BEFORE TIME RUNS OUT. NEW WORD DROPS EVERY 10 MINUTES. SIGN IN WITH GOOGLE AND COMPETE FOR THE TOP SPOT ON THE LEADERBOARD.
+        </div>
+        <div class="game-card-meta">
+          <div class="dot"></div>
+          NEW WORD EVERY 10 MINUTES // GOOGLE LOGIN REQUIRED
+        </div>
+        <div style="margin-top:20px;">
+          <span class="game-card-cta">PLAY NOW <span class="game-card-cta-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 67GUESSR -->
+    <a href="/games/67guessr" class="game-card guessr">
+      <div class="game-card-accent"></div>
+      <div class="game-card-badge live">● LIVE</div>
+      <div class="game-card-body">
+        <div class="game-card-icon">🕵️</div>
+        <div class="game-card-title">67GUESSR</div>
+        <div class="game-card-desc">
+          CAN YOU GUESS WHO IT IS? IDENTIFY MEMBERS OF THE 67 INCH DIH CLUB FROM CLUES, IMAGES, AND PURE VIBES. PUT YOUR KNOWLEDGE TO THE TEST.
+        </div>
+        <div class="game-card-meta">
+          <div class="dot"></div>
+          SERVER KNOWLEDGE REQUIRED // DO YOUR RESEARCH
+        </div>
+        <div style="margin-top:20px;">
+          <span class="game-card-cta">PLAY NOW <span class="game-card-cta-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- COMING SOON -->
+    <div class="game-card coming-soon">
+      <div class="game-card-accent"></div>
+      <div class="game-card-badge soon">COMING SOON</div>
+      <div class="game-card-body">
+        <div class="game-card-icon">🔒</div>
+        <div class="game-card-title">???</div>
+        <div class="game-card-desc">
+          SOMETHING IS BEING BUILT IN THE SHADOWS. THE PROPHECY DOES NOT REVEAL ALL AT ONCE. CHECK BACK. OR DON'T. IT WILL FIND YOU.
+        </div>
+        <div class="game-card-meta">
+          <div class="dot"></div>
+          IN DEVELOPMENT // STAY TUNED
+        </div>
+        <div style="margin-top:20px;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:4px;color:#333;">LOCKED</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="https://iili.io/q5eSGHu.png" alt="Logo" class="footer-logo">
+  <p style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:6px;color:var(--red);">67 INCH DIH CLUB</p>
+  <p style="font-family:'VT323',monospace;font-size:1rem;letter-spacing:4px;color:#555;margin-top:4px;">67INCHDIHCLUB.LOL</p>
+  <div class="footer-links">
+    <a href="/">HOME</a>
+    <a href="/games">67GAMES</a>
+    <a href="/games/67word">67WORD</a>
+    <a href="/games/67guessr">67GUESSR</a>
+    <a href="https://discord.gg/jeffreyedwardepstein" target="_blank">DISCORD</a>
+  </div>
+  <p style="font-family:'VT323',monospace;font-size:1.1rem;letter-spacing:3px;color:#5865F2;margin-top:10px;">
+    discord.gg/jeffreyedwardepstein
+  </p>
+  <div class="footer-copy">
+    © 2025 67 INCH DIH CLUB // ALL RIGHTS RESERVED // WE ARE CHARLIE KIRK
+    <br>
+    <span class="blink">▌</span>
+  </div>
+</footer>
+
+</body>
+</html>
