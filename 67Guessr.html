@@ -34,11 +34,33 @@
         
         .subtitle {
             color: #818384;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 0.9rem;
         }
         
-        #auth-section, #game-section {
+        .timer-display {
+            background: #538d4e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timer-display.cooldown {
+            background: #b59f3b;
+            color: #000;
+        }
+        
+        .timer-display i {
+            font-style: normal;
+        }
+        
+        #auth-section, #game-section, #leaderboard-section, #completed-section {
             width: 100%;
             max-width: 500px;
             animation: fadeIn 0.5s ease;
@@ -87,6 +109,25 @@
             margin: 20px 0;
         }
         
+        .nav-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            max-width: 150px;
+            padding: 10px;
+            font-size: 0.9rem;
+            background: #3a3a3c;
+        }
+        
+        .nav-btn.active {
+            background: #538d4e;
+        }
+        
         .user-info {
             display: flex;
             align-items: center;
@@ -127,10 +168,6 @@
             font-size: 0.9rem;
         }
         
-        .logout-btn:hover {
-            background: #ff6666;
-        }
-        
         button {
             width: 100%;
             padding: 15px;
@@ -168,6 +205,167 @@
             font-weight: 600;
         }
         
+        /* Leaderboard Styles */
+        .leaderboard-container {
+            background: #3a3a3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #565758;
+        }
+        
+        .leaderboard-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .word-display {
+            color: #538d4e;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .leaderboard-entry {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #121213;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .leaderboard-entry:hover {
+            background: #1a1a1d;
+        }
+        
+        .leaderboard-entry.top-3 {
+            background: linear-gradient(90deg, #538d4e22, #121213);
+            border-left: 3px solid #538d4e;
+        }
+        
+        .rank {
+            width: 40px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #818384;
+        }
+        
+        .rank.gold { color: #ffd700; }
+        .rank.silver { color: #c0c0c0; }
+        .rank.bronze { color: #cd7f32; }
+        
+        .player-name {
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .attempts {
+            color: #538d4e;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .history-list {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #121213;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .history-winner {
+            color: #538d4e;
+            font-weight: 600;
+        }
+        
+        /* Completed Game Screen */
+        .completed-box {
+            background: #3a3a3c;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .completed-box h2 {
+            margin-bottom: 20px;
+        }
+        
+        .result-message {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .result-message.won {
+            background: #538d4e33;
+            color: #538d4e;
+        }
+        
+        .result-message.lost {
+            background: #ff444433;
+            color: #ff4444;
+        }
+        
+        .word-reveal {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            color: #fff;
+        }
+        
+        .next-word-timer {
+            background: #b59f3b;
+            color: #000;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        
+        .game-recap {
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .recap-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+            justify-content: center;
+        }
+        
+        .recap-tile {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        
+        .recap-tile.correct { background: #538d4e; }
+        .recap-tile.present { background: #b59f3b; color: #000; }
+        .recap-tile.absent { background: #3a3a3c; }
+        
+        /* Game Board */
         #game-board {
             display: flex;
             flex-direction: column;
@@ -216,20 +414,9 @@
             100% { transform: rotateX(0); }
         }
         
-        .tile.correct {
-            background-color: #538d4e;
-            border-color: #538d4e;
-        }
-        
-        .tile.present {
-            background-color: #b59f3b;
-            border-color: #b59f3b;
-        }
-        
-        .tile.absent {
-            background-color: #3a3a3c;
-            border-color: #3a3a3c;
-        }
+        .tile.correct { background: #538d4e; border-color: #538d4e; }
+        .tile.present { background: #b59f3b; border-color: #b59f3b; }
+        .tile.absent { background: #3a3a3c; border-color: #3a3a3c; }
         
         .keyboard {
             display: flex;
@@ -264,17 +451,8 @@
             max-width: 70px;
         }
         
-        .key:hover {
-            background: #a0a1a2;
-        }
-        
-        .key.wide {
-            min-width: 65px;
-            flex: 1.5;
-            max-width: 100px;
-            font-size: 0.8rem;
-        }
-        
+        .key:hover { background: #a0a1a2; }
+        .key.wide { min-width: 65px; flex: 1.5; max-width: 100px; font-size: 0.8rem; }
         .key.correct { background: #538d4e; }
         .key.present { background: #b59f3b; }
         .key.absent { background: #3a3a3c; }
@@ -294,39 +472,9 @@
             max-width: 90%;
         }
         
-        .message.error {
-            background: #ff4444;
-            color: white;
-        }
-        
-        .message.success {
-            background: #538d4e;
-            color: white;
-        }
-        
-        .message.info {
-            background: #818384;
-            color: white;
-        }
-        
-        .message.warning {
-            background: #b59f3b;
-            color: #000;
-        }
-        
-        #new-game-btn {
-            margin-top: 20px;
-            background: #818384;
-        }
-        
-        #new-game-btn:hover {
-            background: #a0a1a2;
-        }
-        
-        .word-reveal {
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
+        .message.error { background: #ff4444; color: white; }
+        .message.success { background: #538d4e; color: white; }
+        .message.info { background: #818384; color: white; }
         
         .error-screen {
             text-align: center;
@@ -337,17 +485,34 @@
             color: #ff4444;
             margin-bottom: 20px;
         }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #818384;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #818384;
+        }
     </style>
 </head>
 <body>
     <h1>67GUESSR</h1>
-    <p class="subtitle">One account per device • No VPNs</p>
+    <p class="subtitle">New word every 10 minutes</p>
     
+    <div id="timer-display" class="timer-display hidden">
+        <i>⏱️</i> Next word in: <span id="countdown">10:00</span>
+    </div>
+    
+    <!-- Auth Section -->
     <div id="auth-section">
         <div class="auth-box">
             <h2>Sign in to Play</h2>
             <div class="warning">
-                ⚠️ One Google account per device. VPN usage is blocked.
+                ⚠️ One Google account per device • No VPNs
             </div>
             <p>Your device will be permanently linked to your Google account</p>
             
@@ -367,6 +532,7 @@
         </div>
     </div>
     
+    <!-- Error Section -->
     <div id="error-section" class="hidden">
         <div class="auth-box error-screen">
             <h2 id="error-title">Access Denied</h2>
@@ -375,49 +541,123 @@
         </div>
     </div>
     
-    <div id="game-section" class="hidden">
+    <!-- Loading Section -->
+    <div id="loading-section" class="hidden">
+        <div class="loading">
+            <h2>Loading...</h2>
+        </div>
+    </div>
+    
+    <!-- Leaderboard Section (Visible before/after game) -->
+    <div id="leaderboard-section" class="hidden">
+        <div class="nav-bar">
+            <button class="nav-btn active" onclick="showLeaderboard()">Leaderboard</button>
+            <button class="nav-btn" onclick="showHistory()">History</button>
+        </div>
+        
         <div class="user-info">
             <div class="user-avatar" id="user-initial">?</div>
             <div class="user-details">
                 <h3 id="user-name">Player</h3>
-                <p id="user-email">email@example.com</p>
+                <p id="user-stats">Games: 0 | Won: 0 | Streak: 0</p>
             </div>
         </div>
         
-        <div class="stats">
-            Games: <span id="games-played">0</span> | 
-            Won: <span id="games-won">0</span> | 
-            Streak: <span id="current-streak">0</span>
+        <div id="leaderboard-content">
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <h2>🏆 Current Word</h2>
+                    <span class="word-display" id="current-word">Loading...</span>
+                </div>
+                <div id="leaderboard-entries">
+                    <div class="empty-state">No winners yet. Be the first!</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="history-content" class="hidden">
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <h2>📜 Past Words</h2>
+                </div>
+                <div id="history-entries" class="history-list">
+                    <div class="empty-state">No history available</div>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="startGame()" style="margin-top: 20px; background: #538d4e;">Play Now</button>
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+    
+    <!-- Game Section -->
+    <div id="game-section" class="hidden">
+        <div class="nav-bar">
+            <button class="nav-btn" onclick="showLeaderboardFromGame()">🏆 Leaderboard</button>
+            <button class="nav-btn" onclick="showHistoryFromGame()">📜 History</button>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="game-user-initial">?</div>
+            <div class="user-details">
+                <h3 id="game-user-name">Player</h3>
+                <p id="game-timer">Next word: 10:00</p>
+            </div>
         </div>
         
         <div id="game-board"></div>
-        
         <div class="keyboard" id="keyboard"></div>
+    </div>
+    
+    <!-- Completed Game Section -->
+    <div id="completed-section" class="hidden">
+        <div class="nav-bar">
+            <button class="nav-btn" onclick="showLeaderboard()">🏆 Leaderboard</button>
+            <button class="nav-btn" onclick="showHistory()">📜 History</button>
+        </div>
         
-        <button id="new-game-btn" class="hidden" onclick="newGame()">New Word</button>
-        <button class="logout-btn" onclick="logout()">Sign Out</button>
+        <div class="completed-box">
+            <div id="result-message" class="result-message"></div>
+            
+            <div class="word-reveal" id="completed-word"></div>
+            
+            <div class="game-recap" id="game-recap"></div>
+            
+            <div class="next-word-timer">
+                ⏱️ Next word available in: <span id="completed-countdown">10:00</span>
+            </div>
+            
+            <div class="leaderboard-container" style="margin-top: 20px;">
+                <div class="leaderboard-header">
+                    <h3>🏆 How You Ranked</h3>
+                </div>
+                <div id="personal-rank"></div>
+            </div>
+            
+            <button onclick="showLeaderboard()" style="margin-top: 20px;">View Full Leaderboard</button>
+            <button class="logout-btn" onclick="logout()">Sign Out</button>
+        </div>
     </div>
 
     <div id="message-container"></div>
 
     <script>
-        // REPLACE WITH YOUR ACTUAL WORKER URL
         const WORKER_URL = 'https://67.lillykobusiness69.workers.dev';
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
         
-        // REPLACE WITH YOUR GOOGLE CLIENT ID
-        const GOOGLE_CLIENT_ID = '353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com';
-        
-        // Update the Google button with your client ID
         document.getElementById('g_id_onload').setAttribute('data-client_id', GOOGLE_CLIENT_ID);
         
         let currentUser = null;
         let targetWord = '';
+        let currentWordId = null;
         let currentRow = 0;
         let currentTile = 0;
         let gameOver = false;
         let userStats = { games: 0, won: 0, streak: 0 };
         let isAnimating = false;
+        let guesses = [];
         let deviceFingerprint = '';
+        let countdownInterval = null;
         
         const keyboardLayout = [
             ['Q','W','E','R','T','Y','U','I','O','P'],
@@ -425,7 +665,6 @@
             ['ENTER','Z','X','C','V','B','N','M','BACKSPACE']
         ];
         
-        // Generate device fingerprint
         function generateDeviceFingerprint() {
             const components = [
                 navigator.userAgent,
@@ -436,11 +675,8 @@
                 new Date().getTimezoneOffset(),
                 !!window.sessionStorage,
                 !!window.localStorage,
-                navigator.hardwareConcurrency || 'unknown',
-                navigator.deviceMemory || 'unknown'
+                navigator.hardwareConcurrency || 'unknown'
             ];
-            
-            // Create hash
             const str = components.join('###');
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -448,14 +684,33 @@
                 hash = ((hash << 5) - hash) + char;
                 hash = hash & hash;
             }
-            
             return 'fp_' + Math.abs(hash).toString(16);
         }
         
-        // Initialize
         deviceFingerprint = generateDeviceFingerprint();
         
-        // Check for stored session
+        // Countdown timer
+        function startCountdown(endTime, elementId) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            function update() {
+                const now = Date.now();
+                const remaining = Math.max(0, endTime - now);
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                document.getElementById(elementId).textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    location.reload(); // Refresh when new word available
+                }
+            }
+            
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+        
         window.onload = function() {
             const savedSession = localStorage.getItem('67guessr_session');
             if (savedSession) {
@@ -474,41 +729,52 @@
         
         async function restoreSession(session) {
             currentUser = session;
-            updateUserDisplay();
-            await loadUserData();
-            showGame();
+            showLoading();
+            
+            const res = await fetch(`${WORKER_URL}/api/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    googleId: session.googleId,
+                    email: session.email,
+                    name: session.name,
+                    deviceFingerprint: deviceFingerprint
+                })
+            });
+            
+            const data = await res.json();
+            if (data.success) {
+                userStats = data.user.stats || { games: 0, won: 0, streak: 0 };
+                checkGameStatus();
+            } else {
+                showError(data.error, data.message);
+            }
         }
         
-        // Google Sign In Handler
         async function handleGoogleSignIn(response) {
             try {
-                // Decode JWT to get user info
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
                 
-                const authData = {
-                    googleId: payload.sub,
-                    email: payload.email,
-                    name: payload.name,
-                    picture: payload.picture,
-                    idToken: response.credential,
-                    deviceFingerprint: deviceFingerprint
-                };
+                showLoading();
                 
-                // Send to worker for verification
                 const res = await fetch(`${WORKER_URL}/api/auth/google`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(authData)
+                    body: JSON.stringify({
+                        googleId: payload.sub,
+                        email: payload.email,
+                        name: payload.name,
+                        deviceFingerprint: deviceFingerprint
+                    })
                 });
                 
                 const data = await res.json();
                 
                 if (!data.success) {
-                    showError(data.error || 'Authentication failed', data.message);
+                    showError(data.error, data.message);
                     return;
                 }
                 
-                // Save session
                 currentUser = {
                     googleId: payload.sub,
                     email: payload.email,
@@ -517,46 +783,209 @@
                 };
                 
                 localStorage.setItem('67guessr_session', JSON.stringify(currentUser));
-                
                 userStats = data.user.stats || { games: 0, won: 0, streak: 0 };
-                updateStats();
-                updateUserDisplay();
-                showGame();
+                
+                checkGameStatus();
                 
             } catch (e) {
-                showError('Sign-in Error', 'Failed to authenticate. Please try again.');
+                showError('Sign-in Error', 'Failed to authenticate');
                 console.error(e);
             }
         }
         
-        function updateUserDisplay() {
-            document.getElementById('user-name').textContent = currentUser.name;
-            document.getElementById('user-email').textContent = currentUser.email;
-            document.getElementById('user-initial').textContent = currentUser.name.charAt(0).toUpperCase();
+        async function checkGameStatus() {
+            const res = await fetch(`${WORKER_URL}/api/game`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    googleId: currentUser.googleId,
+                    deviceFingerprint: deviceFingerprint
+                })
+            });
+            
+            const data = await res.json();
+            
+            if (data.error) {
+                if (data.error === 'VPN detected') {
+                    showError('Access Denied', data.message);
+                    return;
+                }
+            }
+            
+            if (data.status === 'completed' && data.previousGame) {
+                // Already played this word, show completed screen
+                showCompletedScreen(data.previousGame, data.timeRemaining, data.expiresAt);
+            } else {
+                // Can play
+                showLeaderboard();
+            }
+        }
+        
+        function showLoading() {
+            hideAllSections();
+            document.getElementById('loading-section').classList.remove('hidden');
+        }
+        
+        function hideAllSections() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('game-section').classList.add('hidden');
+            document.getElementById('leaderboard-section').classList.add('hidden');
+            document.getElementById('completed-section').classList.add('hidden');
+            document.getElementById('error-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.add('hidden');
+            document.getElementById('timer-display').classList.add('hidden');
         }
         
         function showError(title, message) {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('game-section').classList.add('hidden');
+            hideAllSections();
             document.getElementById('error-section').classList.remove('hidden');
             document.getElementById('error-title').textContent = title;
             document.getElementById('error-message').textContent = message;
         }
         
-        function showGame() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('error-section').classList.add('hidden');
-            document.getElementById('game-section').classList.remove('hidden');
-            newGame();
+        function updateUserDisplay() {
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-initial').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('user-stats').textContent = 
+                `Games: ${userStats.games} | Won: ${userStats.won} | Streak: ${userStats.streak}`;
+            
+            document.getElementById('game-user-name').textContent = currentUser.name;
+            document.getElementById('game-user-initial').textContent = currentUser.name.charAt(0).toUpperCase();
         }
         
-        function logout() {
-            localStorage.removeItem('67guessr_session');
-            currentUser = null;
-            location.reload();
+        // Leaderboard functions
+        async function showLeaderboard() {
+            hideAllSections();
+            document.getElementById('leaderboard-section').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+            updateUserDisplay();
+            
+            // Switch tabs
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active') || document.querySelector('.nav-btn').classList.add('active');
+            document.getElementById('leaderboard-content').classList.remove('hidden');
+            document.getElementById('history-content').classList.add('hidden');
+            
+            await loadLeaderboard();
+        }
+        
+        async function showHistory() {
+            document.querySelectorAll('.nav-btn').forEach((btn, idx) => 
+                btn.classList.toggle('active', idx === 1)
+            );
+            document.getElementById('leaderboard-content').classList.add('hidden');
+            document.getElementById('history-content').classList.remove('hidden');
+            await loadHistory();
+        }
+        
+        async function loadLeaderboard() {
+            const res = await fetch(`${WORKER_URL}/api/leaderboard`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            
+            const data = await res.json();
+            
+            document.getElementById('current-word').textContent = data.word;
+            startCountdown(Date.now() + parseTimeToMs(data.nextWordIn), 'countdown');
+            
+            const entriesDiv = document.getElementById('leaderboard-entries');
+            if (data.leaderboard.length === 0) {
+                entriesDiv.innerHTML = '<div class="empty-state">No winners yet. Be the first!</div>';
+            } else {
+                entriesDiv.innerHTML = data.leaderboard.map((entry, idx) => `
+                    <div class="leaderboard-entry ${idx < 3 ? 'top-3' : ''}">
+                        <div class="rank ${idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}">
+                            ${idx + 1}
+                        </div>
+                        <div class="player-name">${escapeHtml(entry.name)}</div>
+                        <div class="attempts">${entry.attempts} ${entry.attempts === 1 ? 'try' : 'tries'}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        async function loadHistory() {
+            const res = await fetch(`${WORKER_URL}/api/leaderboard/history`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            
+            const data = await res.json();
+            const entriesDiv = document.getElementById('history-entries');
+            
+            if (!data.history || data.history.length === 0) {
+                entriesDiv.innerHTML = '<div class="empty-state">No history available</div>';
+            } else {
+                entriesDiv.innerHTML = data.history.map(h => `
+                    <div class="history-item">
+                        <span>${escapeHtml(h.word)}</span>
+                        <span class="history-winner">
+                            ${escapeHtml(h.winner.name)} (${h.bestScore} tries) • ${h.totalPlayers} players
+                        </span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function parseTimeToMs(timeStr) {
+            const [mins, secs] = timeStr.split(':').map(Number);
+            return (mins * 60 + secs) * 1000;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // Game functions
+        async function startGame() {
+            const res = await fetch(`${WORKER_URL}/api/game`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    googleId: currentUser.googleId,
+                    deviceFingerprint: deviceFingerprint
+                })
+            });
+            
+            const data = await res.json();
+            
+            if (data.status === 'completed') {
+                showCompletedScreen(data.previousGame, data.timeRemaining, data.expiresAt);
+                return;
+            }
+            
+            targetWord = data.word.toUpperCase().replace(/\s/g, '');
+            currentWordId = data.wordId;
+            
+            hideAllSections();
+            document.getElementById('game-section').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+            
+            currentRow = 0;
+            currentTile = 0;
+            gameOver = false;
+            isAnimating = false;
+            guesses = [];
+            
+            createBoard(targetWord.length);
+            initKeyboard();
+            startCountdown(data.expiresAt, 'countdown');
+        }
+        
+        function showLeaderboardFromGame() {
+            showLeaderboard();
+        }
+        
+        function showHistoryFromGame() {
+            showLeaderboard();
+            showHistory();
+        }
+        
         function initKeyboard() {
             const keyboard = document.getElementById('keyboard');
             keyboard.innerHTML = '';
@@ -579,7 +1008,8 @@
         }
         
         document.addEventListener('keydown', (e) => {
-            if (gameOver || !currentUser || isAnimating) return;
+            if (gameOver || isAnimating) return;
+            if (document.getElementById('game-section').classList.contains('hidden')) return;
             
             if (e.key === 'Enter') handleKey('ENTER');
             else if (e.key === 'Backspace') handleKey('BACKSPACE');
@@ -587,7 +1017,7 @@
         });
         
         function handleKey(key) {
-            if (gameOver || isAnimating || !currentUser) return;
+            if (gameOver || isAnimating) return;
             
             if (key === 'ENTER') {
                 submitGuess();
@@ -627,69 +1057,8 @@
             }
         }
         
-        async function loadUserData() {
-            try {
-                const response = await fetch(`${WORKER_URL}/api/user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        googleId: currentUser.googleId,
-                        deviceFingerprint: deviceFingerprint
-                    })
-                });
-                
-                const data = await response.json();
-                if (data.success && data.stats) {
-                    userStats = data.stats;
-                    updateStats();
-                }
-            } catch (e) {
-                console.error('Failed to load user data:', e);
-            }
-        }
-        
-        async function newGame() {
-            try {
-                const response = await fetch(`${WORKER_URL}/api/game`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        googleId: currentUser.googleId,
-                        deviceFingerprint: deviceFingerprint
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    if (data.error === 'VPN detected' || data.error === 'Device mismatch') {
-                        showError('Access Denied', data.message);
-                        return;
-                    }
-                    showMessage(data.error, 'error');
-                    return;
-                }
-                
-                targetWord = data.word.toUpperCase().replace(/\s/g, '');
-                
-                currentRow = 0;
-                currentTile = 0;
-                gameOver = false;
-                isAnimating = false;
-                
-                createBoard(targetWord.length);
-                initKeyboard();
-                
-                document.getElementById('new-game-btn').classList.add('hidden');
-                clearMessage();
-                
-            } catch (e) {
-                showMessage('Connection error', 'error');
-            }
-        }
-        
         async function submitGuess() {
-            if (isAnimating || !currentUser) return;
+            if (isAnimating) return;
             
             const guess = [];
             for (let i = 0; i < targetWord.length; i++) {
@@ -705,6 +1074,7 @@
             }
             
             isAnimating = true;
+            guesses.push(guessWord);
             
             const evaluation = evaluateGuess(guessWord);
             
@@ -737,30 +1107,136 @@
             await new Promise(resolve => setTimeout(resolve, 500));
             isAnimating = false;
             
-            if (guessWord === targetWord) {
+            const won = guessWord === targetWord;
+            
+            if (won || currentRow === 5) {
                 gameOver = true;
-                userStats.games++;
-                userStats.won++;
-                userStats.streak++;
-                updateStats();
-                await saveUserData(true);
-                
-                showMessage('🎉 GENIUS!', 'success');
-                document.getElementById('new-game-btn').classList.remove('hidden');
-                
-            } else if (currentRow === 5) {
-                gameOver = true;
-                userStats.games++;
-                userStats.streak = 0;
-                updateStats();
-                await saveUserData(false);
-                
-                showMessage(`The word was ${targetWord}`, 'error');
-                document.getElementById('new-game-btn').classList.remove('hidden');
+                await submitGameResult(won, guesses.length);
             }
             
             currentRow++;
             currentTile = 0;
+        }
+        
+        async function submitGameResult(won, attempts) {
+            const res = await fetch(`${WORKER_URL}/api/game/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    googleId: currentUser.googleId,
+                    deviceFingerprint: deviceFingerprint,
+                    guesses: guesses,
+                    won: won,
+                    attempts: attempts
+                })
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                userStats = data.stats;
+                // Get remaining time
+                const gameRes = await fetch(`${WORKER_URL}/api/game`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        googleId: currentUser.googleId,
+                        deviceFingerprint: deviceFingerprint
+                    })
+                });
+                const gameData = await gameRes.json();
+                
+                showCompletedScreen(
+                    { word: targetWord, won, attempts, guesses },
+                    gameData.timeRemaining,
+                    gameData.expiresAt
+                );
+            }
+        }
+        
+        function showCompletedScreen(game, timeRemaining, expiresAt) {
+            hideAllSections();
+            document.getElementById('completed-section').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+            
+            const msgDiv = document.getElementById('result-message');
+            if (game.won) {
+                msgDiv.className = 'result-message won';
+                msgDiv.innerHTML = `🎉 You won in ${game.attempts} ${game.attempts === 1 ? 'try' : 'tries'}!`;
+            } else {
+                msgDiv.className = 'result-message lost';
+                msgDiv.innerHTML = `😔 Better luck next time!`;
+            }
+            
+            document.getElementById('completed-word').textContent = game.word;
+            
+            // Show game recap
+            const recapDiv = document.getElementById('game-recap');
+            recapDiv.innerHTML = (game.guesses || []).map(guess => {
+                const evals = evaluateGuessForDisplay(guess, game.word);
+                return `<div class="recap-row">` + 
+                    guess.split('').map((letter, idx) => 
+                        `<div class="recap-tile ${evals[idx]}">${letter}</div>`
+                    ).join('') + 
+                    `</div>`;
+            }).join('');
+            
+            startCountdown(expiresAt, 'completed-countdown');
+            
+            // Show personal rank
+            loadPersonalRank();
+        }
+        
+        function evaluateGuessForDisplay(guess, target) {
+            const result = new Array(target.length).fill('absent');
+            const targetLetters = target.split('');
+            const guessLetters = guess.split('');
+            
+            for (let i = 0; i < target.length; i++) {
+                if (guessLetters[i] === targetLetters[i]) {
+                    result[i] = 'correct';
+                    targetLetters[i] = null;
+                    guessLetters[i] = null;
+                }
+            }
+            
+            for (let i = 0; i < target.length; i++) {
+                if (guessLetters[i] !== null) {
+                    const index = targetLetters.indexOf(guessLetters[i]);
+                    if (index !== -1) {
+                        result[i] = 'present';
+                        targetLetters[index] = null;
+                    }
+                }
+            }
+            
+            return result;
+        }
+        
+        async function loadPersonalRank() {
+            const res = await fetch(`${WORKER_URL}/api/leaderboard`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            
+            const data = await res.json();
+            const myEntry = data.leaderboard.find(e => e.name === currentUser.name);
+            
+            const rankDiv = document.getElementById('personal-rank');
+            if (myEntry) {
+                rankDiv.innerHTML = `
+                    <div class="leaderboard-entry top-3">
+                        <div class="rank ${myEntry.rank === 1 ? 'gold' : myEntry.rank === 2 ? 'silver' : myEntry.rank === 3 ? 'bronze' : ''}">
+                            ${myEntry.rank}
+                        </div>
+                        <div class="player-name">You</div>
+                        <div class="attempts">${myEntry.attempts} tries</div>
+                    </div>
+                `;
+            } else {
+                rankDiv.innerHTML = '<div class="empty-state">Complete the word to see your rank!</div>';
+            }
         }
         
         function evaluateGuess(guess) {
@@ -789,39 +1265,17 @@
             return result;
         }
         
-        function updateStats() {
-            document.getElementById('games-played').textContent = userStats.games;
-            document.getElementById('games-won').textContent = userStats.won;
-            document.getElementById('current-streak').textContent = userStats.streak;
-        }
-        
-        async function saveUserData(won) {
-            try {
-                await fetch(`${WORKER_URL}/api/user/save`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        googleId: currentUser.googleId,
-                        deviceFingerprint: deviceFingerprint,
-                        stats: userStats
-                    })
-                });
-            } catch (e) {
-                console.error('Failed to save:', e);
-            }
-        }
-        
         function showMessage(text, type) {
             const container = document.getElementById('message-container');
             container.innerHTML = `<div class="message ${type}">${text}</div>`;
-            
-            if (type !== 'success' && type !== 'error') {
-                setTimeout(clearMessage, 2000);
-            }
+            setTimeout(() => container.innerHTML = '', 2000);
         }
         
-        function clearMessage() {
-            document.getElementById('message-container').innerHTML = '';
+        function logout() {
+            localStorage.removeItem('67guessr_session');
+            currentUser = null;
+            if (countdownInterval) clearInterval(countdownInterval);
+            location.reload();
         }
     </script>
 </body>
