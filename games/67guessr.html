@@ -9,6 +9,8 @@
 <link rel="apple-touch-icon" href="https://iili.io/q5eSGHu.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --red: #ff1a1a;
@@ -434,7 +436,7 @@
 
   <!-- STREET VIEW -->
   <div class="sv-container">
-    <div id="sv-panorama"></div>
+    <iframe id="sv-panorama" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>
     <div class="sv-overlay-label" id="sv-label">LOOK AROUND — FIGURE OUT WHERE YOU ARE</div>
     <div class="sv-no-move-hint">NO MOVING // NO ZOOM OUT</div>
 
@@ -504,64 +506,61 @@
 
 <!-- GOOGLE MAPS -->
 <script>
-  const MAPS_API_KEY = 'AIzaSyBO6iqAalVoDGhhPyW_daT_z3iff0my1NY';
   const WORKER = 'https://67.lillykobusiness69.workers.dev';
   const GOOGLE_CLIENT_ID = '353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com';
   const TOTAL_ROUNDS = 3;
-  const GUESS_TIMER_SECONDS = 60; // 15s after first guess, but we give 60s total
-  const TIMER_TRIGGER_ON_FIRST_GUESS = 15; // seconds remaining after first guess
+  const GUESS_TIMER_SECONDS = 60;
+  const TIMER_TRIGGER_ON_FIRST_GUESS = 15;
 
-  // ── LORE LOCATIONS ──
+  // ── LORE LOCATIONS with free Google Maps embed URLs ──
   const LORE_LOCATIONS = [
     {
       id: 'ledurga',
       name: 'Lēdurga, Latvia',
       hint: 'SOMEWHERE IN LATVIA',
       lat: 57.3219, lng: 24.7792,
-      heading: 45, pitch: 0,
+      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590829!6m8!1m7!1sCAoSLEFGMVFpcE1xRldBQ3JkSFJfaHVkWjlZblBRR3VhNHV6eEZCNGRkZkhjZg!2m2!1d57.3219!2d24.7792!3f45!4f0!5f0.7985428755592729',
     },
     {
       id: 'brighton',
       name: '25 Graham Ave, Brighton',
       hint: 'SOMEWHERE IN ENGLAND',
       lat: 50.8288, lng: -0.1395,
-      heading: 200, pitch: 5,
+      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590830!6m8!1m7!1sCAoSLEFGMVFpcE5pSlZ5WEdEWmhseEtON0x4YkdJUEtBa3hGX3ZxWXBNb01vdA!2m2!1d50.8288!2d-0.1395!3f200!4f5!5f0.7985428755592729',
     },
     {
       id: 'covington',
       name: '395 E 40th St, Covington KY',
       hint: 'SOMEWHERE IN AMERICA',
       lat: 39.0776, lng: -84.4849,
-      heading: 90, pitch: 0,
+      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590831!6m8!1m7!1sCAoSLEFGMVFpcE9sVXBxMU9rcWlpZnFKcHJfd1hST0RuOWhVR3E5aHdLMXd3dw!2m2!1d39.0776!2d-84.4849!3f90!4f0!5f0.7985428755592729',
     },
     {
       id: 'tallinn',
       name: 'Veerenni tn, Tallinn',
       hint: 'SOMEWHERE IN ESTONIA',
       lat: 59.4215, lng: 24.7430,
-      heading: 270, pitch: 5,
+      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590832!6m8!1m7!1sCAoSLEFGMVFpcE5OeXBWNjFWZE5GZzROZU11SjlGT3h2VjdTMkNYVzhhWjJnZw!2m2!1d59.4215!2d24.743!3f270!4f5!5f0.7985428755592729',
     },
   ];
 
   // ── STATE ──
   let gUser = null, gStats = { games: 0 };
   let gFingerprint = '';
-  let gRoomCode = null, gRoomRole = null; // 'host' | 'guest'
+  let gRoomCode = null, gRoomRole = null;
   let gPlayers = [];
   let gRoundIndex = 0;
   let gRoundLocations = [];
-  let gMyGuess = null; // { lat, lng }
+  let gMyGuess = null;
   let gGuessMarker = null;
   let gTimerInterval = null;
   let gSecondsLeft = GUESS_TIMER_SECONDS;
   let gFirstGuessTriggered = false;
-  let gRoundScores = []; // per-round results
-  let gTotalScores = {}; // googleId -> total pts
+  let gRoundScores = [];
+  let gTotalScores = {};
   let gPollInterval = null;
   let gMiniMap = null, gResultsMap = null;
-  let gSVPanorama = null;
   let gMapExpanded = false;
-  let gMapsLoaded = false;
   let gGuessSubmitted = false;
 
   // ── FINGERPRINT ──
@@ -752,22 +751,8 @@
     gRoundIndex = d.roundIndex || 0;
     gTotalScores = {};
     gPlayers.forEach(p => { gTotalScores[p.googleId] = 0; });
-    loadMapsAndPlay();
-  }
-
-  // ── LOAD MAPS ──
-  function loadMapsAndPlay() {
-    if (gMapsLoaded) { beginRound(); return; }
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=onMapsReady`;
-    script.async = true;
-    document.head.appendChild(script);
-  }
-
-  window.onMapsReady = function() {
-    gMapsLoaded = true;
     beginRound();
-  };
+  }
 
   // ── ROUND ──
   function beginRound() {
@@ -795,8 +780,9 @@
     document.getElementById('minimap-toggle').textContent = '🗺 EXPAND MAP';
     document.getElementById('guess-confirm-bar').style.display = 'none';
     document.getElementById('btn-confirm-guess').disabled = true;
+    document.getElementById('btn-confirm-guess').textContent = 'PIN YOUR GUESS →';
 
-    // Countdown then show street view
+    // Countdown then show
     showCountdown(3, () => {
       initStreetView(loc);
       initMiniMap(loc);
@@ -822,64 +808,42 @@
     setTimeout(tick, 1000);
   }
 
+  // ── STREET VIEW via free Google Maps iframe embed ──
   function initStreetView(loc) {
-    if (gSVPanorama) { gSVPanorama.setPosition({ lat: loc.lat, lng: loc.lng }); return; }
-    gSVPanorama = new google.maps.StreetViewPanorama(document.getElementById('sv-panorama'), {
-      position: { lat: loc.lat, lng: loc.lng },
-      pov: { heading: loc.heading || 0, pitch: loc.pitch || 0 },
-      zoom: 1,
-      addressControl: false,
-      showRoadLabels: false,
-      zoomControl: false,
-      fullscreenControl: false,
-      motionTracking: false,
-      motionTrackingControl: false,
-      linksControl: false, // no moving
-      panControl: true,
-      scrollwheel: false,
-      disableDefaultUI: true,
-      panControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER }
-    });
+    const iframe = document.getElementById('sv-panorama');
+    // Use the location's embed URL — free Google Maps embed, no API key
+    iframe.src = loc.embedUrl;
   }
 
+  // ── MINI MAP via Leaflet (free OpenStreetMap) ──
   function initMiniMap(loc) {
-    const center = { lat: 20, lng: 0 };
-    if (!gMiniMap) {
-      gMiniMap = new google.maps.Map(document.getElementById('mini-map'), {
-        center, zoom: 2,
-        mapTypeId: 'roadmap',
-        disableDefaultUI: false,
-        zoomControl: true,
-        streetViewControl: false,
-        fullscreenControl: false,
-        mapTypeControl: false,
-        styles: [{ featureType:'all', elementType:'labels.text.fill', stylers:[{color:'#888'}] },
-                 { featureType:'water', elementType:'geometry', stylers:[{color:'#0d0d0d'}] },
-                 { featureType:'landscape', elementType:'geometry', stylers:[{color:'#111'}] },
-                 { featureType:'road', elementType:'geometry', stylers:[{color:'#222'}] },
-                 { featureType:'poi', elementType:'all', stylers:[{visibility:'off'}] }]
-      });
-      gMiniMap.addListener('click', (e) => onMapClick(e.latLng));
+    const mapEl = document.getElementById('mini-map');
+    if (gMiniMap) {
+      gMiniMap.setView([20, 0], 2);
+      if (gGuessMarker) { gMiniMap.removeLayer(gGuessMarker); gGuessMarker = null; }
     } else {
-      gMiniMap.setCenter(center);
-      gMiniMap.setZoom(2);
-      // Remove old markers
-      if (gGuessMarker) { gGuessMarker.setMap(null); gGuessMarker = null; }
+      gMiniMap = L.map(mapEl, {
+        center: [20, 0], zoom: 2,
+        zoomControl: true,
+        attributionControl: false,
+      });
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+      }).addTo(gMiniMap);
+      gMiniMap.on('click', (e) => onMapClick(e.latlng));
     }
+    setTimeout(() => gMiniMap.invalidateSize(), 100);
   }
 
-  function onMapClick(latLng) {
+  function onMapClick(latlng) {
     if (gGuessSubmitted) return;
-    gMyGuess = { lat: latLng.lat(), lng: latLng.lng() };
-    if (gGuessMarker) gGuessMarker.setMap(null);
-    gGuessMarker = new google.maps.Marker({
-      position: latLng,
-      map: gMiniMap,
-      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#ffe600', fillOpacity: 1, strokeColor: '#000', strokeWeight: 2 },
-      title: 'YOUR GUESS'
-    });
+    gMyGuess = { lat: latlng.lat, lng: latlng.lng };
+    if (gGuessMarker) gMiniMap.removeLayer(gGuessMarker);
+    gGuessMarker = L.circleMarker([latlng.lat, latlng.lng], {
+      radius: 10, color: '#000', weight: 2,
+      fillColor: '#ffe600', fillOpacity: 1
+    }).addTo(gMiniMap).bindTooltip('YOUR GUESS', { permanent: false });
     document.getElementById('btn-confirm-guess').disabled = false;
-    // Trigger timer if first guess
     if (!gFirstGuessTriggered) {
       gFirstGuessTriggered = true;
       if (gSecondsLeft > TIMER_TRIGGER_ON_FIRST_GUESS) {
@@ -897,7 +861,7 @@
     wrap.classList.toggle('expanded', gMapExpanded);
     toggle.textContent = gMapExpanded ? '✕ COLLAPSE' : '🗺 EXPAND MAP';
     bar.style.display = gMapExpanded ? 'flex' : 'none';
-    if (gMiniMap) setTimeout(() => google.maps.event.trigger(gMiniMap, 'resize'), 100);
+    if (gMiniMap) setTimeout(() => gMiniMap.invalidateSize(), 450);
   }
 
   function confirmGuess() {
@@ -933,7 +897,7 @@
   function forceSubmitGuess() {
     if (gGuessSubmitted) return;
     gGuessSubmitted = true;
-    if (!gMyGuess) gMyGuess = { lat: 0, lng: 0 }; // no guess = center of map (penalized)
+    if (!gMyGuess) gMyGuess = { lat: 0, lng: 0 };
     document.getElementById('btn-confirm-guess').disabled = true;
     submitGuess();
   }
@@ -947,7 +911,6 @@
       if (d.allGuessed || d.roundResults) {
         showRoundResults(d.roundResults || []);
       } else {
-        // Poll for all guesses
         pollForResults();
       }
     } catch { pollForResults(); }
@@ -971,7 +934,6 @@
     stopTimerInterval();
     const loc = gRoundLocations[gRoundIndex];
 
-    // Fallback: build local result if solo / no backend results
     if (!results || results.length === 0) {
       results = gPlayers.map(p => {
         const isMe = p.googleId === gUser.googleId;
@@ -984,11 +946,9 @@
       results.forEach((r,i) => { r.placement = i+1; r.pts = calcPoints(r.distKm, i+1, results.length); });
     }
 
-    // Update totals
     results.forEach(r => { gTotalScores[r.googleId] = (gTotalScores[r.googleId] || 0) + r.pts; });
     gRoundScores.push(results);
 
-    // Hide game screen, show results
     document.getElementById('game-screen').classList.remove('active');
     const overlay = document.getElementById('results-overlay');
     overlay.classList.add('active');
@@ -997,7 +957,6 @@
     document.getElementById('results-title').textContent = gRoundIndex + 1 === TOTAL_ROUNDS ? 'FINAL ROUND!' : `ROUND ${gRoundIndex + 1} DONE`;
     document.getElementById('results-answer').textContent = `📍 ${loc.name}`;
 
-    // Scores list
     const scoresEl = document.getElementById('results-scores');
     scoresEl.innerHTML = '';
     const sorted = [...results].sort((a,b) => a.distKm - b.distKm);
@@ -1018,56 +977,51 @@
       scoresEl.appendChild(row);
     });
 
-    // Results map
     const isLast = gRoundIndex + 1 >= TOTAL_ROUNDS;
     document.getElementById('btn-next-round').textContent = isLast ? 'VIEW FINAL STANDINGS →' : 'NEXT ROUND →';
 
-    // Delay map init so overlay is visible
     setTimeout(() => showResultsMap(loc, sorted), 200);
   }
 
+  // ── RESULTS MAP via Leaflet ──
   function showResultsMap(loc, sorted) {
     const mapEl = document.getElementById('results-map');
-    const rMap = new google.maps.Map(mapEl, {
-      center: { lat: loc.lat, lng: loc.lng },
-      zoom: 5,
-      mapTypeId: 'roadmap',
-      disableDefaultUI: true,
-      styles: [{ featureType:'water', elementType:'geometry', stylers:[{color:'#0d0d0d'}] },
-               { featureType:'landscape', elementType:'geometry', stylers:[{color:'#111'}] },
-               { featureType:'road', elementType:'geometry', stylers:[{color:'#222'}] },
-               { featureType:'poi', elementType:'all', stylers:[{visibility:'off'}] }]
-    });
-    // Correct location marker
-    new google.maps.Marker({
-      position: { lat: loc.lat, lng: loc.lng }, map: rMap,
-      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor: '#ff1a1a', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 },
-      title: loc.name, zIndex: 100
-    });
-    const bounds = new google.maps.LatLngBounds();
-    bounds.extend({ lat: loc.lat, lng: loc.lng });
+    mapEl.innerHTML = '';
+
+    if (gResultsMap) { gResultsMap.remove(); gResultsMap = null; }
+
+    gResultsMap = L.map(mapEl, { zoomControl: true, attributionControl: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(gResultsMap);
+
+    // Correct location marker (red)
+    const correctMarker = L.circleMarker([loc.lat, loc.lng], {
+      radius: 14, color: '#fff', weight: 2,
+      fillColor: '#ff1a1a', fillOpacity: 1
+    }).addTo(gResultsMap).bindTooltip(`📍 ${loc.name}`, { permanent: true, direction: 'top' });
+
+    const bounds = L.latLngBounds([[loc.lat, loc.lng]]);
     const colors = ['#ffe600','#4fc3f7','#81c784','#ff8a65'];
+
     sorted.forEach((r, i) => {
       if (!r.lat && !r.lng) return;
-      const pos = { lat: r.lat, lng: r.lng };
-      bounds.extend(pos);
-      new google.maps.Marker({
-        position: pos, map: rMap,
-        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: colors[i % colors.length], fillOpacity: 0.9, strokeColor: '#000', strokeWeight: 2 },
-        title: r.name, zIndex: 50 - i
-      });
-      new google.maps.Polyline({
-        path: [pos, { lat: loc.lat, lng: loc.lng }],
-        map: rMap, strokeColor: colors[i % colors.length], strokeOpacity: 0.5, strokeWeight: 2
-      });
+      bounds.extend([r.lat, r.lng]);
+      L.circleMarker([r.lat, r.lng], {
+        radius: 10, color: '#000', weight: 2,
+        fillColor: colors[i % colors.length], fillOpacity: 0.9
+      }).addTo(gResultsMap).bindTooltip(r.name.toUpperCase(), { permanent: false });
+      L.polyline([[r.lat, r.lng], [loc.lat, loc.lng]], {
+        color: colors[i % colors.length], opacity: 0.5, weight: 2, dashArray: '6,4'
+      }).addTo(gResultsMap);
     });
-    rMap.fitBounds(bounds, 60);
+
+    gResultsMap.fitBounds(bounds, { padding: [40, 40] });
   }
 
   function nextRound() {
     gRoundIndex++;
     if (gRoundIndex >= TOTAL_ROUNDS) { showFinalLeaderboard(); return; }
     document.getElementById('results-overlay').classList.remove('active');
+    if (gResultsMap) { gResultsMap.remove(); gResultsMap = null; }
     beginRound();
   }
 
@@ -1105,7 +1059,6 @@
       restEl.appendChild(row);
     });
 
-    // Save game to worker
     fetch(`${WORKER}/api/guessr/finish`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ roomCode:gRoomCode, googleId:gUser.googleId, scores: players.map(p=>({googleId:p.googleId, name:p.name, total:p.total})) }) }).catch(()=>{});
   }
 
@@ -1113,8 +1066,9 @@
     document.getElementById('final-overlay').classList.remove('active');
     document.getElementById('game-screen').classList.remove('active');
     gRoundIndex = 0; gRoundScores = []; gMyGuess = null;
-    if (gSVPanorama) { gSVPanorama = null; document.getElementById('sv-panorama').innerHTML = ''; }
-    gMiniMap = null; document.getElementById('mini-map').innerHTML = '';
+    document.getElementById('sv-panorama').src = '';
+    if (gMiniMap) { gMiniMap.remove(); gMiniMap = null; }
+    if (gResultsMap) { gResultsMap.remove(); gResultsMap = null; }
     gRoomCode = null; gRoomRole = null; gPlayers = [];
     showLobby();
   }
@@ -1140,13 +1094,11 @@
   }
 
   function calcPoints(distKm, placement, totalPlayers) {
-    // Distance score: max 4000, decays exponentially
     const distScore = Math.round(4000 * Math.exp(-distKm / 2000));
-    // Placement bonus: 1st=1000, 2nd=600, 3rd=300, 4th=100
     const bonusTable = [1000, 600, 300, 100];
     const placementBonus = bonusTable[Math.min(placement-1, bonusTable.length-1)] || 0;
     return distScore + (totalPlayers > 1 ? placementBonus : 0);
   }
+
 </script>
 </body>
-</html>
