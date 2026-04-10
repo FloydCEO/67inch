@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>67DRAWPHONE | 67 Inch Dih Club</title>
+<link rel="icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #ff1a1a;
+    --yellow: #ffe600;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --white: #f5f5f5;
+    --gray: #1a1a1a;
+    --green: #538d4e;
+    --blue: #4fc3f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav { background: #0d0d0d; border-bottom: 3px solid var(--yellow); display: flex; justify-content: center; position: sticky; top: 0; z-index: 200; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { color: var(--white); text-decoration: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 3px; padding: 14px 28px; border-right: 1px solid #222; transition: all 0.15s; position: relative; overflow: hidden; white-space: nowrap; flex-shrink: 0; }
+  nav a::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--yellow); transform: scaleX(0); transition: transform 0.2s; }
+  nav a:hover { background: #1a1a1a; color: var(--yellow); }
+  nav a:hover::after { transform: scaleX(1); }
+  nav a.active-page { color: var(--yellow); }
+  nav a.active-page::after { transform: scaleX(1); }
+  nav a.discord-btn { background: #5865F2; color: white; border: none; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+  nav a.discord-btn:hover { background: #4752c4; }
+  nav a.discord-btn::after { display: none; }
+
+  /* PAGE HEADER */
+  .page-header { background: radial-gradient(ellipse at center, #001a1a 0%, #000 70%); padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; border-bottom: 6px solid var(--yellow); }
+  .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem,10vw,7rem); letter-spacing: 6px; color: var(--yellow); text-shadow: 4px 4px 0 var(--red), 8px 8px 0 #000; line-height: 1; }
+  .page-header-sub { font-family: 'VT323', monospace; font-size: 1.2rem; color: #888; letter-spacing: 4px; margin-top: 8px; }
+  .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 3px; color: #555; text-decoration: none; margin-top: 14px; transition: color 0.15s; }
+  .back-link:hover { color: var(--yellow); }
+
+  /* APP */
+  #app { max-width: 700px; margin: 0 auto; padding: 40px 20px 80px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* BOXES */
+  .box { background: #111; border: 2px solid #333; padding: 32px 28px; }
+  .box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; color: var(--yellow); margin-bottom: 6px; }
+  .box p { font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 2px; color: #666; margin-bottom: 20px; line-height: 1.6; }
+
+  /* INPUTS */
+  .field-label { font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 4px; color: #555; margin-bottom: 6px; text-transform: uppercase; }
+  .text-input { width: 100%; background: #0a0a0a; border: 2px solid #333; color: var(--white); padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 1px; outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
+  .text-input:focus { border-color: var(--yellow); }
+  .text-input::placeholder { color: #333; }
+  .code-input { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 10px; text-align: center; text-transform: uppercase; }
+
+  /* BUTTONS */
+  .btn-primary { width: 100%; padding: 14px; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 5px; border: none; background: var(--yellow); color: #000; cursor: pointer; transition: all 0.15s; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); box-shadow: 4px 4px 0 #aa9900; margin-top: 8px; }
+  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #aa9900; }
+  .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-red { background: var(--red); color: var(--yellow); box-shadow: 4px 4px 0 #800; }
+  .btn-red:hover { box-shadow: 6px 6px 0 #800; }
+  .btn-secondary { width: 100%; padding: 11px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 4px; border: 2px solid #333; background: transparent; color: #666; cursor: pointer; transition: all 0.15s; margin-top: 10px; }
+  .btn-secondary:hover { border-color: #666; color: var(--white); }
+
+  /* ROOM CODE */
+  .room-code-display { background: #0a0a0a; border: 3px solid var(--yellow); padding: 20px; text-align: center; margin: 20px 0; }
+  .room-code-label { font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 4px; color: #666; margin-bottom: 8px; }
+  .room-code { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: 12px; color: var(--yellow); text-shadow: 3px 3px 0 var(--red); line-height: 1; cursor: pointer; }
+  .room-code:hover { color: #fff; }
+
+  /* PLAYER LIST */
+  .player-list-label { font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 4px; color: #555; margin-bottom: 10px; text-transform: uppercase; }
+  .player-slot { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #0a0a0a; border: 1px solid #1a1a1a; margin-bottom: 6px; }
+  .player-slot-avatar { width: 34px; height: 34px; background: var(--red); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--yellow); flex-shrink: 0; }
+  .player-slot-name { font-family: 'Oswald', sans-serif; font-size: 0.95rem; letter-spacing: 1px; flex: 1; }
+  .player-slot-badge { font-family: 'VT323', monospace; font-size: 0.75rem; letter-spacing: 2px; padding: 2px 8px; border: 1px solid; }
+  .badge-host { color: var(--yellow); border-color: rgba(255,230,0,0.4); background: rgba(255,230,0,0.06); }
+  .badge-you { color: var(--blue); border-color: rgba(79,195,247,0.4); background: rgba(79,195,247,0.06); }
+  .waiting-pulse { display: flex; align-items: center; gap: 8px; font-family: 'VT323', monospace; font-size: 0.9rem; letter-spacing: 3px; color: #555; margin-top: 16px; }
+  .waiting-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); animation: pulse-dot 1.5s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+
+  /* GAME SCREEN — fullscreen */
+  #game-screen { display: none; position: fixed; inset: 0; z-index: 500; background: var(--darker); flex-direction: column; }
+  #game-screen.active { display: flex; }
+
+  /* GAME HUD */
+  .game-hud { background: #0d0d0d; border-bottom: 3px solid var(--yellow); padding: 10px 18px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .hud-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 4px; color: var(--yellow); }
+  .hud-phase { font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 3px; color: #555; }
+  .hud-spacer { flex: 1; }
+  .hud-timer { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--white); background: #111; border: 2px solid #333; padding: 4px 14px; transition: color 0.3s, border-color 0.3s; min-width: 80px; text-align: center; }
+  .hud-timer.urgent { color: var(--red); border-color: var(--red); animation: flash 0.5s ease-in-out infinite; }
+  @keyframes flash { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .hud-players { display: flex; gap: 5px; }
+  .hud-pip { width: 26px; height: 26px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; color: #555; border: 2px solid transparent; transition: all 0.2s; }
+  .hud-pip.done { border-color: var(--green); color: var(--green); background: rgba(83,141,78,0.15); }
+  .hud-pip.me { border-color: var(--yellow); }
+
+  /* GAME CONTENT AREA */
+  .game-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 24px 20px; gap: 16px; }
+
+  /* PHASE LABEL */
+  .phase-label { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.4rem,4vw,2.2rem); letter-spacing: 5px; color: var(--yellow); text-align: center; }
+  .phase-sub { font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 3px; color: #666; text-align: center; margin-top: 2px; }
+
+  /* PROMPT INPUT */
+  .prompt-wrap { width: 100%; max-width: 600px; }
+  .prompt-textarea { width: 100%; background: #0a0a0a; border: 3px solid #333; color: var(--white); padding: 16px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; letter-spacing: 1px; outline: none; resize: none; height: 100px; transition: border-color 0.2s; }
+  .prompt-textarea:focus { border-color: var(--yellow); }
+  .prompt-char-count { font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 2px; color: #444; text-align: right; margin-top: 4px; }
+
+  /* DRAWING SOURCE (what to draw) */
+  .source-box { width: 100%; max-width: 600px; background: #0d0d0d; border: 2px solid #2a2a2a; padding: 16px 20px; }
+  .source-label { font-family: 'VT323', monospace; font-size: 0.8rem; letter-spacing: 4px; color: #444; margin-bottom: 8px; }
+  .source-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--white); word-break: break-word; }
+  .source-img { width: 100%; max-height: 280px; object-fit: contain; display: block; }
+
+  /* CANVAS AREA */
+  .canvas-wrap { width: 100%; max-width: 600px; position: relative; }
+  #draw-canvas { display: block; width: 100%; background: #fff; cursor: crosshair; touch-action: none; border: 3px solid var(--yellow); }
+
+  /* TOOLBAR */
+  .toolbar { width: 100%; max-width: 600px; background: #111; border: 2px solid #222; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .tool-group { display: flex; gap: 6px; align-items: center; }
+  .tool-sep { width: 1px; height: 28px; background: #333; }
+  .tool-btn { width: 34px; height: 34px; border: 2px solid #333; background: #0a0a0a; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.15s; color: #888; flex-shrink: 0; }
+  .tool-btn:hover { border-color: #666; color: var(--white); }
+  .tool-btn.active { border-color: var(--yellow); color: var(--yellow); background: rgba(255,230,0,0.08); }
+  .color-btn { width: 28px; height: 28px; border: 2px solid #555; cursor: pointer; transition: transform 0.15s, border-color 0.15s; flex-shrink: 0; }
+  .color-btn:hover { transform: scale(1.15); }
+  .color-btn.active { border-color: var(--white); transform: scale(1.2); box-shadow: 0 0 0 1px #000; }
+  .size-btn { width: 28px; height: 28px; border: 2px solid #333; background: #0a0a0a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+  .size-btn:hover { border-color: #666; }
+  .size-btn.active { border-color: var(--yellow); }
+  .size-dot { border-radius: 50%; background: var(--white); display: block; }
+
+  /* SUBMIT BAR */
+  .submit-bar { width: 100%; max-width: 600px; }
+  .submit-bar .btn-primary { font-size: 1.2rem; }
+
+  /* WAITING OVERLAY inside game */
+  .waiting-overlay { position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.92); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+  .waiting-overlay.active { display: flex; }
+  .waiting-overlay h2 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--yellow); }
+  .waiting-overlay p { font-family: 'VT323', monospace; font-size: 1.1rem; letter-spacing: 3px; color: #666; }
+  .waiting-pips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .wpip { display: flex; align-items: center; gap: 8px; font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 2px; color: #555; }
+  .wpip-dot { width: 12px; height: 12px; border-radius: 50%; background: #333; transition: background 0.3s; }
+  .wpip-dot.done { background: var(--green); }
+
+  /* COUNTDOWN */
+  .countdown-overlay { position: fixed; inset: 0; z-index: 700; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; }
+  .countdown-overlay.active { display: flex; }
+  .countdown-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(6rem,20vw,12rem); color: var(--yellow); text-shadow: 6px 6px 0 var(--red); animation: cd-pop 1s ease-in-out; line-height: 1; }
+  .countdown-label { font-family: 'VT323', monospace; font-size: 1.2rem; letter-spacing: 6px; color: #555; margin-top: 12px; }
+  @keyframes cd-pop { 0%{transform:scale(1.5);opacity:0} 30%{transform:scale(1);opacity:1} 80%{transform:scale(1);opacity:1} 100%{transform:scale(0.8);opacity:0} }
+
+  /* REVEAL SCREEN */
+  #reveal-screen { display: none; position: fixed; inset: 0; z-index: 500; background: var(--darker); flex-direction: column; overflow: hidden; }
+  #reveal-screen.active { display: flex; }
+  .reveal-hud { background: #0d0d0d; border-bottom: 3px solid var(--yellow); padding: 12px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .reveal-hud-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 4px; color: var(--yellow); }
+  .reveal-hud-chain { font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 3px; color: #666; }
+  .reveal-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; gap: 0; }
+  .reveal-chain-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem,5vw,3rem); letter-spacing: 6px; color: var(--yellow); text-shadow: 3px 3px 0 var(--red); text-align: center; margin-bottom: 30px; }
+  .reveal-step { width: 100%; max-width: 600px; margin-bottom: 16px; opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .reveal-step.visible { opacity: 1; transform: translateY(0); }
+  .reveal-step-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #111; border: 1px solid #222; margin-bottom: 4px; }
+  .reveal-step-type { font-family: 'VT323', monospace; font-size: 0.8rem; letter-spacing: 4px; padding: 2px 8px; border: 1px solid; }
+  .type-prompt { color: var(--blue); border-color: rgba(79,195,247,0.4); }
+  .type-draw { color: var(--red); border-color: rgba(255,26,26,0.4); }
+  .type-guess { color: var(--green); border-color: rgba(83,141,78,0.4); }
+  .reveal-step-author { font-family: 'VT323', monospace; font-size: 0.9rem; letter-spacing: 2px; color: #888; }
+  .reveal-step-content { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 16px; }
+  .reveal-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--white); word-break: break-word; }
+  .reveal-img { width: 100%; max-height: 320px; object-fit: contain; display: block; background: #fff; }
+  .reveal-nav { display: flex; gap: 12px; padding: 16px 20px; background: #0d0d0d; border-top: 2px solid #222; flex-shrink: 0; }
+  .reveal-nav button { flex: 1; padding: 13px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 4px; border: none; cursor: pointer; transition: all 0.15s; }
+  .btn-prev { background: #222; color: #888; }
+  .btn-prev:hover { background: #333; color: var(--white); }
+  .btn-next { background: var(--yellow); color: #000; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); }
+  .btn-next:hover { background: #fff; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #111; border: 2px solid var(--yellow); color: var(--yellow); font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 3px; padding: 10px 24px; z-index: 9000; transition: transform 0.3s; white-space: nowrap; pointer-events: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* LOADING */
+  .loading-box { text-align: center; padding: 60px 20px; font-family: 'VT323', monospace; font-size: 1.4rem; letter-spacing: 4px; color: #555; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .blink { animation: blink 1s step-end infinite; }
+
+  /* FOOTER */
+  footer { background: #000; border-top: 4px solid var(--red); padding: 40px 20px 30px; text-align: center; }
+  .footer-logo { width: 60px; filter: drop-shadow(0 0 16px rgba(255,26,26,0.5)); margin-bottom: 12px; }
+  .footer-links { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin: 14px 0; }
+  .footer-links a { color: #555; text-decoration: none; font-family: 'VT323', monospace; font-size: 0.95rem; letter-spacing: 3px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-copy { font-family: 'VT323', monospace; font-size: 0.85rem; color: #333; letter-spacing: 2px; margin-top: 20px; }
+
+  @media(max-width:520px) {
+    .toolbar { gap: 8px; }
+    .tool-btn { width: 30px; height: 30px; font-size: 0.85rem; }
+    .color-btn { width: 24px; height: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/">HOME</a>
+  <a href="/#games">67GAMES</a>
+  <a href="/games/67word">67WORD</a>
+  <a href="/games/67guessr">67GUESSR</a>
+  <a href="/games/67drawphone" class="active-page">67DRAWPHONE</a>
+  <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="discord-btn">
+    <svg width="18" height="14" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.19A14.75 14.75 0 0 0 11.48 0a.06.06 0 0 0-.06.03 10.27 10.27 0 0 0-.45.93 13.62 13.62 0 0 0-4.09 0A9.4 9.4 0 0 0 6.43.03.06.06 0 0 0 6.37 0a14.72 14.72 0 0 0-3.77 1.19.05.05 0 0 0-.03.02C.38 4.88-.23 8.44.07 11.96a.06.06 0 0 0 .02.04 14.83 14.83 0 0 0 4.47 2.26.06.06 0 0 0 .07-.02c.34-.47.65-.97.91-1.49a.06.06 0 0 0-.03-.08 9.76 9.76 0 0 1-1.39-.66.06.06 0 0 1-.01-.1c.09-.07.19-.14.28-.21a.06.06 0 0 1 .06-.01c2.92 1.33 6.08 1.33 8.97 0a.06.06 0 0 1 .06.01c.09.07.18.14.28.21a.06.06 0 0 1-.01.1 9.13 9.13 0 0 1-1.4.66.06.06 0 0 0-.03.08c.27.52.57 1.02.91 1.49a.06.06 0 0 0 .07.02 14.78 14.78 0 0 0 4.48-2.26.06.06 0 0 0 .02-.04c.37-3.83-.62-7.36-2.62-10.75a.05.05 0 0 0-.03-.02ZM6.01 9.79c-.88 0-1.61-.81-1.61-1.8s.71-1.8 1.61-1.8c.91 0 1.63.82 1.61 1.8 0 .99-.71 1.8-1.61 1.8Zm5.95 0c-.88 0-1.61-.81-1.61-1.8s.71-1.8 1.61-1.8c.91 0 1.63.82 1.61 1.8 0 .99-.7 1.8-1.61 1.8Z"/></svg>
+    DISCORD
+  </a>
+</nav>
+
+<div class="page-header">
+  <h1>67DRAWPHONE</h1>
+  <div class="page-header-sub">DRAW // GUESS // CHAOS // REPEAT</div>
+  <a href="/#games" class="back-link">← BACK TO 67GAMES</a>
+</div>
+
+<div id="app">
+  <!-- LOBBY SCREEN -->
+  <div id="screen-lobby" class="screen active">
+    <div class="box">
+      <h2>START OR JOIN</h2>
+      <p>NO ACCOUNT NEEDED. JUST A NAME.</p>
+
+      <div class="field-label">YOUR NAME</div>
+      <input class="text-input" id="player-name" maxlength="20" placeholder="Enter your name..." autocomplete="off" spellcheck="false">
+
+      <button class="btn-primary btn-red" onclick="showCreate()">CREATE PARTY →</button>
+      <button class="btn-secondary" onclick="showJoin()">JOIN A PARTY</button>
+    </div>
+  </div>
+
+  <!-- CREATE SCREEN -->
+  <div id="screen-create" class="screen">
+    <div class="box">
+      <h2>YOUR PARTY</h2>
+      <div class="room-code-display">
+        <div class="room-code-label">PARTY CODE — CLICK TO COPY</div>
+        <div class="room-code" id="create-room-code" onclick="copyCode()">------</div>
+      </div>
+      <div class="player-list-label">PLAYERS</div>
+      <div id="create-player-list"></div>
+      <div class="waiting-pulse" id="create-waiting">
+        <div class="waiting-dot"></div>
+        WAITING FOR PLAYERS...
+      </div>
+      <button class="btn-primary" id="btn-start" onclick="startGame()" disabled>START GAME →</button>
+      <button class="btn-secondary" onclick="leaveGame()">← LEAVE PARTY</button>
+    </div>
+  </div>
+
+  <!-- JOIN SCREEN -->
+  <div id="screen-join" class="screen">
+    <div class="box">
+      <h2>JOIN A PARTY</h2>
+      <div class="field-label">PARTY CODE</div>
+      <input class="text-input code-input" id="join-code" maxlength="6" placeholder="XXXXXX" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()">
+      <button class="btn-primary" onclick="joinRoom()">JOIN →</button>
+      <button class="btn-secondary" onclick="showScreen('screen-lobby')">← BACK</button>
+    </div>
+  </div>
+
+  <!-- JOINED SCREEN (non-host waiting) -->
+  <div id="screen-joined" class="screen">
+    <div class="box">
+      <h2>PARTY JOINED!</h2>
+      <div class="room-code-display">
+        <div class="room-code-label">PARTY CODE</div>
+        <div class="room-code" id="joined-room-code">------</div>
+      </div>
+      <div class="player-list-label">PLAYERS</div>
+      <div id="joined-player-list"></div>
+      <div class="waiting-pulse">
+        <div class="waiting-dot"></div>
+        WAITING FOR HOST TO START...
+      </div>
+      <button class="btn-secondary" onclick="leaveGame()">← LEAVE PARTY</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="screen-loading" class="screen">
+    <div class="loading-box">LOADING<span class="blink">▌</span></div>
+  </div>
+</div>
+
+<!-- GAME SCREEN (fullscreen) -->
+<div id="game-screen">
+  <div class="game-hud">
+    <div>
+      <div class="hud-title">67DRAWPHONE</div>
+      <div class="hud-phase" id="hud-phase">PHASE 1</div>
+    </div>
+    <div class="hud-spacer"></div>
+    <div class="hud-players" id="hud-players"></div>
+    <div class="hud-timer" id="hud-timer">--:--</div>
+  </div>
+  <div class="game-content" id="game-content">
+    <!-- dynamically filled -->
+  </div>
+</div>
+
+<!-- WAITING OVERLAY -->
+<div class="waiting-overlay" id="waiting-overlay">
+  <h2>WAITING...</h2>
+  <p>WAITING FOR EVERYONE TO FINISH</p>
+  <div class="waiting-pips" id="waiting-pips"></div>
+</div>
+
+<!-- COUNTDOWN OVERLAY -->
+<div class="countdown-overlay" id="countdown-overlay">
+  <div class="countdown-num" id="countdown-num">3</div>
+  <div class="countdown-label" id="countdown-label">GET READY</div>
+</div>
+
+<!-- REVEAL SCREEN -->
+<div id="reveal-screen">
+  <div class="reveal-hud">
+    <div class="reveal-hud-title">67DRAWPHONE</div>
+    <div class="reveal-hud-chain" id="reveal-chain-label">CHAIN 1 OF 1</div>
+    <div style="flex:1"></div>
+    <button onclick="playAgain()" style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;background:transparent;border:2px solid #333;color:#555;padding:6px 16px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='#666';this.style.color='#fff'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">PLAY AGAIN</button>
+  </div>
+  <div class="reveal-body" id="reveal-body"></div>
+  <div class="reveal-nav">
+    <button class="btn-prev" id="btn-prev" onclick="revealPrev()">← PREV CHAIN</button>
+    <button class="btn-next" id="btn-next" onclick="revealNext()">NEXT CHAIN →</button>
+  </div>
+</div>
+
+<footer>
+  <img src="https://iili.io/q5eSGHu.png" alt="Logo" class="footer-logo">
+  <p style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:6px;color:var(--red);">67 INCH DIH CLUB</p>
+  <div class="footer-links">
+    <a href="/">HOME</a>
+    <a href="/#games">67GAMES</a>
+    <a href="/games/67word">67WORD</a>
+    <a href="/games/67guessr">67GUESSR</a>
+  </div>
+  <div class="footer-copy">© 2025 67 INCH DIH CLUB // ALL RIGHTS RESERVED<br><span class="blink">▌</span></div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WORKER = 'https://67.lillykobusiness69.workers.dev';
+const PROMPT_TIME = 30;
+const DRAW_TIME = 60;
+const PHASE_LABELS = ['prompt','draw','guess','draw','guess','draw','guess','draw'];
+
+// ── STATE ──
+let gRoomCode = null;
+let gPlayerId = null;
+let gPlayerName = null;
+let gIsHost = false;
+let gPlayers = [];
+let gPhase = 0;
+let gPhaseType = 'prompt'; // prompt | draw | guess
+let gTotalPhases = 0;
+let gSubmitted = false;
+let gPollInterval = null;
+let gTimerInterval = null;
+let gSecondsLeft = 0;
+
+// Drawing state
+let gCanvas = null, gCtx = null;
+let gDrawing = false;
+let gTool = 'pen'; // pen | eraser | fill
+let gColor = '#000000';
+let gBrushSize = 6;
+let gLastX = 0, gLastY = 0;
+let gHistory = []; // for undo
+let gHistoryIndex = -1;
+
+// Reveal state
+let gRevealChains = [];
+let gRevealChainIdx = 0;
+let gRevealStepIdx = 0;
+let gRevealInterval = null;
+
+// ── UTILS ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function stopPolling() { if (gPollInterval) { clearInterval(gPollInterval); gPollInterval = null; } }
+function stopTimer() { if (gTimerInterval) { clearInterval(gTimerInterval); gTimerInterval = null; } }
+
+// ── LOBBY ──
+function showCreate() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) { showToast('ENTER YOUR NAME FIRST', true); return; }
+  gPlayerName = name;
+  createRoom();
+}
+
+function showJoin() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) { showToast('ENTER YOUR NAME FIRST', true); return; }
+  gPlayerName = name;
+  showScreen('screen-join');
+}
+
+async function createRoom() {
+  showScreen('screen-loading');
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: gPlayerName }) });
+    const d = await res.json();
+    if (!d.success) { showToast(d.error || 'Error', true); showScreen('screen-lobby'); return; }
+    gRoomCode = d.roomCode;
+    gPlayerId = d.playerId;
+    gIsHost = true;
+    gPlayers = [{ id: gPlayerId, name: gPlayerName }];
+    document.getElementById('create-room-code').textContent = gRoomCode;
+    renderPlayerList('create-player-list');
+    showScreen('screen-create');
+    startPollingLobby();
+  } catch { showToast('Network error', true); showScreen('screen-lobby'); }
+}
+
+async function joinRoom() {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  if (code.length !== 6) { showToast('ENTER A 6-CHAR CODE', true); return; }
+  showScreen('screen-loading');
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/join`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: code, name: gPlayerName }) });
+    const d = await res.json();
+    if (!d.success) { showToast(d.error || 'Room not found', true); showScreen('screen-join'); return; }
+    gRoomCode = d.roomCode;
+    gPlayerId = d.playerId;
+    gIsHost = false;
+    gPlayers = d.players;
+    document.getElementById('joined-room-code').textContent = gRoomCode;
+    renderPlayerList('joined-player-list');
+    showScreen('screen-joined');
+    startPollingLobby();
+  } catch { showToast('Network error', true); showScreen('screen-join'); }
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(gRoomCode).catch(() => {});
+  showToast('CODE COPIED!');
+}
+
+function renderPlayerList(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  gPlayers.forEach(p => {
+    const isHost = gPlayers[0]?.id === p.id;
+    const isMe = p.id === gPlayerId;
+    const div = document.createElement('div');
+    div.className = 'player-slot';
+    div.innerHTML = `
+      <div class="player-slot-avatar">${p.name.charAt(0).toUpperCase()}</div>
+      <div class="player-slot-name">${p.name.toUpperCase()}${isHost ? ' 👑' : ''}</div>
+      ${isMe ? '<span class="player-slot-badge badge-you">YOU</span>' : ''}
+      ${isHost && !isMe ? '<span class="player-slot-badge badge-host">HOST</span>' : ''}
+    `;
+    el.appendChild(div);
+  });
+
+  if (elId === 'create-player-list') {
+    const btn = document.getElementById('btn-start');
+    btn.disabled = gPlayers.length < 2;
+    btn.textContent = gPlayers.length < 2 ? 'NEED 2+ PLAYERS' : `START WITH ${gPlayers.length} →`;
+  }
+}
+
+function startPollingLobby() {
+  stopPolling();
+  gPollInterval = setInterval(pollLobby, 2000);
+}
+
+async function pollLobby() {
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/room`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode }) });
+    const d = await res.json();
+    if (!d.success) return;
+    gPlayers = d.players;
+    renderPlayerList(gIsHost ? 'create-player-list' : 'joined-player-list');
+    if (d.status === 'playing') {
+      stopPolling();
+      receiveGameStart(d);
+    }
+  } catch {}
+}
+
+async function leaveGame() {
+  stopPolling(); stopTimer();
+  if (gRoomCode && gPlayerId) {
+    fetch(`${WORKER}/api/drawphone/leave`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) }).catch(() => {});
+  }
+  gRoomCode = null; gPlayerId = null; gIsHost = false; gPlayers = [];
+  document.getElementById('game-screen').classList.remove('active');
+  document.getElementById('reveal-screen').classList.remove('active');
+  showScreen('screen-lobby');
+}
+
+// ── START GAME (host) ──
+async function startGame() {
+  const btn = document.getElementById('btn-start');
+  btn.disabled = true; btn.textContent = 'STARTING...';
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/start`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
+    const d = await res.json();
+    if (!d.success) { btn.disabled = false; btn.textContent = `START WITH ${gPlayers.length} →`; showToast(d.error || 'Error', true); return; }
+    stopPolling();
+    receiveGameStart(d);
+  } catch { btn.disabled = false; showToast('Network error', true); }
+}
+
+function receiveGameStart(d) {
+  gTotalPhases = gPlayers.length;
+  gPhase = d.phase || 0;
+  gPhaseType = d.phaseType || 'prompt';
+  gSubmitted = false;
+  document.getElementById('game-screen').classList.add('active');
+  showScreen('screen-loading');
+  showCountdown(3, () => beginPhase());
+}
+
+// ── PHASE LOGIC ──
+async function beginPhase() {
+  gSubmitted = false;
+  updateHudPlayers();
+  document.getElementById('hud-phase').textContent = `PHASE ${gPhase + 1} OF ${gTotalPhases} — ${gPhaseType.toUpperCase()}`;
+
+  const content = document.getElementById('game-content');
+  content.innerHTML = '';
+
+  if (gPhaseType === 'prompt') {
+    renderPromptPhase(content);
+    startPhaseTimer(PROMPT_TIME);
+  } else if (gPhaseType === 'draw') {
+    // Fetch what to draw (the previous guess/prompt)
+    const prev = await fetchMyPrompt();
+    renderDrawPhase(content, prev);
+    startPhaseTimer(DRAW_TIME);
+  } else {
+    // guess — fetch the drawing
+    const prev = await fetchMyPrompt();
+    renderGuessPhase(content, prev);
+    startPhaseTimer(PROMPT_TIME);
+  }
+
+  startPollingPhase();
+}
+
+async function fetchMyPrompt() {
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/myprompt`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
+    const d = await res.json();
+    return d;
+  } catch { return null; }
+}
+
+// ── RENDER PHASES ──
+function renderPromptPhase(container) {
+  const isFirstPhase = gPhase === 0;
+  container.innerHTML = `
+    <div class="phase-label">${isFirstPhase ? '✏️ WRITE A PROMPT' : '💬 GUESS THE DRAWING'}</div>
+    <div class="phase-sub">${isFirstPhase ? 'WRITE ANYTHING — YOUR FRIENDS WILL DRAW IT' : 'DESCRIBE WHAT YOU SEE IN THE DRAWING ABOVE'}</div>
+    ${!isFirstPhase ? '<div id="prev-content-wrap"></div>' : ''}
+    <div class="prompt-wrap">
+      <textarea class="prompt-textarea" id="prompt-input" maxlength="120" placeholder="${isFirstPhase ? 'e.g. a cat riding a motorcycle...' : 'What is this drawing of?'}"></textarea>
+      <div class="prompt-char-count"><span id="char-count">0</span>/120</div>
+    </div>
+    <div class="submit-bar">
+      <button class="btn-primary btn-red" id="btn-submit-phase" onclick="submitPhase()">SUBMIT →</button>
+    </div>
+  `;
+  const ta = document.getElementById('prompt-input');
+  ta.addEventListener('input', () => { document.getElementById('char-count').textContent = ta.value.length; });
+}
+
+async function renderDrawPhase(container, prev) {
+  let sourceHTML = '';
+  if (prev && prev.content) {
+    if (prev.type === 'prompt' || prev.type === 'guess') {
+      sourceHTML = `<div class="source-box"><div class="source-label">DRAW THIS:</div><div class="source-text">${escHtml(prev.content)}</div></div>`;
+    }
+  }
+
+  container.innerHTML = `
+    <div class="phase-label">🎨 DRAW IT</div>
+    <div class="phase-sub">USE THE TOOLS BELOW — ${DRAW_TIME}S ON THE CLOCK</div>
+    ${sourceHTML}
+    <div class="canvas-wrap">
+      <canvas id="draw-canvas" width="600" height="400"></canvas>
+    </div>
+    <div class="toolbar">
+      <div class="tool-group">
+        <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')" title="Pen">✏️</button>
+        <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="Eraser">⬜</button>
+        <button class="tool-btn" id="tool-fill" onclick="setTool('fill')" title="Fill">🪣</button>
+      </div>
+      <div class="tool-sep"></div>
+      <div class="tool-group" id="color-btns"></div>
+      <div class="tool-sep"></div>
+      <div class="tool-group">
+        <button class="size-btn active" id="size-sm" onclick="setSize(4)" title="Small"><span class="size-dot" style="width:4px;height:4px;"></span></button>
+        <button class="size-btn" id="size-md" onclick="setSize(8)" title="Medium"><span class="size-dot" style="width:8px;height:8px;"></span></button>
+        <button class="size-btn" id="size-lg" onclick="setSize(14)" title="Large"><span class="size-dot" style="width:14px;height:14px;"></span></button>
+        <button class="size-btn" id="size-xl" onclick="setSize(22)" title="XL"><span class="size-dot" style="width:20px;height:20px;"></span></button>
+      </div>
+      <div class="tool-sep"></div>
+      <div class="tool-group">
+        <button class="tool-btn" onclick="undoDraw()" title="Undo">↩️</button>
+        <button class="tool-btn" onclick="clearCanvas()" title="Clear">🗑️</button>
+      </div>
+    </div>
+    <div class="submit-bar">
+      <button class="btn-primary btn-red" id="btn-submit-phase" onclick="submitPhase()">SUBMIT DRAWING →</button>
+    </div>
+  `;
+
+  // Build color palette
+  const colors = ['#000000','#ffffff','#ff1a1a','#ffe600','#ff6b00','#00cc44','#4fc3f7','#9c27b0','#ff69b4','#8B4513','#808080','#1a237e'];
+  const colorWrap = document.getElementById('color-btns');
+  colors.forEach(c => {
+    const btn = document.createElement('div');
+    btn.className = 'color-btn' + (c === gColor ? ' active' : '');
+    btn.style.background = c;
+    btn.onclick = () => setColor(c);
+    colorWrap.appendChild(btn);
+  });
+
+  initCanvas();
+}
+
+async function renderGuessPhase(container, prev) {
+  let imgHTML = '';
+  if (prev && prev.content && prev.type === 'draw') {
+    imgHTML = `<div class="source-box" style="padding:0;overflow:hidden;"><img class="source-img" src="${prev.content}" alt="drawing"></div>`;
+  }
+  container.innerHTML = `
+    <div class="phase-label">🔍 WHAT IS THIS?</div>
+    <div class="phase-sub">DESCRIBE THE DRAWING IN WORDS</div>
+    ${imgHTML}
+    <div class="prompt-wrap">
+      <textarea class="prompt-textarea" id="prompt-input" maxlength="120" placeholder="I think this is..."></textarea>
+      <div class="prompt-char-count"><span id="char-count">0</span>/120</div>
+    </div>
+    <div class="submit-bar">
+      <button class="btn-primary btn-red" id="btn-submit-phase" onclick="submitPhase()">SUBMIT GUESS →</button>
+    </div>
+  `;
+  const ta = document.getElementById('prompt-input');
+  ta.addEventListener('input', () => { document.getElementById('char-count').textContent = ta.value.length; });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── CANVAS ──
+function initCanvas() {
+  gCanvas = document.getElementById('draw-canvas');
+  if (!gCanvas) return;
+  gCtx = gCanvas.getContext('2d');
+  gCtx.fillStyle = '#ffffff';
+  gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height);
+  gHistory = [];
+  saveSnapshot();
+
+  gCanvas.addEventListener('mousedown', startDraw);
+  gCanvas.addEventListener('mousemove', draw);
+  gCanvas.addEventListener('mouseup', endDraw);
+  gCanvas.addEventListener('mouseleave', endDraw);
+  gCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(touchToMouse(e)); }, { passive: false });
+  gCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(touchToMouse(e)); }, { passive: false });
+  gCanvas.addEventListener('touchend', endDraw, { passive: false });
+}
+
+function touchToMouse(e) {
+  const touch = e.touches[0] || e.changedTouches[0];
+  const rect = gCanvas.getBoundingClientRect();
+  return { clientX: touch.clientX, clientY: touch.clientY, _rect: rect };
+}
+
+function getPos(e) {
+  const rect = e._rect || gCanvas.getBoundingClientRect();
+  const scaleX = gCanvas.width / rect.width;
+  const scaleY = gCanvas.height / rect.height;
+  return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+}
+
+function startDraw(e) {
+  if (gSubmitted) return;
+  const { x, y } = getPos(e);
+  if (gTool === 'fill') { floodFill(Math.round(x), Math.round(y), gColor); saveSnapshot(); return; }
+  gDrawing = true;
+  gLastX = x; gLastY = y;
+  gCtx.beginPath();
+  gCtx.arc(x, y, (gTool === 'eraser' ? gBrushSize * 2 : gBrushSize) / 2, 0, Math.PI * 2);
+  gCtx.fillStyle = gTool === 'eraser' ? '#ffffff' : gColor;
+  gCtx.fill();
+}
+
+function draw(e) {
+  if (!gDrawing || gSubmitted) return;
+  const { x, y } = getPos(e);
+  gCtx.beginPath();
+  gCtx.moveTo(gLastX, gLastY);
+  gCtx.lineTo(x, y);
+  gCtx.strokeStyle = gTool === 'eraser' ? '#ffffff' : gColor;
+  gCtx.lineWidth = gTool === 'eraser' ? gBrushSize * 2.5 : gBrushSize;
+  gCtx.lineCap = 'round';
+  gCtx.lineJoin = 'round';
+  gCtx.stroke();
+  gLastX = x; gLastY = y;
+}
+
+function endDraw() {
+  if (gDrawing) { gDrawing = false; saveSnapshot(); }
+}
+
+function saveSnapshot() {
+  const snap = gCtx.getImageData(0, 0, gCanvas.width, gCanvas.height);
+  gHistory = gHistory.slice(0, gHistoryIndex + 1);
+  gHistory.push(snap);
+  if (gHistory.length > 30) gHistory.shift();
+  gHistoryIndex = gHistory.length - 1;
+}
+
+function undoDraw() {
+  if (gHistoryIndex > 0) { gHistoryIndex--; gCtx.putImageData(gHistory[gHistoryIndex], 0, 0); }
+}
+
+function clearCanvas() {
+  gCtx.fillStyle = '#ffffff';
+  gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height);
+  saveSnapshot();
+}
+
+function setTool(t) {
+  gTool = t;
+  ['pen','eraser','fill'].forEach(n => document.getElementById('tool-' + n)?.classList.toggle('active', n === t));
+}
+
+function setColor(c) {
+  gColor = c;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.toggle('active', b.style.background === hexToRgb(c) || b.style.background === c));
+  if (gTool === 'eraser') setTool('pen');
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function setSize(s) {
+  gBrushSize = s;
+  ['sm','md','lg','xl'].forEach((n, i) => document.getElementById('size-' + n)?.classList.toggle('active', [4,8,14,22][i] === s));
+}
+
+// ── FLOOD FILL ──
+function floodFill(startX, startY, fillColorHex) {
+  const imgData = gCtx.getImageData(0, 0, gCanvas.width, gCanvas.height);
+  const data = imgData.data;
+  const w = gCanvas.width, h = gCanvas.height;
+  const idx = (startY * w + startX) * 4;
+  const targetR = data[idx], targetG = data[idx+1], targetB = data[idx+2];
+  const fr = parseInt(fillColorHex.slice(1,3),16), fg = parseInt(fillColorHex.slice(3,5),16), fb = parseInt(fillColorHex.slice(5,7),16);
+  if (targetR === fr && targetG === fg && targetB === fb) return;
+
+  const stack = [[startX, startY]];
+  const visited = new Uint8Array(w * h);
+
+  function match(i) { return Math.abs(data[i]-targetR)<30 && Math.abs(data[i+1]-targetG)<30 && Math.abs(data[i+2]-targetB)<30; }
+
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    if (cx < 0 || cx >= w || cy < 0 || cy >= h) continue;
+    const i = (cy * w + cx) * 4;
+    if (visited[cy * w + cx] || !match(i)) continue;
+    visited[cy * w + cx] = 1;
+    data[i] = fr; data[i+1] = fg; data[i+2] = fb; data[i+3] = 255;
+    stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+  }
+  gCtx.putImageData(imgData, 0, 0);
+}
+
+// ── SUBMIT ──
+async function submitPhase() {
+  if (gSubmitted) return;
+  let content = '';
+
+  if (gPhaseType === 'draw') {
+    if (!gCanvas) return;
+    content = gCanvas.toDataURL('image/jpeg', 0.6); // compressed JPEG
+  } else {
+    const ta = document.getElementById('prompt-input');
+    content = ta ? ta.value.trim() : '';
+    if (!content) { showToast('ENTER SOMETHING FIRST', true); return; }
+  }
+
+  gSubmitted = true;
+  stopTimer();
+  const btn = document.getElementById('btn-submit-phase');
+  if (btn) { btn.disabled = true; btn.textContent = '✓ SUBMITTED'; }
+
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId, content }) });
+    const d = await res.json();
+    if (!d.success) { gSubmitted = false; if (btn) { btn.disabled = false; btn.textContent = 'SUBMIT →'; } showToast(d.error || 'Error', true); return; }
+    if (d.status === 'reveal') { stopPolling(); showReveal(); return; }
+    if (d.allDone) { stopPolling(); gPhase = d.phase; gPhaseType = d.phaseType; showWaiting(false); showCountdown(3, () => { hideWaiting(); beginPhase(); }); }
+    else { showWaiting(true); }
+  } catch { gSubmitted = false; if (btn) { btn.disabled = false; } showToast('Network error', true); }
+}
+
+// ── POLLING PHASE ──
+function startPollingPhase() {
+  stopPolling();
+  gPollInterval = setInterval(pollPhase, 2500);
+}
+
+async function pollPhase() {
+  if (!gRoomCode) return;
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/room`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode }) });
+    const d = await res.json();
+    if (!d.success) return;
+    gPlayers = d.players;
+    updateHudPlayers();
+    updateWaitingPips(d.submittedCount, d.totalPlayers);
+    if (d.status === 'reveal') { stopPolling(); showReveal(); }
+    else if (gSubmitted && d.phase > gPhase) {
+      stopPolling();
+      gPhase = d.phase;
+      gPhaseType = d.phaseType;
+      hideWaiting();
+      showCountdown(3, () => beginPhase());
+    }
+  } catch {}
+}
+
+// ── TIMER ──
+function startPhaseTimer(seconds) {
+  stopTimer();
+  gSecondsLeft = seconds;
+  updateTimerDisplay();
+  gTimerInterval = setInterval(() => {
+    gSecondsLeft--;
+    updateTimerDisplay();
+    if (gSecondsLeft <= 0) { stopTimer(); if (!gSubmitted) submitPhase(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('hud-timer');
+  const m = Math.floor(gSecondsLeft / 60), s = gSecondsLeft % 60;
+  el.textContent = m + ':' + String(s).padStart(2, '0');
+  el.classList.toggle('urgent', gSecondsLeft <= 10);
+}
+
+// ── HUD PLAYERS ──
+function updateHudPlayers() {
+  const el = document.getElementById('hud-players');
+  el.innerHTML = '';
+  gPlayers.forEach(p => {
+    const pip = document.createElement('div');
+    pip.className = 'hud-pip' + (p.id === gPlayerId ? ' me' : '') + (gSubmitted && p.id === gPlayerId ? ' done' : '');
+    pip.textContent = p.name.charAt(0).toUpperCase();
+    pip.id = 'pip-' + p.id;
+    el.appendChild(pip);
+  });
+}
+
+// ── WAITING OVERLAY ──
+function showWaiting(showPips) {
+  const overlay = document.getElementById('waiting-overlay');
+  overlay.classList.add('active');
+  if (showPips) {
+    const wrap = document.getElementById('waiting-pips');
+    wrap.innerHTML = '';
+    gPlayers.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'wpip';
+      div.innerHTML = `<div class="wpip-dot ${p.id === gPlayerId ? 'done' : ''}" id="wpip-${p.id}"></div><span>${p.name.toUpperCase()}</span>`;
+      wrap.appendChild(div);
+    });
+  }
+}
+
+function hideWaiting() { document.getElementById('waiting-overlay').classList.remove('active'); }
+
+function updateWaitingPips(count, total) {
+  // We don't know which players submitted, just count — mark dots green up to count
+  const dots = document.querySelectorAll('.wpip-dot');
+  dots.forEach((d, i) => { if (i < count) d.classList.add('done'); });
+}
+
+// ── COUNTDOWN ──
+function showCountdown(from, cb) {
+  const overlay = document.getElementById('countdown-overlay');
+  const numEl = document.getElementById('countdown-num');
+  overlay.classList.add('active');
+  let n = from;
+  numEl.textContent = n;
+  const tick = () => {
+    n--;
+    if (n <= 0) { overlay.classList.remove('active'); cb(); return; }
+    numEl.style.animation = 'none';
+    void numEl.offsetWidth;
+    numEl.style.animation = '';
+    numEl.textContent = n;
+    setTimeout(tick, 1000);
+  };
+  setTimeout(tick, 1000);
+}
+
+// ── REVEAL ──
+async function showReveal() {
+  stopPolling(); stopTimer();
+  document.getElementById('game-screen').classList.remove('active');
+  document.getElementById('waiting-overlay').classList.remove('active');
+
+  try {
+    const res = await fetch(`${WORKER}/api/drawphone/reveal`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode }) });
+    const d = await res.json();
+    if (!d.success) { showToast('Error loading reveal', true); return; }
+    gRevealChains = d.chains;
+  } catch { showToast('Error loading reveal', true); return; }
+
+  gRevealChainIdx = 0;
+  gRevealStepIdx = 0;
+  document.getElementById('reveal-screen').classList.add('active');
+  renderRevealChain();
+}
+
+function renderRevealChain() {
+  const chain = gRevealChains[gRevealChainIdx];
+  if (!chain) return;
+
+  document.getElementById('reveal-chain-label').textContent = `CHAIN ${gRevealChainIdx + 1} OF ${gRevealChains.length}`;
+
+  const body = document.getElementById('reveal-body');
+  body.innerHTML = '';
+
+  const title = document.createElement('div');
+  title.className = 'reveal-chain-title';
+  title.textContent = `${chain.ownerName.toUpperCase()}'S CHAIN`;
+  body.appendChild(title);
+
+  // Render all steps, but reveal them one at a time with delay
+  chain.steps.forEach((step, i) => {
+    const stepEl = document.createElement('div');
+    stepEl.className = 'reveal-step';
+    stepEl.id = `rstep-${i}`;
+
+    const typeLabel = step.type === 'draw' ? 'DRAWING' : step.type === 'prompt' ? 'ORIGINAL PROMPT' : 'GUESS';
+    const typeClass = step.type === 'draw' ? 'type-draw' : step.type === 'prompt' ? 'type-prompt' : 'type-guess';
+
+    let contentHTML = '';
+    if (step.type === 'draw') {
+      contentHTML = `<div class="reveal-step-content"><img class="reveal-img" src="${step.content}" alt="drawing"></div>`;
+    } else {
+      contentHTML = `<div class="reveal-step-content"><div class="reveal-text">${escHtml(step.content)}</div></div>`;
+    }
+
+    stepEl.innerHTML = `
+      <div class="reveal-step-header">
+        <span class="reveal-step-type ${typeClass}">${typeLabel}</span>
+        <span class="reveal-step-author">BY ${step.authorName.toUpperCase()}</span>
+      </div>
+      ${contentHTML}
+    `;
+    body.appendChild(stepEl);
+  });
+
+  // Reveal steps one by one
+  gRevealStepIdx = 0;
+  revealNextStep(chain.steps.length);
+
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  prevBtn.disabled = gRevealChainIdx === 0;
+  prevBtn.style.opacity = gRevealChainIdx === 0 ? '0.3' : '1';
+  nextBtn.textContent = gRevealChainIdx === gRevealChains.length - 1 ? 'FINISH →' : 'NEXT CHAIN →';
+}
+
+function revealNextStep(total) {
+  if (gRevealStepIdx >= total) return;
+  const el = document.getElementById(`rstep-${gRevealStepIdx}`);
+  if (el) el.classList.add('visible');
+  gRevealStepIdx++;
+  if (gRevealStepIdx < total) setTimeout(() => revealNextStep(total), 800);
+}
+
+function revealNext() {
+  if (gRevealChainIdx >= gRevealChains.length - 1) { playAgain(); return; }
+  gRevealChainIdx++;
+  gRevealStepIdx = 0;
+  renderRevealChain();
+  document.getElementById('reveal-body').scrollTop = 0;
+}
+
+function revealPrev() {
+  if (gRevealChainIdx <= 0) return;
+  gRevealChainIdx--;
+  gRevealStepIdx = 0;
+  renderRevealChain();
+  document.getElementById('reveal-body').scrollTop = 0;
+}
+
+function playAgain() {
+  // Cleanup on server
+  if (gRoomCode) {
+    fetch(`${WORKER}/api/drawphone/finish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode }) }).catch(() => {});
+  }
+  gRoomCode = null; gPlayerId = null; gIsHost = false; gPlayers = [];
+  gRevealChains = []; gRevealChainIdx = 0;
+  document.getElementById('reveal-screen').classList.remove('active');
+  document.getElementById('game-screen').classList.remove('active');
+  showScreen('screen-lobby');
+}
+
+// ── Smart scroll for /#games ──
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  if (href === '#games' || href === '/#games') {
+    e.preventDefault();
+    window.location.href = '/#games';
+  }
+});
+</script>
+</body>
+</html>
