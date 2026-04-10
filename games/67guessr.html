@@ -510,11 +510,14 @@
   const GUESS_TIMER_SECONDS = 60;
   const TIMER_TRIGGER_ON_FIRST_GUESS = 15;
 
-  // ── STREET VIEW EMBED URL BUILDER ──
+  // ── STREET VIEW EMBED URL BUILDER (no API key required) ──
+  // Uses the keyless google.com/maps/embed pb= parameter format.
+  // !3d = lat, !4d = lng, !3f = heading (yaw), !4f = pitch, !5f = zoom
   function buildStreetViewUrl(lat, lng, heading, pitch) {
     heading = heading ?? 0;
     pitch   = pitch   ?? 0;
-    return `https://www.google.com/maps/embed/v1/streetview?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&location=${lat},${lng}&heading=${heading}&pitch=${pitch}&fov=90`;
+    const ts = Date.now(); // cache-bust so each round loads fresh
+    return `https://www.google.com/maps/embed?pb=!4v${ts}!6m8!1m7!1m2!1m1!0x0!2m2!1d${lat}!2d${lng}!3f${heading}!4f${pitch}!5f0.7985428755592729`;
   }
 
   // ── LORE LOCATIONS (lat/lng/heading/pitch match backend — no embedUrl needed) ──
