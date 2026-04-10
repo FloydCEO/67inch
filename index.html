@@ -1532,6 +1532,89 @@
     .section-title { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 28px; }
     .toast { bottom: 16px; right: 16px; left: 16px; text-align: center; font-size: 1rem; padding: 12px 20px; }
   }
+
+  /* ── HOME GAMES SECTION ── */
+  .games-section-home {
+    background: var(--darker);
+    padding: 80px 20px 90px;
+    text-align: center;
+  }
+  @media(max-width:560px){ .games-section-home { padding: 50px 16px 60px; } }
+  .games-inner-home { max-width: 1100px; margin: 0 auto; }
+  .games-grid-home {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+  }
+  @media(max-width: 960px) {
+    .games-grid-home { grid-template-columns: repeat(2, 1fr); }
+    .games-grid-home .gc:last-child { grid-column: 1 / -1; max-width: 420px; margin: 0 auto; }
+  }
+  @media(max-width: 600px) {
+    .games-grid-home { grid-template-columns: 1fr; gap: 16px; }
+    .games-grid-home .gc:last-child { grid-column: auto; max-width: 100%; }
+  }
+  .gc {
+    background: #111;
+    border: 2px solid #2a2a2a;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-align: left;
+  }
+  .gc:hover { transform: translateY(-8px); border-color: var(--yellow); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,230,0,0.15); }
+  .gc.coming-soon { cursor: default; opacity: 0.6; }
+  .gc.coming-soon:hover { transform: none; border-color: #2a2a2a; box-shadow: none; }
+  .gc-accent { height: 5px; background: var(--red); flex-shrink: 0; }
+  .gc.word .gc-accent { background: #538d4e; }
+  .gc.guessr .gc-accent { background: var(--red); }
+  .gc.coming-soon .gc-accent { background: #333; }
+  .gc-badge {
+    position: absolute; top: 16px; right: 16px;
+    font-family: 'VT323', monospace; font-size: 0.8rem; letter-spacing: 3px;
+    padding: 3px 10px; border: 1px solid;
+  }
+  .gc-badge.live { color: #538d4e; border-color: #538d4e; background: rgba(83,141,78,0.1); }
+  .gc-badge.soon { color: #555; border-color: #333; background: transparent; }
+  .gc-body { padding: 28px 28px 32px; flex: 1; display: flex; flex-direction: column; }
+  @media(max-width:560px){ .gc-body { padding: 22px 20px 26px; } }
+  .gc-icon { font-size: 2.8rem; margin-bottom: 16px; line-height: 1; }
+  .gc-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; letter-spacing: 5px;
+    color: var(--yellow); text-shadow: 2px 2px 0 var(--red); line-height: 1; margin-bottom: 10px;
+  }
+  @media(max-width:560px){ .gc-title { font-size: 2.2rem; } }
+  .gc-desc {
+    font-family: 'VT323', monospace; font-size: 1rem; letter-spacing: 2px;
+    color: #888; line-height: 1.6; flex: 1; margin-bottom: 24px;
+  }
+  .gc-meta {
+    font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 3px; color: #444;
+    border-top: 1px solid #1e1e1e; padding-top: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .gc-dot { width: 6px; height: 6px; border-radius: 50%; background: #538d4e; flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
+  .gc-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 4px;
+    color: var(--white); transition: color 0.15s, gap 0.15s;
+  }
+  .gc:hover .gc-cta { color: var(--yellow); gap: 14px; }
+  .gc-arrow { font-size: 1.4rem; transition: transform 0.15s; }
+  .gc:hover .gc-arrow { transform: translateX(4px); }
+  .gc::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,230,0,0.03) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .gc:hover::after { opacity: 1; }
+  .gc.coming-soon::after { display: none; }
+
 </style>
 </head>
 <body>
@@ -1694,121 +1777,53 @@
 <div class="divider"></div>
 
 <!-- 67GUESSR -->
-<div class="guessr-section" id="guessr">
-  <div class="guessr-inner">
-    <p class="section-label">WORD GAME // NEW WORD EVERY 10 MINUTES</p>
-    <h2 class="section-title">67WORD</h2>
+<div class="games-section-home" id="games">
+  <div class="games-inner-home">
+    <p class="section-label" style="text-align:center;">PICK YOUR POISON</p>
+    <h2 class="section-title" style="display:block;text-align:center;">67GAMES</h2>
 
-    <div id="guessr-app">
+    <div class="games-grid-home">
 
-      <!-- TIMER BAR -->
-      <div class="g-timer" id="g-timer">⏱ NEXT WORD IN: <span id="g-countdown">10:00</span></div>
+      <!-- 67WORD -->
+      <a href="/games/67word" class="gc word">
+        <div class="gc-accent"></div>
+        <div class="gc-badge live">● LIVE</div>
+        <div class="gc-body">
+          <div class="gc-icon">🟩</div>
+          <div class="gc-title">67WORD</div>
+          <div class="gc-desc">GUESS THE SECRET WORD BEFORE TIME RUNS OUT. NEW WORD DROPS EVERY 10 MINUTES. SIGN IN WITH GOOGLE AND COMPETE FOR THE TOP SPOT.</div>
+          <div class="gc-meta"><div class="gc-dot"></div>NEW WORD EVERY 10 MINUTES // GOOGLE LOGIN REQUIRED</div>
+          <div style="margin-top:20px;"><span class="gc-cta">PLAY NOW <span class="gc-arrow">→</span></span></div>
+        </div>
+      </a>
 
-      <!-- AUTH -->
-      <div id="g-auth">
-        <div class="g-auth-box">
-          <h2>SIGN IN TO PLAY</h2>
-          <div class="g-warning">⚠ ONE GOOGLE ACCOUNT PER DEVICE // NO VPNs</div>
-          <p>YOUR DEVICE WILL BE PERMANENTLY LINKED TO YOUR GOOGLE ACCOUNT</p>
-          <div id="g_id_onload"
-               data-client_id="353550115416-m6kojor66ptn2r4i812gig42qb64hu17.apps.googleusercontent.com"
-               data-callback="gHandleSignIn"
-               data-auto_prompt="false"></div>
-          <div class="g-google-wrap">
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="filled_black"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left"></div>
-          </div>
+      <!-- 67GUESSR -->
+      <a href="/games/67guessr" class="gc guessr">
+        <div class="gc-accent"></div>
+        <div class="gc-badge live">● LIVE</div>
+        <div class="gc-body">
+          <div class="gc-icon">🕵️</div>
+          <div class="gc-title">67GUESSR</div>
+          <div class="gc-desc">CAN YOU GUESS WHO IT IS? IDENTIFY MEMBERS OF THE 67 INCH DIH CLUB FROM CLUES, IMAGES, AND PURE VIBES. PUT YOUR KNOWLEDGE TO THE TEST.</div>
+          <div class="gc-meta"><div class="gc-dot"></div>SERVER KNOWLEDGE REQUIRED // DO YOUR RESEARCH</div>
+          <div style="margin-top:20px;"><span class="gc-cta">PLAY NOW <span class="gc-arrow">→</span></span></div>
+        </div>
+      </a>
+
+      <!-- COMING SOON -->
+      <div class="gc coming-soon">
+        <div class="gc-accent"></div>
+        <div class="gc-badge soon">COMING SOON</div>
+        <div class="gc-body">
+          <div class="gc-icon">🔒</div>
+          <div class="gc-title" style="color:#555;text-shadow:none;">???</div>
+          <div class="gc-desc">SOMETHING IS BEING BUILT IN THE SHADOWS. THE PROPHECY DOES NOT REVEAL ALL AT ONCE. CHECK BACK. OR DON'T. IT WILL FIND YOU.</div>
+          <div class="gc-meta" style="color:#333;"><div class="gc-dot" style="background:#333;animation:none;"></div>IN DEVELOPMENT // STAY TUNED</div>
+          <div style="margin-top:20px;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:4px;color:#333;">LOCKED</span></div>
         </div>
       </div>
 
-      <!-- ERROR -->
-      <div id="g-error" style="display:none;">
-        <div class="g-error-box">
-          <h2 id="g-error-title">ACCESS DENIED</h2>
-          <p id="g-error-msg"></p>
-          <button class="g-play-btn" onclick="location.reload()">TRY AGAIN</button>
-        </div>
-      </div>
-
-      <!-- LOADING -->
-      <div id="g-loading" style="display:none;">
-        <div class="g-loading">LOADING...</div>
-      </div>
-
-      <!-- LEADERBOARD VIEW -->
-      <div id="g-lb-view" style="display:none;">
-        <div class="g-nav">
-          <button class="g-nav-btn active" id="g-tab-lb" onclick="gShowLbTab()">🏆 LEADERBOARD</button>
-          <button class="g-nav-btn" id="g-tab-hist" onclick="gShowHistTab()">📜 HISTORY</button>
-        </div>
-        <div class="g-user-bar">
-          <div class="g-avatar" id="g-lb-avatar">?</div>
-          <div>
-            <div class="g-user-name" id="g-lb-name">PLAYER</div>
-            <div class="g-user-stats" id="g-lb-stats">GAMES: 0 | WON: 0 | STREAK: 0</div>
-          </div>
-          <button class="g-logout" onclick="gLogout()">LOG OUT</button>
-        </div>
-        <div id="g-lb-content">
-          <div class="g-lb-box">
-            <div class="g-lb-header">
-              <h3>🏆 CURRENT WORD LEADERBOARD</h3>
-            </div>
-            <div id="g-lb-entries"><div class="g-empty">NO WINNERS YET — BE THE FIRST</div></div>
-          </div>
-        </div>
-        <div id="g-hist-content" style="display:none;">
-          <div class="g-lb-box">
-            <div class="g-lb-header"><h3>📜 PAST WORDS</h3></div>
-            <div id="g-hist-entries"><div class="g-empty">NO HISTORY AVAILABLE</div></div>
-          </div>
-        </div>
-        <button class="g-play-btn" onclick="gStartGame()">▶ PLAY NOW</button>
-      </div>
-
-      <!-- GAME VIEW -->
-      <div id="g-game-view" style="display:none;">
-        <div class="g-nav">
-          <button class="g-nav-btn" onclick="gBackToLb()">🏆 LEADERBOARD</button>
-          <button class="g-nav-btn" onclick="gBackToHist()">📜 HISTORY</button>
-        </div>
-        <div class="g-user-bar">
-          <div class="g-avatar" id="g-game-avatar">?</div>
-          <div>
-            <div class="g-user-name" id="g-game-name">PLAYER</div>
-            <div class="g-user-stats" id="g-game-subtxt">GUESSING...</div>
-          </div>
-        </div>
-        <div id="g-board"></div>
-        <div class="g-keyboard" id="g-keyboard"></div>
-      </div>
-
-      <!-- COMPLETED VIEW -->
-      <div id="g-done-view" style="display:none;">
-        <div class="g-nav">
-          <button class="g-nav-btn" onclick="gBackToLb()">🏆 LEADERBOARD</button>
-          <button class="g-nav-btn" onclick="gBackToHist()">📜 HISTORY</button>
-        </div>
-        <div class="g-completed-box">
-          <div class="g-result" id="g-result-msg"></div>
-          <div class="g-word-reveal" id="g-done-word"></div>
-          <div class="g-recap" id="g-recap"></div>
-          <div class="g-next-timer">⏱ NEXT WORD IN: <span id="g-done-countdown">10:00</span></div>
-          <div class="g-lb-box" style="margin-top:16px;text-align:left;">
-            <div class="g-lb-header"><h3>🏆 YOUR RANK</h3></div>
-            <div id="g-personal-rank"><div class="g-empty">LOADING...</div></div>
-          </div>
-          <button class="g-play-btn" onclick="gBackToLb()">VIEW LEADERBOARD</button>
-          <button class="g-logout" style="margin-top:10px;width:100%;text-align:center;padding:10px;" onclick="gLogout()">SIGN OUT</button>
-        </div>
-      </div>
-
-    </div><!-- /guessr-app -->
+    </div>
   </div>
 </div>
 
@@ -2107,7 +2122,7 @@
   <div class="footer-links">
     <a href="#news">NEWS</a>
     <a href="#leaders">LEADERS</a>
-    <a href="#guessr">67WORD</a>
+    <a href="#games">67GAMES</a>
     <a href="#wall">WALL</a>
     <a href="#oli">OLI ROOM</a>
     <a href="#religion">SCRIPTURE</a>

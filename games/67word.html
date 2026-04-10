@@ -970,22 +970,33 @@
     window.gStartGame = async function() {
       const btn = $('g-play-btn');
       btn.disabled = true;
-      const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
-      const d = await res.json();
+      btn.textContent = 'LOADING...';
+      let d;
+      try {
+        const res = await fetch(`${G_WORKER}/api/game`,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({googleId:gUser.googleId,deviceFingerprint:gFingerprint})});
+        d = await res.json();
+      } catch(e) {
+        btn.disabled = false;
+        btn.textContent = '▶ PLAY NOW';
+        gMsg('NETWORK ERROR — TRY AGAIN', 'error');
+        return;
+      }
       if(d.status==='completed'){
         gPlayedWordId = d.wordId;
         gShowDone(d.previousGame, d.expiresAt);
         return;
       }
-      if(!d.canPlay || d.status!=='active'){
+      if(!d.canPlay || d.status!=='active' || !d.word){
         btn.disabled = false;
-        gMsg('CANNOT PLAY RIGHT NOW', 'error');
+        btn.textContent = '▶ PLAY NOW';
+        gMsg('CANNOT PLAY RIGHT NOW — TRY AGAIN', 'error');
         return;
       }
+      // Full state reset before starting
+      gRow=0; gTile=0; gOver=false; gAnimating=false; gGuesses=[];
       gTargetWord = d.word.toUpperCase().replace(/\s/g,'');
       gWordId = d.wordId;
-      gRow=0; gTile=0; gOver=false; gAnimating=false; gGuesses=[];
       gShowOnly('g-game-view');
       gTimerShow(true);
       gUpdateUserBar();
@@ -1075,8 +1086,9 @@
       await new Promise(r=>setTimeout(r,500));
       gAnimating=false;
       const won=word===gTargetWord;
-      if(won||gRow===5){ gOver=true; await gSubmitResult(won,gGuesses.length); }
+      const isLastRow=gRow===5;
       gRow++; gTile=0;
+      if(won||isLastRow){ gOver=true; await gSubmitResult(won,gGuesses.length); }
     }
 
     async function gSubmitResult(won,attempts){
