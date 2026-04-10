@@ -715,12 +715,16 @@ async function pollLobby() {
     const d = await res.json();
     gMyPing = Date.now() - t0;
     gPingMap[gPlayerId] = gMyPing;
-    if (!d.success) { stopPolling(); showToast('ROOM CLOSED', true); showScreen('screen-lobby'); return; }
+    if (!d.success) { stopPolling(); showToast('ROOM CLOSED', true); gRoomCode = null; gPlayerId = null; gIsHost = false; gPlayers = []; showScreen('screen-lobby'); return; }
+    // Host left lobby — detected by player no longer in list
+    const stillIn = d.players && d.players.find(p => p.id === gPlayerId);
+    if (!stillIn) { stopPolling(); showToast('YOU WERE REMOVED FROM LOBBY', true); gRoomCode = null; gPlayerId = null; gIsHost = false; gPlayers = []; showScreen('screen-lobby'); return; }
     gPlayers = d.players || [];
     if (d.pings) Object.assign(gPingMap, d.pings);
     const listId = gIsHost ? 'create-player-list' : 'joined-player-list';
     renderPlayerList(listId);
-    if (d.status === 'playing' && !gGameActive) {
+    // Only auto-start if game just transitioned from waiting->playing (not re-polling after a done game)
+    if (d.status === 'playing' && !gGameActive && !gGameOverHandled) {
       stopPolling();
       receiveGameStart(d);
     }
@@ -729,6 +733,7 @@ async function pollLobby() {
 
 // ── START GAME (host) ──
 async function startGame() {
+  gGameOverHandled = false; // allow new game to start
   const btn = document.getElementById('btn-start');
   btn.disabled = true; btn.textContent = 'STARTING...';
   try {
@@ -744,7 +749,6 @@ function receiveGameStart(d) {
   gMyRole = d.roles?.[gPlayerId] || 'civilian';
   gLastMurdererGooglId = d.murdererId;
   gGameActive = true;
-  gGameOverHandled = false;
   gMyDead = false;
   gWeaponRevealed = false;
   gWeaponInFlight = false;
@@ -1367,7 +1371,11 @@ async function pollGameState() {
     const res = await fetch(`${WORKER}/api/murder/gamestate`, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
     const d = await res.json();
-    if (!d.success) return;
+    // Room gone mid-game — boot to lobby
+    if (!d.success) {
+      if (gGameActive) { showToast('ROOM CLOSED — RETURNING TO LOBBY', true); forceLobbyReset(); }
+      return;
+    }
 
     // Update remote players
     if (d.players) {
@@ -1491,9 +1499,80 @@ function handleGameOver(d) {
     if (t <= 0) {
       clearInterval(iv);
       overlay.classList.remove('active');
-      returnToLobby();
+      returnToPartyLobby();
     }
   }, 1000);
+}
+
+// Called when host leaves mid-game — instantly boot everyone out
+function forceLobbyReset() {
+  stopGameLoop();
+  hideGameUI();
+  document.getElementById('end-overlay').classList.remove('active');
+  document.getElementById('role-reveal-overlay').classList.remove('active');
+  document.getElementById('countdown-overlay').classList.remove('active');
+  gGameActive = false;
+  gGameOverHandled = false;
+  gMyRole = null;
+  gMyDead = false;
+  gWeaponRevealed = false;
+  gWeaponInFlight = false;
+  gHasGun = false;
+  gProjectile = null;
+  gBloodSplats = [];
+  gDeathAnimations = [];
+  gRoomCode = null;
+  gPlayerId = null;
+  gIsHost = false;
+  gPlayers = [];
+  document.getElementById('spectate-bar').classList.remove('active');
+  showScreen('screen-lobby');
+}
+
+// Called after game over — go back to the party lobby screen (keep room)
+async function returnToPartyLobby() {
+  stopGameLoop();
+  hideGameUI();
+  gGameActive = false;
+  gGameOverHandled = false;
+  gMyRole = null;
+  gMyDead = false;
+  gWeaponRevealed = false;
+  gWeaponInFlight = false;
+  gHasGun = false;
+  gProjectile = null;
+  gBloodSplats = [];
+  gDeathAnimations = [];
+  document.getElementById('spectate-bar').classList.remove('active');
+
+  if (!gRoomCode) { showScreen('screen-lobby'); return; }
+
+  // Reset room status back to 'waiting' on server so it can be started again
+  try {
+    await fetch(`${WORKER}/api/murder/leave`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: '__reset__' }) }).catch(()=>{});
+  } catch {}
+
+  // Re-fetch room state
+  try {
+    const res = await fetch(`${WORKER}/api/murder/room`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
+    const d = await res.json();
+    if (!d.success || d.players.length === 0) { showScreen('screen-lobby'); return; }
+    gPlayers = d.players || [];
+    gIsHost = d.hostId === gPlayerId;
+    if (gIsHost) {
+      document.getElementById('create-code').textContent = gRoomCode;
+      renderPlayerList('create-player-list');
+      showScreen('screen-create');
+    } else {
+      document.getElementById('joined-code').textContent = gRoomCode;
+      renderPlayerList('joined-player-list');
+      showScreen('screen-joined');
+    }
+    gGameOverHandled = false; // allow detecting next game start
+    startPolling();
+  } catch { showScreen('screen-lobby'); }
 }
 
 function returnToLobby() {
