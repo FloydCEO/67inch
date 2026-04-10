@@ -2860,6 +2860,26 @@
     btn.textContent = 'SUBMIT TIP →';
     btn.disabled = false;
   }
+
+  // ── SMART SCROLL: /#games links scroll smoothly when already on homepage ──
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (href === '#games' || href === '/#games') {
+      e.preventDefault();
+      document.getElementById('games').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // Also auto-scroll on load if arriving via /#games
+  window.addEventListener('load', function() {
+    if (window.location.hash === '#games') {
+      setTimeout(() => {
+        document.getElementById('games').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  });
 </script>
 </body>
 </html>

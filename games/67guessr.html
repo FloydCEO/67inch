@@ -288,7 +288,7 @@
 <!-- NAV -->
 <nav>
   <a href="/">HOME</a>
-  <a href="/games">67GAMES</a>
+  <a href="/#games">67GAMES</a>
   <a href="/games/67guessr" class="active-page">67GUESSR</a>
   <a href="https://discord.gg/jeffreyedwardepstein" target="_blank" class="discord-btn">
     <svg width="20" height="20" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40.9 40.9 0 0 0-1.8 3.6 54.1 54.1 0 0 0-16.2 0A40 40 0 0 0 25.8.7 58.4 58.4 0 0 0 11.3 5C1.6 19.5-1 33.6.3 47.5a58.9 58.9 0 0 0 18 9.1 44.2 44.2 0 0 0 3.8-6.2 38.3 38.3 0 0 1-6-2.9l1.5-1.1a42 42 0 0 0 35.8 0l1.5 1.1a38.3 38.3 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1c1.5-15.7-2.5-29.7-10.6-41.5zM23.7 39.2c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2zm23.6 0c-3.5 0-6.3-3.2-6.3-7.2s2.8-7.2 6.3-7.2 6.4 3.2 6.3 7.2c0 4-2.8 7.2-6.3 7.2z" fill="currentColor"/></svg>
@@ -302,7 +302,7 @@
   <img src="https://iili.io/q5eSGHu.png" alt="67 Inch Dih Club Logo" class="page-header-logo">
   <h1>67GUESSR</h1>
   <p class="page-header-sub">MULTIPLAYER // UP TO 4 PLAYERS // KNOW THE LORE // CLOSEST WINS</p>
-  <a href="/games" class="back-link">← BACK TO 67GAMES</a>
+  <a href="/#games" class="back-link">← BACK TO 67GAMES</a>
 </div>
 
 <div class="divider"></div>
@@ -495,7 +495,7 @@
   <p style="font-family:'VT323',monospace;font-size:1rem;letter-spacing:4px;color:#555;margin-top:4px;">67INCHDIHCLUB.LOL</p>
   <div class="footer-links">
     <a href="/">HOME</a>
-    <a href="/games">67GAMES</a>
+    <a href="/#games">67GAMES</a>
     <a href="/games/67word">67WORD</a>
     <a href="https://discord.gg/jeffreyedwardepstein" target="_blank">DISCORD</a>
   </div>
@@ -777,7 +777,9 @@
     showCountdown(3, () => {
       initStreetView(loc);
       initMiniMap(loc);
-      startTimer();
+      // Timer starts on first map click, not here
+      document.getElementById('hud-timer').textContent = '--:--';
+      document.getElementById('hud-timer').classList.remove('urgent');
     });
   }
 
@@ -852,10 +854,7 @@
     document.getElementById('btn-confirm-guess').disabled = false;
     if (!gFirstGuessTriggered) {
       gFirstGuessTriggered = true;
-      if (gSecondsLeft > TIMER_TRIGGER_ON_FIRST_GUESS) {
-        gSecondsLeft = TIMER_TRIGGER_ON_FIRST_GUESS;
-        updateTimerDisplay();
-      }
+      startTimer();
     }
   }
 
