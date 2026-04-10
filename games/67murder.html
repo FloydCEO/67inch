@@ -744,6 +744,7 @@ function receiveGameStart(d) {
   gMyRole = d.roles?.[gPlayerId] || 'civilian';
   gLastMurdererGooglId = d.murdererId;
   gGameActive = true;
+  gGameOverHandled = false;
   gMyDead = false;
   gWeaponRevealed = false;
   gWeaponInFlight = false;
@@ -848,10 +849,10 @@ function beginGameplay(d) {
   // Start render loop
   requestAnimationFrame(gameLoop);
 
-  // Start net sync
-  gNetInterval = setInterval(sendMyState, 100);
-  // Start polling game state
-  gPollInterval = setInterval(pollGameState, 800);
+  // Start net sync - send position fast
+  gNetInterval = setInterval(sendMyState, 50);
+  // Poll game state fast for responsive kills/deaths/gameOver
+  gPollInterval = setInterval(pollGameState, 200);
 }
 
 function resizeCanvas() {
@@ -903,11 +904,12 @@ function update(dt) {
   gCamX = Math.max(0, Math.min(gCamX, mapPxW - gCanvas.width));
   gCamY = Math.max(0, Math.min(gCamY, mapPxH - gCanvas.height));
 
-  // Lerp remote players
+  // Lerp remote players - aggressive lerp to minimize visual lag
   for (const rp of Object.values(gRemotePlayers)) {
     if (!rp.dead) {
-      rp.x += (rp.serverX - rp.x) * 0.25;
-      rp.y += (rp.serverY - rp.y) * 0.25;
+      const lerpSpeed = 0.35 * dt;
+      rp.x += (rp.serverX - rp.x) * Math.min(lerpSpeed, 1);
+      rp.y += (rp.serverY - rp.y) * Math.min(lerpSpeed, 1);
     }
   }
 
@@ -1180,8 +1182,8 @@ function tickTimer() {
   if (!gGameActive) return;
   gRoundSeconds--;
   updateHUD();
-  if (gRoundSeconds <= 0 && !gRoundEndSent) {
-    // Time up — civilians win
+  if (gRoundSeconds <= 0 && !gRoundEndSent && gIsHost) {
+    // Only host ends the round to prevent all clients racing
     endRound('civilians_timeout');
   }
 }
@@ -1360,7 +1362,7 @@ async function sendPickupGun() {
 }
 
 async function pollGameState() {
-  if (!gGameActive || !gRoomCode) return;
+  if (!gRoomCode) return;
   try {
     const res = await fetch(`${WORKER}/api/murder/gamestate`, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
@@ -1375,7 +1377,12 @@ async function pollGameState() {
           gRemotePlayers[p.id] = { x: p.x, y: p.y, name: p.name, role: null, revealed: false, dead: false, serverX: p.x, serverY: p.y };
         }
         const rp = gRemotePlayers[p.id];
-        if (!rp.dead) { rp.serverX = p.x; rp.serverY = p.y; }
+        if (!rp.dead) {
+          // Snap if too far (teleport / just joined), lerp otherwise
+          const dist = Math.hypot(p.x - rp.serverX, p.y - rp.serverY);
+          if (dist > 200) { rp.x = p.x; rp.y = p.y; }
+          rp.serverX = p.x; rp.serverY = p.y;
+        }
         rp.revealed = p.revealed;
         if (p.role && (p.id === gPlayerId || p.revealed || p.dead)) rp.role = p.role;
         const wasDead = rp.dead;
@@ -1383,6 +1390,7 @@ async function pollGameState() {
         if (!wasDead && p.dead) {
           gBloodSplats.push({ x: rp.x, y: rp.y, r: 12, t: Date.now() });
           gDeathAnimations.push({ x: rp.x, y: rp.y, t: Date.now() });
+          updateHUD();
         }
       }
     }
@@ -1393,7 +1401,7 @@ async function pollGameState() {
     // Server says I died
     if (d.myDead && !gMyDead) {
       gMyDead = true;
-      gBloodSplats.push({ x: gSelf.x, y: gSelf.y, r: 14, t: Date.now() });
+      if (gSelf) gBloodSplats.push({ x: gSelf.x, y: gSelf.y, r: 14, t: Date.now() });
       document.getElementById('spectate-bar').classList.add('active');
       updateHUD();
     }
@@ -1401,18 +1409,18 @@ async function pollGameState() {
     // Projectiles from server (knife throws / shoots)
     if (d.projectiles) {
       for (const proj of d.projectiles) {
-        if (proj.ownerId === gPlayerId) continue; // our own
-        // Animate them — simple: just check if they kill us
+        if (proj.ownerId === gPlayerId) continue;
         if (!gMyDead && gSelf) {
           const dist = Math.hypot(gSelf.x - proj.x, gSelf.y - proj.y);
           if (dist < 18) {
-            // We got hit
+            // We got hit — server will confirm via myDead next poll
           }
         }
       }
     }
 
-    if (d.gameOver) handleGameOver(d);
+    // Always check gameOver regardless of gGameActive state
+    if (d.gameOver && !gGameOverHandled) handleGameOver(d);
   } catch {}
 }
 
@@ -1435,8 +1443,10 @@ async function endRound(reason) {
   } catch {}
 }
 
+let gGameOverHandled = false;
 function handleGameOver(d) {
-  if (!gGameActive) return;
+  if (gGameOverHandled) return;
+  gGameOverHandled = true;
   gGameActive = false;
   stopGameLoop();
 
@@ -1489,6 +1499,7 @@ function handleGameOver(d) {
 function returnToLobby() {
   hideGameUI();
   gGameActive = false;
+  gGameOverHandled = false;
   gMyRole = null;
   gMyDead = false;
   gWeaponRevealed = false;
