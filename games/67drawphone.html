@@ -227,6 +227,43 @@
     .tool-btn { width: 30px; height: 30px; font-size: 0.85rem; }
     .color-btn { width: 24px; height: 24px; }
   }
+
+    /* ===== 67DRAWPHONE MOBILE ===== */
+    @media (max-width: 480px) {
+      nav a { font-size: 1rem; padding: 12px 14px; letter-spacing: 1.5px; }
+      .page-header { padding: 36px 16px 30px; }
+      .page-header h1 { font-size: clamp(2rem, 10vw, 3.5rem); }
+
+      /* Canvas — let it fill width */
+      canvas { width: 100% !important; height: auto !important; touch-action: none; }
+      .canvas-wrap, .draw-area { width: 100% !important; }
+
+      /* Tool palette — horizontal scroll */
+      .tools { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+      .tool-btn { min-width: 44px; min-height: 44px; }
+
+      /* Color swatches */
+      .color-swatch { width: 32px !important; height: 32px !important; }
+
+      /* Chat / player list */
+      .game-layout { flex-direction: column !important; }
+      .sidebar { width: 100% !important; max-width: 100% !important; border-left: none !important; border-top: 1px solid #222; }
+      .chat-input-row input { font-size: 16px; }
+
+      /* Room cards */
+      .room-card, .rooms-grid { grid-template-columns: 1fr !important; }
+
+      footer { padding: 28px 14px; }
+      .footer-links { gap: 12px; }
+    }
+
+    /* ===== UNIVERSAL TOUCH / iOS FIXES ===== */
+    /* Prevent double-tap zoom on buttons/links */
+    a, button, [onclick] { touch-action: manipulation; }
+    /* Prevent iOS auto-zoom on input focus (needs font-size >= 16px) */
+    input, textarea, select { font-size: 16px !important; }
+    /* Better tap highlight */
+    * { -webkit-tap-highlight-color: rgba(255,230,0,0.15); }
 </style>
 </head>
 <body>

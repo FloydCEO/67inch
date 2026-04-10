@@ -604,6 +604,55 @@
     footer { padding: 36px 16px 28px; }
     .footer-links { gap: 16px; }
   }
+
+    /* ===== 67WORD MOBILE ===== */
+    @media (max-width: 480px) {
+      /* Game board tiles scale down */
+      .g-tile { width: 48px; height: 48px; font-size: 1.5rem; }
+
+      /* Keyboard keys */
+      .g-key { height: 44px; min-width: 28px; font-size: 0.85rem; padding: 0 3px; }
+      .g-key.wide { min-width: 44px; font-size: 0.65rem; }
+      .g-kb-row { gap: 4px; }
+      .g-keyboard { gap: 6px; }
+
+      /* Nav */
+      nav a { font-size: 1rem; padding: 12px 14px; letter-spacing: 1.5px; }
+
+      /* Header */
+      .page-header { padding: 36px 16px 30px; }
+      .page-header h1 { font-size: clamp(2.2rem, 11vw, 4rem); }
+      .page-header p  { font-size: 0.9rem; }
+
+      /* Completed box */
+      .g-word-reveal { font-size: 2rem; letter-spacing: 4px; }
+      .g-completed-box { padding: 20px 14px; }
+
+      /* Recap tiles */
+      .g-recap-tile { width: 28px; height: 28px; font-size: 0.9rem; }
+
+      /* User bar */
+      .g-user-bar { padding: 10px 12px; gap: 10px; }
+      .g-avatar { width: 36px; height: 36px; font-size: 1.1rem; }
+
+      /* Footer */
+      footer { padding: 28px 14px; }
+      .footer-links { gap: 12px; }
+    }
+
+    @media (max-width: 360px) {
+      .g-tile { width: 40px; height: 40px; font-size: 1.25rem; }
+      .g-key { height: 38px; min-width: 24px; font-size: 0.75rem; }
+      .g-key.wide { min-width: 38px; font-size: 0.6rem; }
+    }
+
+    /* ===== UNIVERSAL TOUCH / iOS FIXES ===== */
+    /* Prevent double-tap zoom on buttons/links */
+    a, button, [onclick] { touch-action: manipulation; }
+    /* Prevent iOS auto-zoom on input focus (needs font-size >= 16px) */
+    input, textarea, select { font-size: 16px !important; }
+    /* Better tap highlight */
+    * { -webkit-tap-highlight-color: rgba(255,230,0,0.15); }
 </style>
 </head>
 <body>

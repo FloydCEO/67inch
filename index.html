@@ -1614,6 +1614,106 @@
   .gc:hover::after { opacity: 1; }
   .gc.coming-soon::after { display: none; }
 
+
+    /* ===== EXTRA MOBILE OPTIMIZATIONS (index) ===== */
+    @media (max-width: 480px) {
+      /* Nav — make it scroll horizontally and readable */
+      nav a { font-size: 1rem; padding: 12px 16px; letter-spacing: 1.5px; }
+      nav a.discord-btn { font-size: 0.9rem; padding: 12px 14px; }
+
+      /* Hero */
+      .hero { padding: 32px 14px; }
+      .hero-logo { width: 70vw; }
+      .hero-title { font-size: clamp(2.2rem, 12vw, 4rem); letter-spacing: 4px; text-shadow: 2px 2px 0 var(--red); }
+      .hero-sub { font-size: clamp(0.9rem, 3.5vw, 1.4rem); }
+      .hero-btns { gap: 10px; margin-top: 22px; }
+      .btn { font-size: 1.1rem; padding: 13px 28px; }
+
+      /* Section headings */
+      .section-title { font-size: clamp(1.8rem, 9vw, 3rem) !important; margin-bottom: 24px; }
+
+      /* Leader cards — 2-col on small screens */
+      .leaders-grid .leader-card { flex: 0 0 calc(50% - 8px); }
+      .leader-name { font-size: 1.5rem; }
+      .leader-info { padding: 10px 12px 14px; }
+
+      /* Bio modal — stack vertically */
+      .bio-inner { max-width: 100%; }
+      .bio-header { flex-direction: column; }
+      .bio-img-col { width: 100%; }
+      .bio-img-col img { height: 180px; width: 100%; }
+      .bio-text-col { border-left: none; border-top: 3px solid var(--yellow); padding: 16px 18px; }
+      .bio-name { font-size: 1.6rem; }
+      .bio-body { padding: 16px 18px; }
+      .bio-body p { font-size: 0.88rem; }
+
+      /* Games grid — already 1 col at 600px but ensure it */
+      .games-grid-home { grid-template-columns: 1fr; gap: 14px; }
+      .gc-title { font-size: 2rem; }
+      .gc-body { padding: 20px 18px 24px; }
+
+      /* News */
+      .news-grid { grid-template-columns: 1fr; }
+      .news-featured img { aspect-ratio: 16/10; }
+      .news-headline { font-size: 1.3rem; }
+
+      /* Submit form */
+      .verify-code-row { flex-direction: column; }
+      .verify-code-row input { width: 100%; }
+      .btn-verify { width: 100%; padding: 12px; }
+
+      /* Photo wall */
+      .photo-wall { grid-template-columns: repeat(2,1fr); gap: 5px; }
+      .wall-item.wide { grid-column: span 2; }
+
+      /* Gartic */
+      .gartic-caption { font-size: 1rem; }
+
+      /* Donate */
+      .qr-frame { width: 190px; height: 190px; }
+
+      /* Religion tenets */
+      .religion-tenets { grid-template-columns: 1fr; gap: 14px; }
+
+      /* Oli section */
+      .oli-inner { grid-template-columns: 1fr; gap: 24px; }
+      .oli-text .section-title { font-size: 2.2rem !important; }
+
+      /* Footer */
+      footer { padding: 36px 14px 28px; }
+      .footer-links { gap: 12px; }
+      .footer-links a { font-size: 0.9rem; }
+
+      /* Toast */
+      .toast { bottom: 12px; right: 12px; left: 12px; font-size: 0.95rem; padding: 11px 16px; }
+
+      /* Modal */
+      .modal-inner { padding: 18px 14px; }
+      .modal-img { max-height: 55vh; }
+    }
+
+    /* Extra tiny screens */
+    @media (max-width: 360px) {
+      nav a { font-size: 0.85rem; padding: 11px 11px; letter-spacing: 1px; }
+      .hero-title { font-size: 2rem; letter-spacing: 2px; }
+      .leaders-grid .leader-card { flex: 0 0 100%; }
+      .gc-title { font-size: 1.7rem; }
+    }
+
+    /* Touch — remove hover effects that look broken on mobile */
+    @media (hover: none) {
+      .leader-card:hover { transform: none; border-color: #333; }
+      .news-small:hover { transform: none; border-color: #1e1e1e; }
+      .gc:hover { transform: none; border-color: #2a2a2a; box-shadow: none; }
+    }
+
+    /* ===== UNIVERSAL TOUCH / iOS FIXES ===== */
+    /* Prevent double-tap zoom on buttons/links */
+    a, button, [onclick] { touch-action: manipulation; }
+    /* Prevent iOS auto-zoom on input focus (needs font-size >= 16px) */
+    input, textarea, select { font-size: 16px !important; }
+    /* Better tap highlight */
+    * { -webkit-tap-highlight-color: rgba(255,230,0,0.15); }
 </style>
 </head>
 <body>
