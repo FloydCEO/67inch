@@ -680,15 +680,22 @@
   }
 
   // ── POLLING ──
-  function startPolling() { stopPolling(); gPollInterval = setInterval(pollRoom, 2000); }
+  let gMyPing = null;
+  const gPingMap = {};
+  function startPolling() { stopPolling(); pollRoom(); gPollInterval = setInterval(pollRoom, 1000); }
   function stopPolling() { if (gPollInterval) { clearInterval(gPollInterval); gPollInterval = null; } }
 
   async function pollRoom() {
     if (!gRoomCode) return;
     try {
+      const t0 = Date.now();
       const res = await fetch(`${WORKER}/api/guessr/room`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ roomCode:gRoomCode, googleId:gUser.googleId }) });
       const d = await res.json();
+      gMyPing = Date.now() - t0;
       if (!d.success) { stopPolling(); showToast('Room closed', true); showLobby(); return; }
+      // Merge ping data
+      if (d.pings) Object.assign(gPingMap, d.pings);
+      gPingMap[gUser.googleId] = gMyPing;
       gPlayers = d.players || [];
       updatePlayerLists();
       if (d.status === 'playing') { stopPolling(); receiveGameStart(d); }
@@ -711,7 +718,8 @@
         ? `<div class="player-slot-avatar">${p.name.charAt(0).toUpperCase()}</div>
            <div class="player-slot-name">${p.name.toUpperCase()}</div>
            ${i === 0 ? '<div class="player-slot-badge">HOST</div>' : ''}
-           ${isMe ? '<div class="player-slot-badge" style="border-color:rgba(255,230,0,0.4);color:var(--yellow);">YOU</div>' : ''}`
+           ${isMe ? '<div class="player-slot-badge" style="border-color:rgba(255,230,0,0.4);color:var(--yellow);">YOU</div>' : ''}
+           ${gPingMap[p.googleId] ? `<div class="player-slot-badge" style="border-color:rgba(0,255,0,0.3);color:#0f0;font-size:0.7rem;">${gPingMap[p.googleId]}ms</div>` : ''}`
         : `<div class="player-slot-avatar">+</div><div class="player-slot-name">WAITING...</div>`;
       el.appendChild(div);
     }
@@ -925,13 +933,13 @@
     let attempts = 0;
     const poll = setInterval(async () => {
       attempts++;
-      if (attempts > 30) { clearInterval(poll); showRoundResults([]); return; }
+      if (attempts > 60) { clearInterval(poll); showRoundResults([]); return; }
       try {
         const res = await fetch(`${WORKER}/api/guessr/roundstate`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ roomCode:gRoomCode, round:gRoundIndex }) });
         const d = await res.json();
         if (d.allGuessed || d.roundResults) { clearInterval(poll); showRoundResults(d.roundResults || []); }
       } catch {}
-    }, 1500);
+    }, 800);
   }
 
   // ── ROUND RESULTS ──

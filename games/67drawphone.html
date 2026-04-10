@@ -536,6 +536,7 @@ function renderPlayerList(elId) {
       <div class="player-slot-name">${p.name.toUpperCase()}${isHost ? ' 👑' : ''}</div>
       ${isMe ? '<span class="player-slot-badge badge-you">YOU</span>' : ''}
       ${isHost && !isMe ? '<span class="player-slot-badge badge-host">HOST</span>' : ''}
+      ${gPingMap[p.id] ? `<span class="player-slot-badge" style="border-color:rgba(0,255,0,0.3);color:#0f0;font-size:0.7rem;">${gPingMap[p.id]}ms</span>` : ''}
     `;
     el.appendChild(div);
   });
@@ -549,13 +550,20 @@ function renderPlayerList(elId) {
 
 function startPollingLobby() {
   stopPolling();
-  gPollInterval = setInterval(pollLobby, 2000);
+  pollLobby();
+  gPollInterval = setInterval(pollLobby, 1000);
 }
+
+let gMyPing = null;
+const gPingMap = {};
 
 async function pollLobby() {
   try {
+    const t0 = Date.now();
     const res = await fetch(`${WORKER}/api/drawphone/room`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomCode: gRoomCode }) });
     const d = await res.json();
+    gMyPing = Date.now() - t0;
+    gPingMap[gPlayerId] = gMyPing;
     if (!d.success) return;
     gPlayers = d.players;
     renderPlayerList(gIsHost ? 'create-player-list' : 'joined-player-list');
@@ -894,7 +902,8 @@ async function submitPhase() {
 // ── POLLING PHASE ──
 function startPollingPhase() {
   stopPolling();
-  gPollInterval = setInterval(pollPhase, 2500);
+  pollPhase();
+  gPollInterval = setInterval(pollPhase, 1000);
 }
 
 async function pollPhase() {

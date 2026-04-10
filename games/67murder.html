@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>67 Murder Mystery</title>
+<link rel="icon" type="image/png" href="https://iili.io/q5eSGHu.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #ff1a1a;
+    --yellow: #ffe600;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --white: #f5f5f5;
+    --gray: #1a1a1a;
+    --green: #00ff88;
+    --blue: #00aaff;
+    --orange: #ff6b00;
+    --murder-red: #cc0000;
+    --sheriff-gold: #ffd700;
+    --vision-r: 130;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--darker);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    overflow: hidden;
+    height: 100dvh;
+    width: 100dvw;
+    user-select: none;
+    cursor: crosshair;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; padding: 20px; }
+  .screen.active { display: flex; }
+
+  /* Scanlines */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  h1.title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--red);
+    text-shadow: 3px 3px 0 #000, 0 0 30px rgba(255,26,26,0.5);
+    letter-spacing: 4px;
+    text-align: center;
+    line-height: 1;
+  }
+  h2.subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .card {
+    background: #0d0d0d;
+    border: 2px solid #222;
+    border-radius: 4px;
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+    margin-top: 20px;
+  }
+
+  input[type=text] {
+    width: 100%; padding: 12px 16px;
+    background: #111; border: 2px solid #333; border-radius: 3px;
+    color: var(--white); font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus { outline: none; border-color: var(--yellow); }
+  input[type=text]::placeholder { color: #444; text-transform: uppercase; }
+
+  .btn {
+    width: 100%; padding: 13px; font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem; letter-spacing: 3px; border: none; border-radius: 3px;
+    cursor: pointer; transition: all 0.15s; margin-bottom: 8px;
+  }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-red:hover:not(:disabled) { background: #ff3333; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,26,26,0.4); }
+  .btn-yellow { background: var(--yellow); color: #000; }
+  .btn-yellow:hover:not(:disabled) { background: #ffee44; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--white); border: 2px solid #333; }
+  .btn-ghost:hover:not(:disabled) { border-color: #666; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── LOBBY ── */
+  .room-code-display {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem; color: var(--yellow);
+    letter-spacing: 12px; text-align: center;
+    background: #111; border: 2px solid #333; border-radius: 3px;
+    padding: 10px 20px; margin-bottom: 16px; cursor: pointer;
+  }
+  .room-code-display:hover { border-color: var(--yellow); }
+
+  .player-slot {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: #111; border: 1px solid #222;
+    border-radius: 3px; margin-bottom: 6px; transition: border-color 0.2s;
+  }
+  .player-slot.me { border-color: rgba(255,230,0,0.4); }
+  .player-slot-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--red); display: flex; align-items: center;
+    justify-content: center; font-family: 'Bebas Neue'; font-size: 1.1rem;
+    color: #fff; flex-shrink: 0;
+  }
+  .player-slot-name { flex: 1; font-size: 0.95rem; letter-spacing: 2px; }
+  .player-slot-ping {
+    font-family: 'VT323', monospace; font-size: 0.85rem; padding: 2px 6px;
+    border: 1px solid rgba(0,255,136,0.3); border-radius: 2px; color: var(--green);
+  }
+  .player-slot-badge {
+    font-family: 'VT323', monospace; font-size: 0.75rem; padding: 2px 6px;
+    border: 1px solid #444; border-radius: 2px; color: #888; white-space: nowrap;
+  }
+  .player-slot-badge.host { border-color: rgba(255,230,0,0.4); color: var(--yellow); }
+  .player-slot-badge.you { border-color: rgba(0,255,136,0.4); color: var(--green); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-60px);
+    background: #111; border: 2px solid var(--yellow); border-radius: 3px;
+    padding: 8px 20px; font-family: 'VT323', monospace; font-size: 1.1rem;
+    color: var(--yellow); letter-spacing: 2px; z-index: 99999;
+    transition: transform 0.25s; pointer-events: none; white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast.err { border-color: var(--red); color: var(--red); }
+
+  /* ── COUNTDOWN ── */
+  #countdown-overlay {
+    display: none; position: fixed; inset: 0; z-index: 8888;
+    background: rgba(0,0,0,0.85);
+    align-items: center; justify-content: center; flex-direction: column;
+  }
+  #countdown-overlay.active { display: flex; }
+  #countdown-num {
+    font-family: 'Bebas Neue', cursive; font-size: 20vw;
+    color: var(--yellow); text-shadow: 0 0 60px rgba(255,230,0,0.6);
+    animation: pulse 0.8s ease-out;
+  }
+  @keyframes pulse { 0% { transform: scale(1.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  #countdown-label {
+    font-family: 'VT323', monospace; font-size: 1.4rem;
+    letter-spacing: 4px; color: #888; margin-top: 8px;
+  }
+
+  /* ── ROLE REVEAL ── */
+  #role-reveal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 8887;
+    background: rgba(0,0,0,0.95);
+    align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+  }
+  #role-reveal-overlay.active { display: flex; }
+  .role-card {
+    background: #0d0d0d; border: 3px solid var(--red);
+    border-radius: 6px; padding: 40px 60px; text-align: center;
+    animation: roleIn 0.4s ease-out;
+  }
+  @keyframes roleIn { from { transform: scale(0.7) rotateY(90deg); opacity: 0; } to { transform: scale(1) rotateY(0); opacity: 1; } }
+  .role-icon { font-size: 5rem; }
+  .role-name {
+    font-family: 'Bebas Neue', cursive; font-size: 3.5rem; letter-spacing: 6px;
+    margin-top: 10px; text-shadow: 0 0 20px currentColor;
+  }
+  .role-desc { font-family: 'VT323', monospace; font-size: 1.1rem; color: #888; letter-spacing: 2px; margin-top: 8px; }
+  .role-murderer .role-card { border-color: var(--murder-red); }
+  .role-murderer .role-name { color: var(--murder-red); }
+  .role-sheriff .role-card { border-color: var(--sheriff-gold); }
+  .role-sheriff .role-name { color: var(--sheriff-gold); }
+  .role-civilian .role-card { border-color: var(--blue); }
+  .role-civilian .role-name { color: var(--blue); }
+  #role-reveal-timer { font-family: 'VT323', monospace; font-size: 1.2rem; color: #555; letter-spacing: 3px; }
+
+  /* ── GAME CANVAS ── */
+  #game-canvas-wrap {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: #000;
+    align-items: center; justify-content: center;
+  }
+  #game-canvas-wrap.active { display: flex; }
+  #game-canvas { display: block; }
+
+  /* ── HUD ── */
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 8px 14px;
+    display: none; z-index: 200;
+    align-items: center; gap: 10px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  #hud.active { display: flex; }
+  #hud-timer {
+    font-family: 'Bebas Neue', cursive; font-size: 2rem;
+    color: var(--yellow); letter-spacing: 4px;
+  }
+  #hud-timer.urgent { color: var(--red); animation: blink 0.5s infinite; }
+  @keyframes blink { 50% { opacity: 0.4; } }
+  #hud-players {
+    display: flex; gap: 6px; flex-wrap: wrap; flex: 1;
+    justify-content: flex-end;
+  }
+  .hud-player {
+    font-family: 'VT323', monospace; font-size: 0.9rem;
+    padding: 2px 8px; border-radius: 2px; border: 1px solid #333;
+    color: #888; background: rgba(0,0,0,0.6);
+  }
+  .hud-player.alive { color: var(--white); border-color: #555; }
+  .hud-player.dead { color: #444; text-decoration: line-through; border-color: #222; }
+
+  /* ── INVENTORY ── */
+  #inventory {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 8px 14px;
+    display: none; z-index: 200;
+    align-items: center; gap: 12px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  #inventory.active { display: flex; }
+  .inv-slot {
+    width: 52px; height: 52px; border: 2px solid #333; border-radius: 4px;
+    background: rgba(0,0,0,0.7); display: flex; align-items: center;
+    justify-content: center; font-size: 1.8rem; pointer-events: auto;
+    cursor: pointer; position: relative; transition: border-color 0.15s;
+  }
+  .inv-slot:hover { border-color: #666; }
+  .inv-slot.selected { border-color: var(--yellow); box-shadow: 0 0 10px rgba(255,230,0,0.4); }
+  .inv-slot.empty { opacity: 0.3; cursor: default; }
+  .inv-slot-key {
+    position: absolute; top: 2px; right: 4px;
+    font-family: 'VT323', monospace; font-size: 0.7rem; color: #555;
+  }
+  #role-badge {
+    font-family: 'VT323', monospace; font-size: 0.95rem; padding: 4px 10px;
+    border: 1px solid #333; border-radius: 2px; color: #888; margin-left: auto;
+  }
+
+  /* ── JOYSTICK ── */
+  #joystick-wrap {
+    position: fixed; bottom: 80px; left: 20px; z-index: 201;
+    display: none;
+  }
+  #joystick-wrap.active { display: block; }
+  #joystick-base {
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
+    position: relative;
+  }
+  #joystick-knob {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.3); border: 2px solid rgba(255,255,255,0.5);
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* ── END SCREEN ── */
+  #end-overlay {
+    display: none; position: fixed; inset: 0; z-index: 8889;
+    background: rgba(0,0,0,0.92);
+    align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+  }
+  #end-overlay.active { display: flex; }
+  #end-title {
+    font-family: 'Bebas Neue', cursive; font-size: clamp(2.5rem, 10vw, 5rem);
+    letter-spacing: 6px; text-align: center;
+    text-shadow: 0 0 40px currentColor;
+  }
+  #end-subtitle { font-family: 'VT323', monospace; font-size: 1.3rem; color: #888; letter-spacing: 3px; text-align: center; }
+  #end-roles-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 500px; }
+  .end-role-item {
+    font-family: 'VT323', monospace; font-size: 0.95rem; padding: 6px 12px;
+    border: 1px solid #333; border-radius: 3px; color: #888; background: #0d0d0d;
+  }
+  .end-role-item.murderer { border-color: var(--murder-red); color: var(--murder-red); }
+  .end-role-item.sheriff { border-color: var(--sheriff-gold); color: var(--sheriff-gold); }
+  #end-counter { font-family: 'VT323', monospace; font-size: 1.2rem; color: #555; letter-spacing: 3px; }
+
+  /* ── SPECTATE BAR ── */
+  #spectate-bar {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85); border: 2px solid #333; border-radius: 4px;
+    padding: 10px 20px; z-index: 210;
+    font-family: 'VT323', monospace; font-size: 1.3rem; color: #888;
+    letter-spacing: 3px; pointer-events: none;
+    display: none;
+  }
+  #spectate-bar.active { display: block; }
+
+  /* Mobile attack btn */
+  #mobile-attack-btn {
+    position: fixed; bottom: 80px; right: 20px; z-index: 201;
+    width: 70px; height: 70px; border-radius: 50%;
+    background: rgba(200,0,0,0.8); border: 2px solid var(--red);
+    font-size: 1.8rem; display: none; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
+  }
+  #mobile-attack-btn.active { display: flex; }
+  #mobile-reveal-btn {
+    position: fixed; bottom: 160px; right: 20px; z-index: 201;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(0,0,0,0.7); border: 2px solid #555;
+    font-size: 1.5rem; display: none; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
+  }
+  #mobile-reveal-btn.active { display: flex; }
+
+  .label { font-family: 'VT323', monospace; font-size: 0.85rem; letter-spacing: 3px; color: #555; margin-bottom: 6px; text-transform: uppercase; }
+
+  .sep { height: 1px; background: #1a1a1a; margin: 14px 0; }
+
+  #screen-lobby { background: var(--darker); }
+  #screen-create { background: var(--darker); }
+  #screen-join { background: var(--darker); }
+
+  .back-btn {
+    position: absolute; top: 14px; left: 14px;
+    font-family: 'VT323', monospace; font-size: 1.1rem;
+    color: #555; cursor: pointer; letter-spacing: 2px;
+    background: none; border: none;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- COUNTDOWN OVERLAY -->
+<div id="countdown-overlay">
+  <div id="countdown-num">3</div>
+  <div id="countdown-label">GAME STARTING</div>
+</div>
+
+<!-- ROLE REVEAL OVERLAY -->
+<div id="role-reveal-overlay">
+  <div id="role-reveal-inner"></div>
+  <div id="role-reveal-timer">STARTING IN 5...</div>
+</div>
+
+<!-- END OVERLAY -->
+<div id="end-overlay">
+  <div id="end-title">MURDERER WINS</div>
+  <div id="end-subtitle">THE KNIFE WINS AGAIN</div>
+  <div id="end-roles-list"></div>
+  <div id="end-counter">RETURNING TO LOBBY IN 10...</div>
+</div>
+
+<!-- ══ SCREEN: LOBBY ══ -->
+<div id="screen-lobby" class="screen active">
+  <h1 class="title">67 MURDER<br>MYSTERY</h1>
+  <h2 class="subtitle">⚔ DEAD FRIENDS FOREVER ⚔</h2>
+  <div class="card">
+    <input type="text" id="lobby-name" placeholder="YOUR NAME" maxlength="16">
+    <button class="btn btn-red" onclick="goCreate()">CREATE LOBBY</button>
+    <button class="btn btn-ghost" onclick="goJoin()">JOIN LOBBY</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: CREATE ══ -->
+<div id="screen-create" class="screen">
+  <button class="back-btn" onclick="showScreen('screen-lobby')">← BACK</button>
+  <h1 class="title" style="font-size:2.5rem">YOUR LOBBY</h1>
+  <div class="card">
+    <div class="label">GAME CODE — SHARE WITH FRIENDS</div>
+    <div class="room-code-display" id="create-code" onclick="copyCode()">——</div>
+    <div class="label">PLAYERS</div>
+    <div id="create-player-list"></div>
+    <div class="sep"></div>
+    <button class="btn btn-yellow" id="btn-start" disabled onclick="startGame()">WAITING FOR PLAYERS...</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: JOIN ══ -->
+<div id="screen-join" class="screen">
+  <button class="back-btn" onclick="showScreen('screen-lobby')">← BACK</button>
+  <h1 class="title" style="font-size:2.5rem">JOIN GAME</h1>
+  <div class="card">
+    <input type="text" id="join-code-input" placeholder="ENTER CODE" maxlength="6">
+    <button class="btn btn-red" onclick="joinLobby()">JOIN →</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: JOINED ══ -->
+<div id="screen-joined" class="screen">
+  <button class="back-btn" onclick="leaveGame()">← LEAVE</button>
+  <h1 class="title" style="font-size:2.5rem">LOBBY</h1>
+  <div class="card">
+    <div class="label">GAME CODE</div>
+    <div class="room-code-display" id="joined-code" onclick="copyCode()">——</div>
+    <div class="label">PLAYERS</div>
+    <div id="joined-player-list"></div>
+    <div class="sep"></div>
+    <div style="font-family:'VT323',monospace;font-size:1rem;color:#555;text-align:center;letter-spacing:2px;">WAITING FOR HOST TO START...</div>
+  </div>
+</div>
+
+<!-- ══ GAME CANVAS ══ -->
+<div id="game-canvas-wrap">
+  <canvas id="game-canvas"></canvas>
+</div>
+
+<!-- ══ HUD ══ -->
+<div id="hud">
+  <div id="hud-timer">2:00</div>
+  <div id="hud-players"></div>
+</div>
+
+<!-- ══ INVENTORY ══ -->
+<div id="inventory">
+  <div class="inv-slot" id="inv-weapon" onclick="toggleReveal()">
+    <span id="inv-weapon-icon">🔪</span>
+    <span class="inv-slot-key">E</span>
+  </div>
+  <div style="font-family:'VT323',monospace;font-size:0.85rem;color:#555;letter-spacing:2px;line-height:1.4;" id="inv-hint"></div>
+  <div id="role-badge">CIVILIAN</div>
+</div>
+
+<!-- ══ JOYSTICK ══ -->
+<div id="joystick-wrap">
+  <div id="joystick-base">
+    <div id="joystick-knob"></div>
+  </div>
+</div>
+
+<!-- Mobile buttons -->
+<div id="mobile-attack-btn" onclick="mobileAttack()">⚔</div>
+<div id="mobile-reveal-btn" onclick="toggleReveal()">👁</div>
+
+<!-- ══ SPECTATE BAR ══ -->
+<div id="spectate-bar">☠ YOU ARE DEAD — SPECTATING</div>
+
+<script>
+// ── CONFIG ──
+const WORKER = 'https://67inch.zepda2009.workers.dev';
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || ('ontouchstart' in window);
+
+// ── STATE ──
+let gName = '';
+let gRoomCode = null;
+let gPlayerId = null;
+let gIsHost = false;
+let gPlayers = [];
+let gPollInterval = null;
+let gMyPing = null;
+const gPingMap = {};
+
+// Game state
+let gMyRole = null; // 'murderer' | 'sheriff' | 'civilian'
+let gGameActive = false;
+let gMyDead = false;
+let gWeaponRevealed = false;
+let gWeaponInFlight = false;
+let gGunDropped = false;
+let gHasGun = false; // civilian picked up sheriff's gun
+let gLastMurdererGooglId = null;
+
+// Canvas / rendering
+let gCanvas, gCtx;
+let gCamX = 0, gCamY = 0;
+const TILE = 32;
+const MAP_W = 50, MAP_H = 40;
+
+// Players on canvas
+let gSelf = null;
+let gRemotePlayers = {}; // id -> {x,y,dead,role,revealed,name}
+let gDroppedGun = null; // {x,y} or null
+let gProjectile = null; // {x,y,vx,vy,ownerId}
+let gBloodSplats = []; // [{x,y,t}]
+let gDeathAnimations = []; // [{x,y,t}]
+
+// Input
+const keys = {};
+let gMoveDir = {x:0,y:0};
+let gMouseWorld = {x:0,y:0};
+let gMouseScreen = {x:0,y:0};
+
+// Timer
+let gRoundSeconds = 120;
+let gTimerInterval = null;
+let gRoundEndSent = false;
+
+// Network
+let gNetInterval = null;
+let gStateVersion = 0;
+
+// House map — wall segments as closed rooms
+// Format: array of {x1,y1,x2,y2} wall segments
+let gWalls = [];
+let gSpawns = [];
+
+function buildMap() {
+  gWalls = [];
+  // Outer boundary
+  const bx = 2, by = 2, bw = 46, bh = 36;
+  // Outer walls
+  gWalls.push(...roomRect(bx,by,bw,bh));
+  // Interior rooms
+  gWalls.push(...roomRect(4, 4, 12, 10));   // room 1 (top left)
+  gWalls.push(...roomRect(18, 4, 12, 10));  // room 2 (top mid)
+  gWalls.push(...roomRect(32, 4, 14, 10));  // room 3 (top right)
+  gWalls.push(...roomRect(4, 20, 10, 16));  // room 4 (bottom left)
+  gWalls.push(...roomRect(22, 22, 12, 12)); // room 5 (bottom mid)
+  gWalls.push(...roomRect(36, 18, 10, 18)); // room 6 (bottom right)
+  // Corridors (openings) are implied by gaps between rooms
+  // Add some interior dividers
+  gWalls.push({x1:16,y1:4,x2:16,y2:10});
+  gWalls.push({x1:30,y1:4,x2:30,y2:10});
+
+  // Doorway gaps — remove a segment from each room
+  // We'll do it differently: store wall rects as lists and punch holes
+  // Simpler: just the outline of each rectangle with door gaps
+
+  gWalls = [];
+  // Rebuild with door gaps
+  addRoomWithDoors(bx,by,bw,bh,   [{side:'right',pos:0.3},{side:'bottom',pos:0.4}]);
+  addRoomWithDoors(4, 4, 12, 10,  [{side:'right',pos:0.5},{side:'bottom',pos:0.5}]);
+  addRoomWithDoors(18, 4, 12, 10, [{side:'left',pos:0.5},{side:'right',pos:0.5},{side:'bottom',pos:0.5}]);
+  addRoomWithDoors(32, 4, 14, 10, [{side:'left',pos:0.5},{side:'bottom',pos:0.5}]);
+  addRoomWithDoors(4, 20, 10, 16, [{side:'top',pos:0.5},{side:'right',pos:0.5}]);
+  addRoomWithDoors(22, 22, 12, 12,[{side:'top',pos:0.5},{side:'left',pos:0.5},{side:'right',pos:0.5}]);
+  addRoomWithDoors(36, 18, 10, 18,[{side:'top',pos:0.5},{side:'left',pos:0.5}]);
+
+  // Outer wall (no doors, just boundary)
+  gWalls.push(...[
+    {x1:bx,y1:by,x2:bx+bw,y2:by},
+    {x1:bx+bw,y1:by,x2:bx+bw,y2:by+bh},
+    {x1:bx+bw,y1:by+bh,x2:bx,y2:by+bh},
+    {x1:bx,y1:by+bh,x2:bx,y2:by},
+  ]);
+
+  gSpawns = [
+    {x:8*TILE,y:8*TILE},{x:22*TILE,y:8*TILE},{x:36*TILE,y:8*TILE},
+    {x:8*TILE,y:26*TILE},{x:26*TILE,y:26*TILE},{x:40*TILE,y:26*TILE},
+    {x:14*TILE,y:16*TILE},{x:30*TILE,y:16*TILE},{x:24*TILE,y:14*TILE},
+    {x:44*TILE,y:20*TILE},{x:6*TILE,y:33*TILE},{x:42*TILE,y:36*TILE},
+  ];
+}
+
+function roomRect(x,y,w,h) {
+  return [
+    {x1:x,y1:y,x2:x+w,y2:y},
+    {x1:x+w,y1:y,x2:x+w,y2:y+h},
+    {x1:x+w,y1:y+h,x2:x,y2:y+h},
+    {x1:x,y1:y+h,x2:x,y2:y},
+  ];
+}
+
+function addRoomWithDoors(x,y,w,h,doors) {
+  const doorSize = 3; // in tiles
+  const sides = { top:{x1:x,y1:y,x2:x+w,y2:y}, right:{x1:x+w,y1:y,x2:x+w,y2:y+h}, bottom:{x1:x,y1:y+h,x2:x+w,y2:y+h}, left:{x1:x,y1:y,x2:x,y2:y+h} };
+  for (const [sideKey, seg] of Object.entries(sides)) {
+    const door = doors.find(d => d.side === sideKey);
+    if (!door) { gWalls.push(seg); continue; }
+    const isHoriz = seg.y1 === seg.y2;
+    const len = isHoriz ? Math.abs(seg.x2-seg.x1) : Math.abs(seg.y2-seg.y1);
+    const pos = door.pos;
+    const mid = pos * len;
+    const half = doorSize / 2;
+    const a = mid - half, b = mid + half;
+    if (isHoriz) {
+      const base = Math.min(seg.x1,seg.x2);
+      if (a > 0) gWalls.push({x1:seg.x1,y1:seg.y1,x2:base+a,y2:seg.y1});
+      if (b < len) gWalls.push({x1:base+b,y1:seg.y1,x2:seg.x2,y2:seg.y1});
+    } else {
+      const base = Math.min(seg.y1,seg.y2);
+      if (a > 0) gWalls.push({x1:seg.x1,y1:seg.y1,x2:seg.x1,y2:base+a});
+      if (b < len) gWalls.push({x1:seg.x1,y1:base+b,x2:seg.x1,y2:seg.y2});
+    }
+  }
+}
+
+// ── SCREEN MANAGEMENT ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = err ? 'show err' : 'show';
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── LOBBY ──
+function goCreate() {
+  const name = document.getElementById('lobby-name').value.trim();
+  if (!name) { showToast('ENTER YOUR NAME', true); return; }
+  gName = name.toUpperCase();
+  createLobby();
+}
+function goJoin() {
+  const name = document.getElementById('lobby-name').value.trim();
+  if (!name) { showToast('ENTER YOUR NAME', true); return; }
+  gName = name.toUpperCase();
+  showScreen('screen-join');
+}
+
+async function createLobby() {
+  gPlayerId = 'mm_' + Math.random().toString(36).slice(2, 10);
+  try {
+    const res = await fetch(`${WORKER}/api/murder/create`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ playerId: gPlayerId, name: gName }) });
+    const d = await res.json();
+    if (!d.success) { showToast(d.error || 'Error', true); return; }
+    gRoomCode = d.roomCode;
+    gIsHost = true;
+    gPlayers = d.players;
+    document.getElementById('create-code').textContent = gRoomCode;
+    renderPlayerList('create-player-list');
+    showScreen('screen-create');
+    startPolling();
+  } catch { showToast('NETWORK ERROR', true); }
+}
+
+async function joinLobby() {
+  const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+  if (code.length < 4) { showToast('ENTER VALID CODE', true); return; }
+  gPlayerId = 'mm_' + Math.random().toString(36).slice(2, 10);
+  try {
+    const res = await fetch(`${WORKER}/api/murder/join`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: code, playerId: gPlayerId, name: gName }) });
+    const d = await res.json();
+    if (!d.success) { showToast(d.error || 'ROOM NOT FOUND', true); return; }
+    gRoomCode = d.roomCode;
+    gIsHost = false;
+    gPlayers = d.players;
+    document.getElementById('joined-code').textContent = gRoomCode;
+    renderPlayerList('joined-player-list');
+    showScreen('screen-joined');
+    startPolling();
+  } catch { showToast('NETWORK ERROR', true); }
+}
+
+function copyCode() {
+  if (gRoomCode) navigator.clipboard.writeText(gRoomCode).catch(()=>{});
+  showToast('CODE COPIED!');
+}
+
+async function leaveGame() {
+  stopPolling(); stopGameLoop();
+  if (gRoomCode && gPlayerId) {
+    fetch(`${WORKER}/api/murder/leave`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode:gRoomCode, playerId:gPlayerId }) }).catch(()=>{});
+  }
+  gRoomCode = null; gPlayerId = null; gIsHost = false; gPlayers = [];
+  hideGameUI();
+  showScreen('screen-lobby');
+}
+
+function renderPlayerList(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  gPlayers.forEach((p, i) => {
+    const isHost = i === 0;
+    const isMe = p.id === gPlayerId;
+    const div = document.createElement('div');
+    div.className = 'player-slot' + (isMe ? ' me' : '');
+    div.innerHTML = `
+      <div class="player-slot-avatar" style="background:${playerColor(p.id)}">${p.name.charAt(0).toUpperCase()}</div>
+      <div class="player-slot-name">${p.name.toUpperCase()}</div>
+      ${isHost ? '<span class="player-slot-badge host">HOST</span>' : ''}
+      ${isMe ? '<span class="player-slot-badge you">YOU</span>' : ''}
+      ${gPingMap[p.id] ? `<span class="player-slot-ping">${gPingMap[p.id]}ms</span>` : ''}
+    `;
+    el.appendChild(div);
+  });
+  if (elId === 'create-player-list') {
+    const btn = document.getElementById('btn-start');
+    const can = gPlayers.length >= 2;
+    btn.disabled = !can;
+    btn.textContent = can ? `START WITH ${gPlayers.length} →` : 'NEED 2+ PLAYERS';
+  }
+}
+
+function playerColor(id) {
+  let h = 0;
+  for (let c of id) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+  return `hsl(${h % 360},60%,45%)`;
+}
+
+// ── POLLING ──
+function startPolling() { stopPolling(); pollLobby(); gPollInterval = setInterval(pollLobby, 1000); }
+function stopPolling() { if (gPollInterval) { clearInterval(gPollInterval); gPollInterval = null; } }
+
+async function pollLobby() {
+  if (!gRoomCode) return;
+  try {
+    const t0 = Date.now();
+    const res = await fetch(`${WORKER}/api/murder/room`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode:gRoomCode, playerId:gPlayerId }) });
+    const d = await res.json();
+    gMyPing = Date.now() - t0;
+    gPingMap[gPlayerId] = gMyPing;
+    if (!d.success) { stopPolling(); showToast('ROOM CLOSED', true); showScreen('screen-lobby'); return; }
+    gPlayers = d.players || [];
+    if (d.pings) Object.assign(gPingMap, d.pings);
+    const listId = gIsHost ? 'create-player-list' : 'joined-player-list';
+    renderPlayerList(listId);
+    if (d.status === 'playing' && !gGameActive) {
+      stopPolling();
+      receiveGameStart(d);
+    }
+  } catch {}
+}
+
+// ── START GAME (host) ──
+async function startGame() {
+  const btn = document.getElementById('btn-start');
+  btn.disabled = true; btn.textContent = 'STARTING...';
+  try {
+    const res = await fetch(`${WORKER}/api/murder/start`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode:gRoomCode, playerId:gPlayerId, lastMurdererId: gLastMurdererGooglId }) });
+    const d = await res.json();
+    if (!d.success) { btn.disabled = false; btn.textContent = `START WITH ${gPlayers.length} →`; showToast(d.error || 'Error', true); return; }
+    receiveGameStart(d);
+  } catch { btn.disabled = false; showToast('NETWORK ERROR', true); }
+}
+
+function receiveGameStart(d) {
+  gMyRole = d.roles?.[gPlayerId] || 'civilian';
+  gLastMurdererGooglId = d.murdererId;
+  gGameActive = true;
+  gMyDead = false;
+  gWeaponRevealed = false;
+  gWeaponInFlight = false;
+  gGunDropped = false;
+  gHasGun = false;
+  gRoundEndSent = false;
+  gProjectile = null;
+  gBloodSplats = [];
+  gDeathAnimations = [];
+  gDroppedGun = null;
+
+  // Show role reveal
+  showRoleReveal(gMyRole, () => beginGameplay(d));
+}
+
+function showRoleReveal(role, cb) {
+  const overlay = document.getElementById('role-reveal-overlay');
+  const inner = document.getElementById('role-reveal-inner');
+  const timerEl = document.getElementById('role-reveal-timer');
+
+  const roleInfo = {
+    murderer: { icon:'🔪', name:'MURDERER', desc:'KILL EVERYONE. STAY HIDDEN.', cls:'role-murderer' },
+    sheriff:  { icon:'🔫', name:'SHERIFF',  desc:'PROTECT THE INNOCENT. SHOOT THE KILLER.', cls:'role-sheriff' },
+    civilian: { icon:'🏃', name:'CIVILIAN', desc:'SURVIVE. TRUST NO ONE.', cls:'role-civilian' },
+  };
+  const info = roleInfo[role] || roleInfo.civilian;
+  inner.className = info.cls;
+  inner.innerHTML = `
+    <div class="role-card">
+      <div class="role-icon">${info.icon}</div>
+      <div class="role-name" style="color:${role==='murderer'?'var(--murder-red)':role==='sheriff'?'var(--sheriff-gold)':'var(--blue)'}">${info.name}</div>
+      <div class="role-desc">${info.desc}</div>
+    </div>
+  `;
+
+  overlay.classList.add('active');
+
+  let t = 5;
+  timerEl.textContent = `STARTING IN ${t}...`;
+  const iv = setInterval(() => {
+    t--;
+    timerEl.textContent = t > 0 ? `STARTING IN ${t}...` : 'GO!';
+    if (t <= 0) { clearInterval(iv); overlay.classList.remove('active'); cb(); }
+  }, 1000);
+}
+
+function beginGameplay(d) {
+  buildMap();
+
+  // Assign spawn positions
+  const playerList = d.players || gPlayers;
+  const myIdx = playerList.findIndex(p => p.id === gPlayerId);
+  const spawnIdx = myIdx >= 0 ? myIdx % gSpawns.length : 0;
+  const spawn = gSpawns[spawnIdx];
+
+  gSelf = {
+    x: spawn.x, y: spawn.y,
+    vx: 0, vy: 0,
+    speed: 2.8,
+    r: 10,
+    name: gName,
+    role: gMyRole,
+    revealed: false,
+    dead: false,
+  };
+
+  // Remote players
+  gRemotePlayers = {};
+  playerList.forEach((p, i) => {
+    if (p.id === gPlayerId) return;
+    const sp = gSpawns[i % gSpawns.length];
+    gRemotePlayers[p.id] = {
+      x: sp.x, y: sp.y, name: p.name,
+      role: null, revealed: false, dead: false,
+      serverX: sp.x, serverY: sp.y,
+    };
+  });
+
+  // Setup canvas
+  gCanvas = document.getElementById('game-canvas');
+  gCtx = gCanvas.getContext('2d');
+  resizeCanvas();
+
+  // Show game UI
+  document.getElementById('game-canvas-wrap').classList.add('active');
+  document.getElementById('hud').classList.add('active');
+  document.getElementById('inventory').classList.add('active');
+  updateInventoryUI();
+  updateHUD();
+
+  if (isMobile) {
+    document.getElementById('joystick-wrap').classList.add('active');
+    document.getElementById('mobile-attack-btn').classList.add('active');
+    document.getElementById('mobile-reveal-btn').classList.add('active');
+    initJoystick();
+  }
+
+  // Start timer
+  gRoundSeconds = 120;
+  gTimerInterval = setInterval(tickTimer, 1000);
+
+  // Start render loop
+  requestAnimationFrame(gameLoop);
+
+  // Start net sync
+  gNetInterval = setInterval(sendMyState, 100);
+  // Start polling game state
+  gPollInterval = setInterval(pollGameState, 800);
+}
+
+function resizeCanvas() {
+  if (!gCanvas) return;
+  gCanvas.width = window.innerWidth;
+  gCanvas.height = window.innerHeight;
+}
+
+// ── GAME LOOP ──
+let gLastTime = 0;
+function gameLoop(ts) {
+  if (!gGameActive) return;
+  const dt = Math.min((ts - gLastTime) / 16.67, 3);
+  gLastTime = ts;
+
+  update(dt);
+  render();
+
+  requestAnimationFrame(gameLoop);
+}
+
+function update(dt) {
+  if (!gSelf || gMyDead) return;
+
+  // Movement
+  let dx = 0, dy = 0;
+  if (!isMobile) {
+    if (keys['w'] || keys['arrowup'])    dy -= 1;
+    if (keys['s'] || keys['arrowdown'])  dy += 1;
+    if (keys['a'] || keys['arrowleft'])  dx -= 1;
+    if (keys['d'] || keys['arrowright']) dx += 1;
+  } else {
+    dx = gMoveDir.x;
+    dy = gMoveDir.y;
+  }
+  const mag = Math.sqrt(dx*dx+dy*dy);
+  if (mag > 0) { dx /= mag; dy /= mag; }
+
+  const spd = gSelf.speed * TILE * 0.08;
+  const nx = gSelf.x + dx * spd * dt;
+  const ny = gSelf.y + dy * spd * dt;
+  if (!collides(nx, gSelf.y, gSelf.r)) gSelf.x = nx;
+  if (!collides(gSelf.x, ny, gSelf.r)) gSelf.y = ny;
+
+  // Camera
+  gCamX = gSelf.x - gCanvas.width / 2;
+  gCamY = gSelf.y - gCanvas.height / 2;
+  const mapPxW = MAP_W * TILE, mapPxH = MAP_H * TILE;
+  gCamX = Math.max(0, Math.min(gCamX, mapPxW - gCanvas.width));
+  gCamY = Math.max(0, Math.min(gCamY, mapPxH - gCanvas.height));
+
+  // Lerp remote players
+  for (const rp of Object.values(gRemotePlayers)) {
+    if (!rp.dead) {
+      rp.x += (rp.serverX - rp.x) * 0.25;
+      rp.y += (rp.serverY - rp.y) * 0.25;
+    }
+  }
+
+  // Projectile
+  if (gProjectile) {
+    gProjectile.x += gProjectile.vx * dt;
+    gProjectile.y += gProjectile.vy * dt;
+    // Hit wall?
+    if (collides(gProjectile.x, gProjectile.y, 4) || outOfBounds(gProjectile.x, gProjectile.y)) {
+      gProjectile = null;
+      gWeaponInFlight = false;
+    } else if (gMyRole === 'sheriff' && gSelf && !gMyDead) {
+      // Check if sheriff bullet hits remote player
+      for (const [id, rp] of Object.entries(gRemotePlayers)) {
+        if (rp.dead) continue;
+        const dist = Math.hypot(rp.x - gProjectile.x, rp.y - gProjectile.y);
+        if (dist < 18) {
+          gProjectile = null;
+          gWeaponInFlight = false;
+          sendKill(id, 'shot');
+          break;
+        }
+      }
+    }
+  }
+
+  // Check pickup of dropped gun
+  if (gDroppedGun && !gHasGun && gMyRole === 'civilian' && !gMyDead) {
+    const dist = Math.hypot(gSelf.x - gDroppedGun.x, gSelf.y - gDroppedGun.y);
+    if (dist < 30) {
+      // Prompt shown, actually pick up on E
+    }
+  }
+
+  // Blood splat cleanup
+  gBloodSplats = gBloodSplats.filter(b => Date.now() - b.t < 5000);
+  gDeathAnimations = gDeathAnimations.filter(b => Date.now() - b.t < 1500);
+}
+
+function collides(x, y, r) {
+  for (const w of gWalls) {
+    if (segCircle(w.x1*TILE, w.y1*TILE, w.x2*TILE, w.y2*TILE, x, y, r + 2)) return true;
+  }
+  return false;
+}
+
+function outOfBounds(x, y) {
+  return x < 0 || y < 0 || x > MAP_W * TILE || y > MAP_H * TILE;
+}
+
+function segCircle(x1,y1,x2,y2,cx,cy,r) {
+  const dx = x2-x1, dy = y2-y1;
+  const fx = x1-cx, fy = y1-cy;
+  const a = dx*dx+dy*dy;
+  if (a === 0) return Math.hypot(fx,fy) < r;
+  let t = -(fx*dx+fy*dy)/a;
+  t = Math.max(0, Math.min(1, t));
+  const nx = fx+t*dx, ny = fy+t*dy;
+  return nx*nx+ny*ny < r*r;
+}
+
+// ── RENDER ──
+function render() {
+  if (!gCtx || !gCanvas) return;
+  const W = gCanvas.width, H = gCanvas.height;
+  gCtx.clearRect(0, 0, W, H);
+
+  // Floor
+  gCtx.fillStyle = '#0d0d0d';
+  gCtx.fillRect(0, 0, W, H);
+
+  gCtx.save();
+  gCtx.translate(-gCamX, -gCamY);
+
+  // Floor tiles
+  gCtx.fillStyle = '#111';
+  gCtx.fillRect(2*TILE, 2*TILE, (MAP_W-4)*TILE, (MAP_H-4)*TILE);
+
+  // Room floors
+  const rooms = [
+    [4,4,12,10],[18,4,12,10],[32,4,14,10],
+    [4,20,10,16],[22,22,12,12],[36,18,10,18]
+  ];
+  gCtx.fillStyle = '#141414';
+  for (const [rx,ry,rw,rh] of rooms) {
+    gCtx.fillRect(rx*TILE,ry*TILE,rw*TILE,rh*TILE);
+  }
+
+  // Blood splats
+  for (const b of gBloodSplats) {
+    const age = (Date.now() - b.t) / 5000;
+    gCtx.fillStyle = `rgba(180,0,0,${0.7 * (1 - age)})`;
+    gCtx.beginPath();
+    gCtx.arc(b.x, b.y, b.r || 8, 0, Math.PI*2);
+    gCtx.fill();
+  }
+
+  // Dropped gun
+  if (gDroppedGun) {
+    gCtx.font = '20px serif';
+    gCtx.textAlign = 'center';
+    gCtx.fillText('🔫', gDroppedGun.x, gDroppedGun.y);
+    gCtx.textAlign = 'left';
+  }
+
+  // Remote players
+  for (const [id, rp] of Object.entries(gRemotePlayers)) {
+    drawPlayer(rp.x, rp.y, rp.name, id, rp.dead, rp.role, rp.revealed, false);
+  }
+
+  // Death animations
+  for (const d of gDeathAnimations) {
+    const age = (Date.now() - d.t) / 1500;
+    gCtx.save();
+    gCtx.globalAlpha = 1 - age;
+    gCtx.font = `${20 + age * 30}px serif`;
+    gCtx.textAlign = 'center';
+    gCtx.fillText('💀', d.x, d.y - age * 40);
+    gCtx.restore();
+    gCtx.textAlign = 'left';
+  }
+
+  // Self
+  if (gSelf) {
+    drawPlayer(gSelf.x, gSelf.y, gName, gPlayerId, gMyDead, gMyRole, gWeaponRevealed, true);
+  }
+
+  // Projectile
+  if (gProjectile) {
+    gCtx.fillStyle = '#ff0';
+    gCtx.beginPath();
+    gCtx.arc(gProjectile.x, gProjectile.y, 4, 0, Math.PI*2);
+    gCtx.fill();
+    // Direction trail
+    gCtx.strokeStyle = 'rgba(255,255,0,0.3)';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(gProjectile.x, gProjectile.y);
+    gCtx.lineTo(gProjectile.x - gProjectile.vx*4, gProjectile.y - gProjectile.vy*4);
+    gCtx.stroke();
+  }
+
+  // Walls
+  gCtx.strokeStyle = '#555';
+  gCtx.lineWidth = 3;
+  gCtx.lineCap = 'round';
+  for (const w of gWalls) {
+    gCtx.beginPath();
+    gCtx.moveTo(w.x1*TILE, w.y1*TILE);
+    gCtx.lineTo(w.x2*TILE, w.y2*TILE);
+    gCtx.stroke();
+  }
+
+  // Sheriff gun direction arrow
+  if (gSelf && !gMyDead && (gMyRole === 'sheriff' || gHasGun) && gWeaponRevealed && !gWeaponInFlight) {
+    const angle = Math.atan2(gMouseWorld.y - gSelf.y, gMouseWorld.x - gSelf.x);
+    const arLen = 60;
+    gCtx.save();
+    gCtx.strokeStyle = 'rgba(255,215,0,0.6)';
+    gCtx.lineWidth = 2;
+    gCtx.setLineDash([4, 4]);
+    gCtx.beginPath();
+    gCtx.moveTo(gSelf.x, gSelf.y);
+    gCtx.lineTo(gSelf.x + Math.cos(angle)*arLen, gSelf.y + Math.sin(angle)*arLen);
+    gCtx.stroke();
+    gCtx.setLineDash([]);
+    gCtx.restore();
+  }
+
+  // Murderer stab range indicator
+  if (gSelf && !gMyDead && gMyRole === 'murderer' && gWeaponRevealed) {
+    gCtx.strokeStyle = 'rgba(200,0,0,0.3)';
+    gCtx.lineWidth = 1;
+    gCtx.setLineDash([3,3]);
+    gCtx.beginPath();
+    gCtx.arc(gSelf.x, gSelf.y, 36, 0, Math.PI*2);
+    gCtx.stroke();
+    gCtx.setLineDash([]);
+  }
+
+  // Pickup hint
+  if (gDroppedGun && !gHasGun && gMyRole === 'civilian' && !gMyDead && gSelf) {
+    const dist = Math.hypot(gSelf.x - gDroppedGun.x, gSelf.y - gDroppedGun.y);
+    if (dist < 50) {
+      gCtx.fillStyle = 'rgba(255,230,0,0.9)';
+      gCtx.font = '13px Oswald';
+      gCtx.textAlign = 'center';
+      gCtx.fillText(isMobile ? 'TAP 👁 TO PICK UP' : 'PRESS E TO PICK UP GUN', gDroppedGun.x, gDroppedGun.y - 30);
+      gCtx.textAlign = 'left';
+    }
+  }
+
+  gCtx.restore();
+
+  // ── VISION MASK ──
+  const visionR = 150;
+  if (gSelf) {
+    const sx = gSelf.x - gCamX;
+    const sy = gSelf.y - gCamY;
+    // Radial gradient mask
+    const grad = gCtx.createRadialGradient(sx, sy, visionR * 0.6, sx, sy, visionR * 1.8);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(0.6, 'rgba(0,0,0,0.7)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.97)');
+    gCtx.fillStyle = grad;
+    gCtx.fillRect(0, 0, W, H);
+  }
+}
+
+function drawPlayer(x, y, name, id, dead, role, revealed, isMe) {
+  const sx = x, sy = y;
+  const r = 10;
+  const col = isMe ? '#f5f5f5' : playerColor(id);
+
+  gCtx.save();
+  if (dead) { gCtx.globalAlpha = 0.25; }
+
+  // Shadow
+  gCtx.fillStyle = 'rgba(0,0,0,0.4)';
+  gCtx.beginPath();
+  gCtx.ellipse(sx, sy + r, r, r * 0.4, 0, 0, Math.PI * 2);
+  gCtx.fill();
+
+  // Body
+  gCtx.fillStyle = col;
+  gCtx.beginPath();
+  gCtx.arc(sx, sy, r, 0, Math.PI * 2);
+  gCtx.fill();
+
+  if (isMe) {
+    gCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+    gCtx.lineWidth = 2;
+    gCtx.stroke();
+  }
+
+  // Dead X
+  if (dead) {
+    gCtx.strokeStyle = 'rgba(255,0,0,0.8)';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(sx - r*0.6, sy - r*0.6); gCtx.lineTo(sx + r*0.6, sy + r*0.6);
+    gCtx.moveTo(sx + r*0.6, sy - r*0.6); gCtx.lineTo(sx - r*0.6, sy + r*0.6);
+    gCtx.stroke();
+  }
+
+  // Weapon reveal indicator
+  if (revealed && !dead) {
+    const icon = (role === 'murderer') ? '🔪' : '🔫';
+    gCtx.font = '14px serif';
+    gCtx.textAlign = 'center';
+    gCtx.fillText(icon, sx, sy - r - 4);
+    gCtx.textAlign = 'left';
+  }
+
+  // Name tag
+  gCtx.fillStyle = 'rgba(0,0,0,0.6)';
+  gCtx.font = 'bold 10px Oswald';
+  gCtx.textAlign = 'center';
+  const tw = gCtx.measureText(name).width;
+  gCtx.fillRect(sx - tw/2 - 3, sy - r - 20, tw + 6, 14);
+  gCtx.fillStyle = dead ? '#444' : (isMe ? '#ffe600' : '#fff');
+  gCtx.fillText(name, sx, sy - r - 9);
+  gCtx.textAlign = 'left';
+
+  gCtx.restore();
+}
+
+// ── TIMER ──
+function tickTimer() {
+  if (!gGameActive) return;
+  gRoundSeconds--;
+  updateHUD();
+  if (gRoundSeconds <= 0 && !gRoundEndSent) {
+    // Time up — civilians win
+    endRound('civilians_timeout');
+  }
+}
+
+function updateHUD() {
+  const el = document.getElementById('hud-timer');
+  const m = Math.floor(gRoundSeconds/60), s = gRoundSeconds%60;
+  el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  el.className = gRoundSeconds <= 20 ? 'urgent' : '';
+
+  // Players
+  const hp = document.getElementById('hud-players');
+  hp.innerHTML = '';
+  const allPlayers = [
+    { id: gPlayerId, name: gName, dead: gMyDead },
+    ...Object.entries(gRemotePlayers).map(([id, rp]) => ({ id, name: rp.name, dead: rp.dead }))
+  ];
+  allPlayers.forEach(p => {
+    const span = document.createElement('span');
+    span.className = 'hud-player ' + (p.dead ? 'dead' : 'alive');
+    span.textContent = p.name;
+    hp.appendChild(span);
+  });
+}
+
+function updateInventoryUI() {
+  const iconEl = document.getElementById('inv-weapon-icon');
+  const hintEl = document.getElementById('inv-hint');
+  const badge = document.getElementById('role-badge');
+  const slot = document.getElementById('inv-weapon');
+
+  if (gMyRole === 'murderer') {
+    iconEl.textContent = '🔪';
+    badge.textContent = 'MURDERER';
+    badge.style.color = 'var(--murder-red)';
+    badge.style.borderColor = 'rgba(200,0,0,0.4)';
+    hintEl.innerHTML = 'E: REVEAL/HIDE KNIFE<br>CLICK: STAB<br>R-CLICK: THROW';
+  } else if (gMyRole === 'sheriff') {
+    iconEl.textContent = '🔫';
+    badge.textContent = 'SHERIFF';
+    badge.style.color = 'var(--sheriff-gold)';
+    badge.style.borderColor = 'rgba(255,215,0,0.4)';
+    hintEl.innerHTML = 'E: REVEAL/HIDE GUN<br>CLICK: SHOOT';
+  } else {
+    iconEl.textContent = gHasGun ? '🔫' : '🚶';
+    badge.textContent = 'CIVILIAN';
+    badge.style.color = 'var(--blue)';
+    badge.style.borderColor = 'rgba(0,170,255,0.3)';
+    hintEl.innerHTML = gHasGun ? 'E: REVEAL/HIDE GUN<br>CLICK: SHOOT' : 'STAY ALIVE';
+  }
+
+  if (gWeaponRevealed) slot.classList.add('selected');
+  else slot.classList.remove('selected');
+}
+
+// ── WEAPON ACTIONS ──
+function toggleReveal() {
+  if (gMyDead) return;
+  if (gMyRole === 'civilian' && !gHasGun) {
+    // Check if near gun to pick up
+    if (gDroppedGun && gSelf) {
+      const dist = Math.hypot(gSelf.x - gDroppedGun.x, gSelf.y - gDroppedGun.y);
+      if (dist < 50) { pickupGun(); return; }
+    }
+    return;
+  }
+  gWeaponRevealed = !gWeaponRevealed;
+  updateInventoryUI();
+  sendReveal(gWeaponRevealed);
+}
+
+function pickupGun() {
+  gHasGun = true;
+  gDroppedGun = null;
+  gMyRole = 'sheriff'; // become new sheriff
+  gWeaponRevealed = false;
+  updateInventoryUI();
+  showToast('YOU ARE NOW THE SHERIFF!');
+  sendPickupGun();
+}
+
+function tryStab() {
+  if (!gWeaponRevealed || gMyRole !== 'murderer' || gMyDead || gWeaponInFlight) return;
+  // Check nearby players
+  for (const [id, rp] of Object.entries(gRemotePlayers)) {
+    if (rp.dead) continue;
+    const dist = Math.hypot(gSelf.x - rp.x, gSelf.y - rp.y);
+    if (dist < 36) {
+      sendKill(id, 'stab');
+      return;
+    }
+  }
+}
+
+function tryThrow() {
+  if (!gWeaponRevealed || gMyRole !== 'murderer' || gMyDead || gWeaponInFlight) return;
+  if (gProjectile) return;
+  const angle = Math.atan2(gMouseWorld.y - gSelf.y, gMouseWorld.x - gSelf.x);
+  const spd = 12;
+  gProjectile = { x: gSelf.x, y: gSelf.y, vx: Math.cos(angle)*spd, vy: Math.sin(angle)*spd, ownerId: gPlayerId };
+  gWeaponInFlight = true;
+  updateInventoryUI();
+  // Send throw to server (so others see it)
+  sendThrow(angle);
+}
+
+function tryShoot() {
+  if (!gWeaponRevealed || (gMyRole !== 'sheriff' && !gHasGun) || gMyDead || gWeaponInFlight) return;
+  if (gProjectile) return;
+  const angle = Math.atan2(gMouseWorld.y - gSelf.y, gMouseWorld.x - gSelf.x);
+  const spd = 14;
+  gProjectile = { x: gSelf.x, y: gSelf.y, vx: Math.cos(angle)*spd, vy: Math.sin(angle)*spd, ownerId: gPlayerId };
+  gWeaponInFlight = true;
+  updateInventoryUI();
+  sendShoot(angle);
+}
+
+function mobileAttack() {
+  if (gMyDead) return;
+  if (gMyRole === 'murderer') { tryStab(); }
+  else if (gMyRole === 'sheriff' || gHasGun) { tryShoot(); }
+}
+
+// ── NETWORK ──
+async function sendMyState() {
+  if (!gGameActive || !gRoomCode || !gSelf) return;
+  try {
+    await fetch(`${WORKER}/api/murder/state`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        roomCode: gRoomCode, playerId: gPlayerId,
+        x: Math.round(gSelf.x), y: Math.round(gSelf.y),
+        revealed: gWeaponRevealed, dead: gMyDead,
+      })
+    });
+  } catch {}
+}
+
+async function sendKill(targetId, method) {
+  try {
+    const res = await fetch(`${WORKER}/api/murder/kill`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, killerId: gPlayerId, targetId, method }) });
+    const d = await res.json();
+    if (d.success) {
+      markPlayerDead(targetId);
+      if (d.gameOver) handleGameOver(d);
+    }
+  } catch {}
+}
+
+async function sendReveal(revealed) {
+  try {
+    await fetch(`${WORKER}/api/murder/reveal`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId, revealed }) });
+  } catch {}
+}
+
+async function sendThrow(angle) {
+  try {
+    await fetch(`${WORKER}/api/murder/throw`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId, angle, x: Math.round(gSelf.x), y: Math.round(gSelf.y) }) });
+  } catch {}
+}
+
+async function sendShoot(angle) {
+  try {
+    await fetch(`${WORKER}/api/murder/shoot`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId, angle, x: Math.round(gSelf.x), y: Math.round(gSelf.y) }) });
+  } catch {}
+}
+
+async function sendPickupGun() {
+  try {
+    await fetch(`${WORKER}/api/murder/pickup`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
+  } catch {}
+}
+
+async function pollGameState() {
+  if (!gGameActive || !gRoomCode) return;
+  try {
+    const res = await fetch(`${WORKER}/api/murder/gamestate`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
+    const d = await res.json();
+    if (!d.success) return;
+
+    // Update remote players
+    if (d.players) {
+      for (const p of d.players) {
+        if (p.id === gPlayerId) continue;
+        if (!gRemotePlayers[p.id]) {
+          gRemotePlayers[p.id] = { x: p.x, y: p.y, name: p.name, role: null, revealed: false, dead: false, serverX: p.x, serverY: p.y };
+        }
+        const rp = gRemotePlayers[p.id];
+        if (!rp.dead) { rp.serverX = p.x; rp.serverY = p.y; }
+        rp.revealed = p.revealed;
+        if (p.role && (p.id === gPlayerId || p.revealed || p.dead)) rp.role = p.role;
+        const wasDead = rp.dead;
+        rp.dead = p.dead;
+        if (!wasDead && p.dead) {
+          gBloodSplats.push({ x: rp.x, y: rp.y, r: 12, t: Date.now() });
+          gDeathAnimations.push({ x: rp.x, y: rp.y, t: Date.now() });
+        }
+      }
+    }
+
+    // Dropped gun
+    if (d.droppedGun !== undefined) gDroppedGun = d.droppedGun;
+
+    // Server says I died
+    if (d.myDead && !gMyDead) {
+      gMyDead = true;
+      gBloodSplats.push({ x: gSelf.x, y: gSelf.y, r: 14, t: Date.now() });
+      document.getElementById('spectate-bar').classList.add('active');
+      updateHUD();
+    }
+
+    // Projectiles from server (knife throws / shoots)
+    if (d.projectiles) {
+      for (const proj of d.projectiles) {
+        if (proj.ownerId === gPlayerId) continue; // our own
+        // Animate them — simple: just check if they kill us
+        if (!gMyDead && gSelf) {
+          const dist = Math.hypot(gSelf.x - proj.x, gSelf.y - proj.y);
+          if (dist < 18) {
+            // We got hit
+          }
+        }
+      }
+    }
+
+    if (d.gameOver) handleGameOver(d);
+  } catch {}
+}
+
+function markPlayerDead(id) {
+  const rp = gRemotePlayers[id];
+  if (rp) {
+    rp.dead = true;
+    gBloodSplats.push({ x: rp.x, y: rp.y, r: 12, t: Date.now() });
+    gDeathAnimations.push({ x: rp.x, y: rp.y, t: Date.now() });
+    updateHUD();
+  }
+}
+
+async function endRound(reason) {
+  if (gRoundEndSent) return;
+  gRoundEndSent = true;
+  try {
+    await fetch(`${WORKER}/api/murder/end`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId, reason }) });
+  } catch {}
+}
+
+function handleGameOver(d) {
+  if (!gGameActive) return;
+  gGameActive = false;
+  stopGameLoop();
+
+  const winner = d.winner; // 'murderer' | 'civilians'
+  const murdererId = d.murdererId;
+  const murdererName = d.murdererName || 'UNKNOWN';
+
+  const overlay = document.getElementById('end-overlay');
+  const title = document.getElementById('end-title');
+  const subtitle = document.getElementById('end-subtitle');
+  const rolesList = document.getElementById('end-roles-list');
+  const counter = document.getElementById('end-counter');
+
+  if (winner === 'murderer') {
+    title.textContent = 'MURDERER WINS';
+    title.style.color = 'var(--murder-red)';
+    subtitle.textContent = `${murdererName} KILLED EVERYONE`;
+  } else {
+    title.textContent = 'CIVILIANS WIN';
+    title.style.color = 'var(--blue)';
+    subtitle.textContent = winner === 'sheriff_shot' ? 'MURDERER WAS SHOT!' : 'MURDERER RAN OUT OF TIME';
+  }
+
+  rolesList.innerHTML = '';
+  if (d.allRoles) {
+    for (const [pid, role] of Object.entries(d.allRoles)) {
+      const pname = pid === gPlayerId ? gName : (gRemotePlayers[pid]?.name || pid);
+      const span = document.createElement('span');
+      span.className = 'end-role-item ' + (role === 'murderer' ? 'murderer' : role === 'sheriff' ? 'sheriff' : '');
+      span.textContent = `${pname}: ${role.toUpperCase()}`;
+      rolesList.appendChild(span);
+    }
+  }
+
+  overlay.classList.add('active');
+
+  let t = 10;
+  counter.textContent = `RETURNING TO LOBBY IN ${t}...`;
+  const iv = setInterval(() => {
+    t--;
+    counter.textContent = t > 0 ? `RETURNING TO LOBBY IN ${t}...` : 'GOING BACK...';
+    if (t <= 0) {
+      clearInterval(iv);
+      overlay.classList.remove('active');
+      returnToLobby();
+    }
+  }, 1000);
+}
+
+function returnToLobby() {
+  hideGameUI();
+  gGameActive = false;
+  gMyRole = null;
+  gMyDead = false;
+  gWeaponRevealed = false;
+  gWeaponInFlight = false;
+  gHasGun = false;
+  gProjectile = null;
+  gBloodSplats = [];
+  gDeathAnimations = [];
+  document.getElementById('spectate-bar').classList.remove('active');
+
+  if (gRoomCode) {
+    gPlayers = [];
+    // Re-poll lobby
+    fetch(`${WORKER}/api/murder/room`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ roomCode:gRoomCode, playerId:gPlayerId }) })
+      .then(r => r.json())
+      .then(d => {
+        if (!d.success) { showScreen('screen-lobby'); return; }
+        gPlayers = d.players || [];
+        const isNowHost = d.hostId === gPlayerId;
+        gIsHost = isNowHost;
+        if (isNowHost) {
+          document.getElementById('create-code').textContent = gRoomCode;
+          renderPlayerList('create-player-list');
+          showScreen('screen-create');
+        } else {
+          document.getElementById('joined-code').textContent = gRoomCode;
+          renderPlayerList('joined-player-list');
+          showScreen('screen-joined');
+        }
+        startPolling();
+      }).catch(() => showScreen('screen-lobby'));
+  } else {
+    showScreen('screen-lobby');
+  }
+}
+
+function hideGameUI() {
+  document.getElementById('game-canvas-wrap').classList.remove('active');
+  document.getElementById('hud').classList.remove('active');
+  document.getElementById('inventory').classList.remove('active');
+  document.getElementById('joystick-wrap').classList.remove('active');
+  document.getElementById('mobile-attack-btn').classList.remove('active');
+  document.getElementById('mobile-reveal-btn').classList.remove('active');
+  document.getElementById('spectate-bar').classList.remove('active');
+}
+
+function stopGameLoop() {
+  gGameActive = false;
+  if (gTimerInterval) { clearInterval(gTimerInterval); gTimerInterval = null; }
+  if (gNetInterval)   { clearInterval(gNetInterval); gNetInterval = null; }
+  if (gPollInterval)  { clearInterval(gPollInterval); gPollInterval = null; }
+}
+
+// ── INPUT ──
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  keys[k] = true;
+  if (!gGameActive) return;
+  if (k === 'e') toggleReveal();
+  if (k === 'escape') {
+    // do nothing, prevent accidental back
+  }
+});
+document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+document.addEventListener('mousemove', e => {
+  gMouseScreen = { x: e.clientX, y: e.clientY };
+  if (gSelf) {
+    gMouseWorld = { x: e.clientX + gCamX, y: e.clientY + gCamY };
+  }
+});
+
+document.addEventListener('click', e => {
+  if (!gGameActive || gMyDead) return;
+  if (gMyRole === 'murderer') tryStab();
+  else if (gMyRole === 'sheriff' || gHasGun) tryShoot();
+});
+
+document.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  if (!gGameActive || gMyDead) return;
+  if (gMyRole === 'murderer') tryThrow();
+});
+
+window.addEventListener('resize', resizeCanvas);
+
+// ── JOYSTICK ──
+let jActive = false, jStartX = 0, jStartY = 0;
+function initJoystick() {
+  const base = document.getElementById('joystick-base');
+  const knob = document.getElementById('joystick-knob');
+  const maxR = 28;
+
+  function onStart(cx, cy) {
+    jActive = true;
+    jStartX = cx; jStartY = cy;
+  }
+  function onMove(cx, cy) {
+    if (!jActive) return;
+    let dx = cx - jStartX, dy = cy - jStartY;
+    const mag = Math.sqrt(dx*dx+dy*dy);
+    if (mag > maxR) { dx = dx/mag*maxR; dy = dy/mag*maxR; }
+    knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    gMoveDir = { x: dx/maxR, y: dy/maxR };
+  }
+  function onEnd() {
+    jActive = false;
+    knob.style.transform = 'translate(-50%,-50%)';
+    gMoveDir = {x:0,y:0};
+  }
+
+  base.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; onStart(t.clientX, t.clientY); });
+  base.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; onMove(t.clientX, t.clientY); });
+  base.addEventListener('touchend', e => { e.preventDefault(); onEnd(); });
+}
+
+// Touch aim (non-joystick area)
+document.addEventListener('touchmove', e => {
+  if (!gGameActive) return;
+  const t = e.touches[0];
+  if (gSelf) gMouseWorld = { x: t.clientX + gCamX, y: t.clientY + gCamY };
+}, { passive: true });
+
+// ── INIT ──
+buildMap();
+</script>
+</body>
+</html>
