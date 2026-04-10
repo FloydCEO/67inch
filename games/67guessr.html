@@ -437,8 +437,6 @@
   <!-- STREET VIEW -->
   <div class="sv-container">
     <iframe id="sv-panorama" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>
-    <div class="sv-overlay-label" id="sv-label">LOOK AROUND — FIGURE OUT WHERE YOU ARE</div>
-    <div class="sv-no-move-hint">NO MOVING // NO ZOOM OUT</div>
 
     <!-- MINIMAP -->
     <div class="minimap-wrap" id="minimap-wrap">
@@ -512,35 +510,26 @@
   const GUESS_TIMER_SECONDS = 60;
   const TIMER_TRIGGER_ON_FIRST_GUESS = 15;
 
-  // ── LORE LOCATIONS with free Google Maps embed URLs ──
+  // ── STREET VIEW EMBED URL BUILDER ──
+  function buildStreetViewUrl(lat, lng, heading, pitch) {
+    heading = heading ?? 0;
+    pitch   = pitch   ?? 0;
+    return `https://www.google.com/maps/embed/v1/streetview?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&location=${lat},${lng}&heading=${heading}&pitch=${pitch}&fov=90`;
+  }
+
+  // ── LORE LOCATIONS (lat/lng/heading/pitch match backend — no embedUrl needed) ──
   const LORE_LOCATIONS = [
     {
-      id: 'ledurga',
-      name: 'Lēdurga, Latvia',
-      hint: 'SOMEWHERE IN LATVIA',
-      lat: 57.3219, lng: 24.7792,
-      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590829!6m8!1m7!1sCAoSLEFGMVFpcE1xRldBQ3JkSFJfaHVkWjlZblBRR3VhNHV6eEZCNGRkZkhjZg!2m2!1d57.3219!2d24.7792!3f45!4f0!5f0.7985428755592729',
+      id: 'ledurga',  name: 'Lēdurga, Latvia',             lat: 57.3219, lng: 24.7792,  heading: 45,  pitch: 0,
     },
     {
-      id: 'brighton',
-      name: '25 Graham Ave, Brighton',
-      hint: 'SOMEWHERE IN ENGLAND',
-      lat: 50.8288, lng: -0.1395,
-      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590830!6m8!1m7!1sCAoSLEFGMVFpcE5pSlZ5WEdEWmhseEtON0x4YkdJUEtBa3hGX3ZxWXBNb01vdA!2m2!1d50.8288!2d-0.1395!3f200!4f5!5f0.7985428755592729',
+      id: 'brighton', name: '25 Graham Ave, Brighton',       lat: 50.8288, lng: -0.1395,  heading: 200, pitch: 5,
     },
     {
-      id: 'covington',
-      name: '395 E 40th St, Covington KY',
-      hint: 'SOMEWHERE IN AMERICA',
-      lat: 39.0776, lng: -84.4849,
-      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590831!6m8!1m7!1sCAoSLEFGMVFpcE9sVXBxMU9rcWlpZnFKcHJfd1hST0RuOWhVR3E5aHdLMXd3dw!2m2!1d39.0776!2d-84.4849!3f90!4f0!5f0.7985428755592729',
+      id: 'covington',name: '395 E 40th St, Covington KY',  lat: 39.0776, lng: -84.4849, heading: 90,  pitch: 0,
     },
     {
-      id: 'tallinn',
-      name: 'Veerenni tn, Tallinn',
-      hint: 'SOMEWHERE IN ESTONIA',
-      lat: 59.4215, lng: 24.7430,
-      embedUrl: 'https://www.google.com/maps/embed?pb=!4v1775853590832!6m8!1m7!1sCAoSLEFGMVFpcE5OeXBWNjFWZE5GZzROZU11SjlGT3h2VjdTMkNYVzhhWjJnZw!2m2!1d59.4215!2d24.743!3f270!4f5!5f0.7985428755592729',
+      id: 'tallinn',  name: 'Veerenni tn, Tallinn',         lat: 59.4215, lng: 24.7430,  heading: 270, pitch: 5,
     },
   ];
 
@@ -766,7 +755,6 @@
     gGuessSubmitted = false;
 
     document.getElementById('hud-round').textContent = `ROUND ${gRoundIndex + 1} OF ${TOTAL_ROUNDS}`;
-    document.getElementById('sv-label').textContent = loc.hint || 'LOOK AROUND — FIGURE OUT WHERE YOU ARE';
     updateHudPlayers();
 
     // Show game screen
@@ -808,11 +796,10 @@
     setTimeout(tick, 1000);
   }
 
-  // ── STREET VIEW via free Google Maps iframe embed ──
+  // ── STREET VIEW via Google Maps Embed API ──
   function initStreetView(loc) {
     const iframe = document.getElementById('sv-panorama');
-    // Use the location's embed URL — free Google Maps embed, no API key
-    iframe.src = loc.embedUrl;
+    iframe.src = buildStreetViewUrl(loc.lat, loc.lng, loc.heading, loc.pitch);
   }
 
   // ── MINI MAP via Leaflet (free OpenStreetMap) ──
