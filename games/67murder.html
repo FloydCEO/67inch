@@ -1149,17 +1149,17 @@ function render() {
 
   // ── VISION MASK ── (disabled for dead spectators — they see everything)
   if (gSelf && !gMyDead) {
-    const visionR = 150;
+    // Large vision radius — covers most of the screen so nearby players are always visible
+    const visionR = Math.max(W, H) * 0.75;
     const sx = gSelf.x - gCamX;
     const sy = gSelf.y - gCamY;
-    const grad = gCtx.createRadialGradient(sx, sy, visionR * 0.6, sx, sy, visionR * 1.8);
+    const grad = gCtx.createRadialGradient(sx, sy, visionR * 0.5, sx, sy, visionR);
     grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(0.6, 'rgba(0,0,0,0.7)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.97)');
+    grad.addColorStop(0.7, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.92)');
     gCtx.fillStyle = grad;
     gCtx.fillRect(0, 0, W, H);
   } else if (gMyDead) {
-    // Subtle blue tint for ghost mode
     gCtx.fillStyle = 'rgba(0,50,100,0.15)';
     gCtx.fillRect(0, 0, W, H);
   }
