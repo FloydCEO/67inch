@@ -853,10 +853,12 @@ function beginGameplay(d) {
   // Start render loop
   requestAnimationFrame(gameLoop);
 
-  // Start net sync - send position fast
+  // Start net sync - fire position updates every 50ms (fire-and-forget)
   gNetInterval = setInterval(sendMyState, 50);
-  // Poll game state fast for responsive kills/deaths/gameOver
-  gPollInterval = setInterval(pollGameState, 200);
+  // Stagger the poll by 25ms so send and poll don't collide on KV
+  setTimeout(() => {
+    gPollInterval = setInterval(pollGameState, 150);
+  }, 25);
 }
 
 function resizeCanvas() {
@@ -879,7 +881,42 @@ function gameLoop(ts) {
 }
 
 function update(dt) {
-  if (!gSelf || gMyDead) return;
+  if (!gSelf) return;
+  // Dead players can still move as ghosts (spectators) — just can't attack
+  if (gMyDead) {
+    // Ghost movement — free roam, no collision
+    let dx = 0, dy = 0;
+    if (!isMobile) {
+      if (keys['w'] || keys['arrowup'])    dy -= 1;
+      if (keys['s'] || keys['arrowdown'])  dy += 1;
+      if (keys['a'] || keys['arrowleft'])  dx -= 1;
+      if (keys['d'] || keys['arrowright']) dx += 1;
+    } else {
+      dx = gMoveDir.x; dy = gMoveDir.y;
+    }
+    const mag = Math.sqrt(dx*dx+dy*dy);
+    if (mag > 0) { dx /= mag; dy /= mag; }
+    const spd = gSelf.speed * TILE * 0.10; // slightly faster as ghost
+    gSelf.x += dx * spd * dt;
+    gSelf.y += dy * spd * dt;
+    gSelf.x = Math.max(0, Math.min(gSelf.x, MAP_W * TILE));
+    gSelf.y = Math.max(0, Math.min(gSelf.y, MAP_H * TILE));
+    // Camera follows ghost
+    gCamX = Math.max(0, Math.min(gSelf.x - gCanvas.width/2, MAP_W*TILE - gCanvas.width));
+    gCamY = Math.max(0, Math.min(gSelf.y - gCanvas.height/2, MAP_H*TILE - gCanvas.height));
+    // Still lerp remote players
+    const now = Date.now();
+    for (const rp of Object.values(gRemotePlayers)) {
+      if (!rp.dead) {
+        const age = now - (rp.serverTs || now);
+        const predX = rp.serverX + rp.vx * age;
+        const predY = rp.serverY + rp.vy * age;
+        rp.x += (predX - rp.x) * Math.min(0.6 * dt, 1);
+        rp.y += (predY - rp.y) * Math.min(0.6 * dt, 1);
+      }
+    }
+    return;
+  }
 
   // Movement
   let dx = 0, dy = 0;
@@ -908,12 +945,19 @@ function update(dt) {
   gCamX = Math.max(0, Math.min(gCamX, mapPxW - gCanvas.width));
   gCamY = Math.max(0, Math.min(gCamY, mapPxH - gCanvas.height));
 
-  // Lerp remote players - aggressive lerp to minimize visual lag
+  // Dead reckoning: extrapolate where remote player is RIGHT NOW based on velocity,
+  // then snap/lerp visual position toward that prediction
+  const now = Date.now();
   for (const rp of Object.values(gRemotePlayers)) {
     if (!rp.dead) {
-      const lerpSpeed = 0.35 * dt;
-      rp.x += (rp.serverX - rp.x) * Math.min(lerpSpeed, 1);
-      rp.y += (rp.serverY - rp.y) * Math.min(lerpSpeed, 1);
+      // How long since we got the server update?
+      const age = now - (rp.serverTs || now);
+      // Predicted current position based on last known velocity
+      const predX = rp.serverX + rp.vx * age;
+      const predY = rp.serverY + rp.vy * age;
+      // Snap visual position toward prediction — fast lerp (0.6 per frame)
+      rp.x += (predX - rp.x) * Math.min(0.6 * dt, 1);
+      rp.y += (predY - rp.y) * Math.min(0.6 * dt, 1);
     }
   }
 
@@ -1036,9 +1080,16 @@ function render() {
     gCtx.textAlign = 'left';
   }
 
-  // Self
+  // Self — if dead, draw as translucent ghost (only visible to self)
   if (gSelf) {
-    drawPlayer(gSelf.x, gSelf.y, gName, gPlayerId, gMyDead, gMyRole, gWeaponRevealed, true);
+    if (gMyDead) {
+      gCtx.save();
+      gCtx.globalAlpha = 0.35;
+      drawPlayer(gSelf.x, gSelf.y, gName + ' 👻', gPlayerId, false, gMyRole, false, true);
+      gCtx.restore();
+    } else {
+      drawPlayer(gSelf.x, gSelf.y, gName, gPlayerId, gMyDead, gMyRole, gWeaponRevealed, true);
+    }
   }
 
   // Projectile
@@ -1108,17 +1159,20 @@ function render() {
 
   gCtx.restore();
 
-  // ── VISION MASK ──
-  const visionR = 150;
-  if (gSelf) {
+  // ── VISION MASK ── (disabled for dead spectators — they see everything)
+  if (gSelf && !gMyDead) {
+    const visionR = 150;
     const sx = gSelf.x - gCamX;
     const sy = gSelf.y - gCamY;
-    // Radial gradient mask
     const grad = gCtx.createRadialGradient(sx, sy, visionR * 0.6, sx, sy, visionR * 1.8);
     grad.addColorStop(0, 'rgba(0,0,0,0)');
     grad.addColorStop(0.6, 'rgba(0,0,0,0.7)');
     grad.addColorStop(1, 'rgba(0,0,0,0.97)');
     gCtx.fillStyle = grad;
+    gCtx.fillRect(0, 0, W, H);
+  } else if (gMyDead) {
+    // Subtle blue tint for ghost mode
+    gCtx.fillStyle = 'rgba(0,50,100,0.15)';
     gCtx.fillRect(0, 0, W, H);
   }
 }
@@ -1312,16 +1366,21 @@ function mobileAttack() {
 }
 
 // ── NETWORK ──
+let gLastSentX = -1, gLastSentY = -1, gLastSentRevealed = false;
 async function sendMyState() {
   if (!gGameActive || !gRoomCode || !gSelf) return;
+  const rx = Math.round(gSelf.x), ry = Math.round(gSelf.y);
+  // Only send if position or revealed state changed — reduces KV write load
+  if (rx === gLastSentX && ry === gLastSentY && gWeaponRevealed === gLastSentRevealed) return;
+  gLastSentX = rx; gLastSentY = ry; gLastSentRevealed = gWeaponRevealed;
   try {
-    await fetch(`${WORKER}/api/murder/state`, { method:'POST', headers:{'Content-Type':'application/json'},
+    fetch(`${WORKER}/api/murder/state`, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         roomCode: gRoomCode, playerId: gPlayerId,
-        x: Math.round(gSelf.x), y: Math.round(gSelf.y),
+        x: rx, y: ry,
         revealed: gWeaponRevealed, dead: gMyDead,
       })
-    });
+    }); // fire and forget — don't await, no need to block
   } catch {}
 }
 
@@ -1382,13 +1441,22 @@ async function pollGameState() {
       for (const p of d.players) {
         if (p.id === gPlayerId) continue;
         if (!gRemotePlayers[p.id]) {
-          gRemotePlayers[p.id] = { x: p.x, y: p.y, name: p.name, role: null, revealed: false, dead: false, serverX: p.x, serverY: p.y };
+          gRemotePlayers[p.id] = { x: p.x, y: p.y, name: p.name, role: null, revealed: false, dead: false,
+            serverX: p.x, serverY: p.y, prevServerX: p.x, prevServerY: p.y,
+            vx: 0, vy: 0, serverTs: Date.now() };
         }
         const rp = gRemotePlayers[p.id];
         if (!rp.dead) {
-          // Snap if too far (teleport / just joined), lerp otherwise
+          const now = Date.now();
+          const dt = Math.max(1, now - (rp.serverTs || now));
+          // Compute velocity from delta between server updates
+          rp.vx = (p.x - rp.serverX) / dt;  // px/ms
+          rp.vy = (p.y - rp.serverY) / dt;
+          rp.prevServerX = rp.serverX;
+          rp.prevServerY = rp.serverY;
+          rp.serverTs = now;
           const dist = Math.hypot(p.x - rp.serverX, p.y - rp.serverY);
-          if (dist > 200) { rp.x = p.x; rp.y = p.y; }
+          if (dist > 250) { rp.x = p.x; rp.y = p.y; } // snap on teleport
           rp.serverX = p.x; rp.serverY = p.y;
         }
         rp.revealed = p.revealed;
@@ -1409,26 +1477,66 @@ async function pollGameState() {
     // Server says I died
     if (d.myDead && !gMyDead) {
       gMyDead = true;
-      if (gSelf) gBloodSplats.push({ x: gSelf.x, y: gSelf.y, r: 14, t: Date.now() });
+      if (gSelf) {
+        gBloodSplats.push({ x: gSelf.x, y: gSelf.y, r: 14, t: Date.now() });
+        gDeathAnimations.push({ x: gSelf.x, y: gSelf.y, t: Date.now() });
+      }
+      showToast('YOU WERE KILLED — SPECTATING', true);
       document.getElementById('spectate-bar').classList.add('active');
       updateHUD();
     }
 
-    // Projectiles from server (knife throws / shoots)
-    if (d.projectiles) {
-      for (const proj of d.projectiles) {
-        if (proj.ownerId === gPlayerId) continue;
-        if (!gMyDead && gSelf) {
-          const dist = Math.hypot(gSelf.x - proj.x, gSelf.y - proj.y);
-          if (dist < 18) {
-            // We got hit — server will confirm via myDead next poll
-          }
+    // Game over — server confirms it (works for the killer's client)
+    if (!gGameOverHandled && d.gameOver) {
+      handleGameOver(d);
+      return;
+    }
+
+    // Client-side game-over detection for ALL other clients (victim, bystanders).
+    // The server sets player.dead=true and player.role is revealed on death.
+    // We check: is murderer dead? → civilians win. Are all non-murderers dead? → murderer wins.
+    if (!gGameOverHandled && gGameActive && d.players && d.players.length >= 2) {
+      const allRolesMap = {};
+      d.players.forEach(p => { if (p.role) allRolesMap[p.id] = p.role; });
+      // Also add our own role since server only sends others' roles when revealed/dead
+      allRolesMap[gPlayerId] = gMyRole;
+
+      const murdererEntry = d.players.find(p => p.role === 'murderer');
+      const alivePlayers = d.players.filter(p => !p.dead);
+      const iAmAlive = !gMyDead;
+      const totalAlive = alivePlayers.length + (iAmAlive && !d.players.find(p=>p.id===gPlayerId) ? 1 : 0);
+
+      // Murderer got shot
+      if (murdererEntry && murdererEntry.dead) {
+        handleGameOver({
+          winner: 'sheriff_shot',
+          murdererId: murdererEntry.id,
+          murdererName: murdererEntry.name,
+          allRoles: allRolesMap,
+          gameOver: true,
+        });
+        return;
+      }
+
+      // All non-murderers dead (murderer wins)
+      // We know this if: only 1 person alive and they're the murderer,
+      // OR everyone except murderer is dead and I'm dead too
+      const aliveNonMurderers = alivePlayers.filter(p => p.role !== 'murderer');
+      const iAmNonMurderer = gMyRole !== 'murderer';
+      if (aliveNonMurderers.length === 0 && (!iAmNonMurderer || gMyDead)) {
+        const murderer = d.players.find(p => p.role === 'murderer') || alivePlayers[0];
+        if (murderer) {
+          handleGameOver({
+            winner: 'murderer',
+            murdererId: murderer.id,
+            murdererName: murderer.name,
+            allRoles: allRolesMap,
+            gameOver: true,
+          });
+          return;
         }
       }
     }
-
-    // Always check gameOver regardless of gGameActive state
-    if (d.gameOver && !gGameOverHandled) handleGameOver(d);
   } catch {}
 }
 
