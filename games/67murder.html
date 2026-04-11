@@ -904,15 +904,11 @@ function update(dt) {
     // Camera follows ghost
     gCamX = Math.max(0, Math.min(gSelf.x - gCanvas.width/2, MAP_W*TILE - gCanvas.width));
     gCamY = Math.max(0, Math.min(gSelf.y - gCanvas.height/2, MAP_H*TILE - gCanvas.height));
-    // Still lerp remote players
-    const now = Date.now();
+    // Still lerp remote players while spectating
     for (const rp of Object.values(gRemotePlayers)) {
       if (!rp.dead) {
-        const age = now - (rp.serverTs || now);
-        const predX = rp.serverX + rp.vx * age;
-        const predY = rp.serverY + rp.vy * age;
-        rp.x += (predX - rp.x) * Math.min(0.6 * dt, 1);
-        rp.y += (predY - rp.y) * Math.min(0.6 * dt, 1);
+        rp.x += (rp.serverX - rp.x) * Math.min(0.5 * dt, 1);
+        rp.y += (rp.serverY - rp.y) * Math.min(0.5 * dt, 1);
       }
     }
     return;
@@ -945,19 +941,11 @@ function update(dt) {
   gCamX = Math.max(0, Math.min(gCamX, mapPxW - gCanvas.width));
   gCamY = Math.max(0, Math.min(gCamY, mapPxH - gCanvas.height));
 
-  // Dead reckoning: extrapolate where remote player is RIGHT NOW based on velocity,
-  // then snap/lerp visual position toward that prediction
-  const now = Date.now();
+  // Lerp remote players toward their server position — fast and smooth
   for (const rp of Object.values(gRemotePlayers)) {
     if (!rp.dead) {
-      // How long since we got the server update?
-      const age = now - (rp.serverTs || now);
-      // Predicted current position based on last known velocity
-      const predX = rp.serverX + rp.vx * age;
-      const predY = rp.serverY + rp.vy * age;
-      // Snap visual position toward prediction — fast lerp (0.6 per frame)
-      rp.x += (predX - rp.x) * Math.min(0.6 * dt, 1);
-      rp.y += (predY - rp.y) * Math.min(0.6 * dt, 1);
+      rp.x += (rp.serverX - rp.x) * Math.min(0.5 * dt, 1);
+      rp.y += (rp.serverY - rp.y) * Math.min(0.5 * dt, 1);
     }
   }
 
@@ -1442,21 +1430,13 @@ async function pollGameState() {
         if (p.id === gPlayerId) continue;
         if (!gRemotePlayers[p.id]) {
           gRemotePlayers[p.id] = { x: p.x, y: p.y, name: p.name, role: null, revealed: false, dead: false,
-            serverX: p.x, serverY: p.y, prevServerX: p.x, prevServerY: p.y,
-            vx: 0, vy: 0, serverTs: Date.now() };
+            serverX: p.x, serverY: p.y };
         }
         const rp = gRemotePlayers[p.id];
         if (!rp.dead) {
-          const now = Date.now();
-          const dt = Math.max(1, now - (rp.serverTs || now));
-          // Compute velocity from delta between server updates
-          rp.vx = (p.x - rp.serverX) / dt;  // px/ms
-          rp.vy = (p.y - rp.serverY) / dt;
-          rp.prevServerX = rp.serverX;
-          rp.prevServerY = rp.serverY;
-          rp.serverTs = now;
           const dist = Math.hypot(p.x - rp.serverX, p.y - rp.serverY);
-          if (dist > 250) { rp.x = p.x; rp.y = p.y; } // snap on teleport
+          // Snap instantly if they jumped far (spawn/teleport), otherwise update target
+          if (dist > 200) { rp.x = p.x; rp.y = p.y; }
           rp.serverX = p.x; rp.serverY = p.y;
         }
         rp.revealed = p.revealed;
