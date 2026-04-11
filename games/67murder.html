@@ -486,6 +486,7 @@ let gSelf = null;
 let gRemotePlayers = {}; // id -> {x,y,dead,role,revealed,name}
 let gDroppedGun = null; // {x,y} or null
 let gProjectile = null; // {x,y,vx,vy,ownerId}
+let gRemoteProjectiles = []; // other players' projectiles, animated locally
 let gBloodSplats = []; // [{x,y,t}]
 let gDeathAnimations = []; // [{x,y,t}]
 
@@ -756,6 +757,7 @@ function receiveGameStart(d) {
   gHasGun = false;
   gRoundEndSent = false;
   gProjectile = null;
+  gRemoteProjectiles = [];
   gBloodSplats = [];
   gDeathAnimations = [];
   gDroppedGun = null;
@@ -949,7 +951,16 @@ function update(dt) {
     }
   }
 
-  // Projectile
+  // Animate remote projectiles
+  for (const rp of gRemoteProjectiles) {
+    rp.x += rp.vx * dt;
+    rp.y += rp.vy * dt;
+  }
+  gRemoteProjectiles = gRemoteProjectiles.filter(p =>
+    !outOfBounds(p.x, p.y) && Date.now() - p.ts < 2500
+  );
+
+  // My projectile
   if (gProjectile) {
     gProjectile.x += gProjectile.vx * dt;
     gProjectile.y += gProjectile.vy * dt;
@@ -1080,19 +1091,29 @@ function render() {
     }
   }
 
-  // Projectile
+  // My projectile
   if (gProjectile) {
-    gCtx.fillStyle = '#ff0';
-    gCtx.beginPath();
-    gCtx.arc(gProjectile.x, gProjectile.y, 4, 0, Math.PI*2);
-    gCtx.fill();
-    // Direction trail
-    gCtx.strokeStyle = 'rgba(255,255,0,0.3)';
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(gProjectile.x, gProjectile.y);
-    gCtx.lineTo(gProjectile.x - gProjectile.vx*4, gProjectile.y - gProjectile.vy*4);
-    gCtx.stroke();
+    gCtx.save();
+    gCtx.font = '18px serif';
+    gCtx.textAlign = 'center';
+    gCtx.textBaseline = 'middle';
+    const myAngle = Math.atan2(gProjectile.vy, gProjectile.vx);
+    gCtx.translate(gProjectile.x, gProjectile.y);
+    gCtx.rotate(myAngle);
+    gCtx.fillText(gMyRole === 'murderer' ? '🔪' : '🔫', 0, 0);
+    gCtx.restore();
+  }
+  // Remote projectiles
+  for (const rp of gRemoteProjectiles) {
+    gCtx.save();
+    gCtx.font = '18px serif';
+    gCtx.textAlign = 'center';
+    gCtx.textBaseline = 'middle';
+    const rpAngle = Math.atan2(rp.vy, rp.vx);
+    gCtx.translate(rp.x, rp.y);
+    gCtx.rotate(rpAngle);
+    gCtx.fillText(rp.type === 'knife' ? '🔪' : '🔫', 0, 0);
+    gCtx.restore();
   }
 
   // Walls
@@ -1226,11 +1247,14 @@ function drawPlayer(x, y, name, id, dead, role, revealed, isMe) {
 // ── TIMER ──
 function tickTimer() {
   if (!gGameActive) return;
+  if (gRoundSeconds <= 0) return;
   gRoundSeconds--;
   updateHUD();
-  if (gRoundSeconds <= 0 && !gRoundEndSent && gIsHost) {
-    // Only host ends the round to prevent all clients racing
-    endRound('civilians_timeout');
+  if (gRoundSeconds <= 0) {
+    if (!gRoundEndSent && gIsHost) endRound('civilians_timeout');
+    if (gTimerInterval) { clearInterval(gTimerInterval); gTimerInterval = null; }
+    const el = document.getElementById('hud-timer');
+    if (el) { el.textContent = '0:00'; el.className = 'urgent'; }
   }
 }
 
@@ -1454,6 +1478,26 @@ async function pollGameState() {
     // Dropped gun
     if (d.droppedGun !== undefined) gDroppedGun = d.droppedGun;
 
+    // Remote projectiles — store server projectiles for local animation
+    if (d.projectiles) {
+      const serverIds = new Set(d.projectiles.map(p => p.id));
+      // Add new ones we haven't seen
+      for (const proj of d.projectiles) {
+        if (proj.ownerId === gPlayerId) continue;
+        if (!gRemoteProjectiles.find(p => p.id === proj.id)) {
+          gRemoteProjectiles.push({
+            id: proj.id, x: proj.x, y: proj.y,
+            vx: proj.vx, vy: proj.vy,
+            type: proj.type || 'knife', ts: proj.ts || Date.now(),
+          });
+        }
+      }
+      // Remove ones that left the server
+      gRemoteProjectiles = gRemoteProjectiles.filter(p =>
+        serverIds.has(p.id) && Date.now() - p.ts < 2500
+      );
+    }
+
     // Server says I died
     if (d.myDead && !gMyDead) {
       gMyDead = true;
@@ -1607,6 +1651,7 @@ function forceLobbyReset() {
   gWeaponInFlight = false;
   gHasGun = false;
   gProjectile = null;
+  gRemoteProjectiles = [];
   gBloodSplats = [];
   gDeathAnimations = [];
   gRoomCode = null;
@@ -1629,6 +1674,7 @@ async function returnToPartyLobby() {
   gWeaponInFlight = false;
   gHasGun = false;
   gProjectile = null;
+  gRemoteProjectiles = [];
   gBloodSplats = [];
   gDeathAnimations = [];
   document.getElementById('spectate-bar').classList.remove('active');
