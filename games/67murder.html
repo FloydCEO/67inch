@@ -1681,18 +1681,12 @@ async function returnToPartyLobby() {
 
   if (!gRoomCode) { showScreen('screen-lobby'); return; }
 
-  // Reset room status back to 'waiting' on server so it can be started again
+  // Reset room back to 'waiting' so host can start again
   try {
-    await fetch(`${WORKER}/api/murder/leave`, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ roomCode: gRoomCode, playerId: '__reset__' }) }).catch(()=>{});
-  } catch {}
-
-  // Re-fetch room state
-  try {
-    const res = await fetch(`${WORKER}/api/murder/room`, { method:'POST', headers:{'Content-Type':'application/json'},
+    const res = await fetch(`${WORKER}/api/murder/reset`, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ roomCode: gRoomCode, playerId: gPlayerId }) });
     const d = await res.json();
-    if (!d.success || d.players.length === 0) { showScreen('screen-lobby'); return; }
+    if (!d.success) { showScreen('screen-lobby'); return; }
     gPlayers = d.players || [];
     gIsHost = d.hostId === gPlayerId;
     if (gIsHost) {
@@ -1704,7 +1698,7 @@ async function returnToPartyLobby() {
       renderPlayerList('joined-player-list');
       showScreen('screen-joined');
     }
-    gGameOverHandled = false; // allow detecting next game start
+    gGameOverHandled = false;
     startPolling();
   } catch { showScreen('screen-lobby'); }
 }
