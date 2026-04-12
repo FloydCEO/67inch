@@ -1,0 +1,7 @@
+[[durable_objects.bindings]]
+name = "MURDER_ROOM"
+class_name = "MurderRoom"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["MurderRoom"]
